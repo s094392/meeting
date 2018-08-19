@@ -1,5 +1,5 @@
 <template>
-  <div >
+  <div>
     <div>
       <h2 class="uk-display-inline">近期會議</h2>
       <button class="uk-button uk-button-primary uk-align-right">新增會議</button>

@@ -1,8 +1,7 @@
 <template>
-<div class="outter">
-    <div class="buttons">
-        <div class="uk-inline"> 
-            <button class="uk-button uk-button-default uk-button-primary">開始</button>
+<div>
+    <div class="buttons uk-display-inline-block">
+        <button  class="uk-button uk-button-default uk-button-primary">開始</button>
             <button class="uk-button uk-button-default" type="button">請假</button>
             <div uk-dropdown="mode: click;">
                 <ul class="uk-nav uk-dropdown-nav">
@@ -15,15 +14,11 @@
                     <li><a href="#">其他</a></li>
                 </ul>
             </div>
-        </div>
         <button class="uk-button uk-button-default">編輯</button>
         <button class="uk-button uk-button-default">刪除</button>
     </div>
 </div>
 </template>
-
-<style lang="scss" scoped>
-</style>
 
 
 <script>
