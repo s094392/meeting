@@ -1,13 +1,43 @@
 <template>
+<div>
+    <TopNav />
+<div class="uk-padding">
+    <div uk-grid>
+        <div class="uk-width-1-5@m"><LeftNav/></div>
+        <div class="uk-width-3-5@m"><ActiveMeetings /></div>
+        <div class="uk-width-1-5@m"><InactiveMeetings /></div>
+    </div>
     <div>
-        <h1>Vue Router Demo App</h1>
-        <router-link :to="{ name: '/' }">Home</router-link> |
-        <router-link :to="{ name: 'hello' }">hello</router-link> |
-            <div class="container">
-               <router-view></router-view>
+        <div class="container">
+            <router-view></router-view>
         </div>
     </div>
+</div>
+</div>
 </template>
+
+<style lang="scss" scoped>
+@media only screen and (max-width: 640px) {
+  .uk-padding {
+    padding-top: 15px;
+  }
+}
+</style>
+
+
 <script>
-export default {};
+import ActiveMeetings from "./components/ActiveMeetings";
+import InactiveMeetings from "./components/InactiveMeetings";
+import LeftNav from "./components/LeftNav";
+import TopNav from "./components/TopNav";
+
+export default {
+  name: "App",
+  components: {
+    ActiveMeetings,
+    InactiveMeetings,
+    LeftNav,
+    TopNav
+  }
+};
 </script>

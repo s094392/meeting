@@ -1,7 +1,4 @@
 
-// Fonts
-@import url('https://fonts.googleapis.com/css?family=Nunito');
-
 // Variables
 @import 'variables';
 
@@ -10,3 +7,19 @@
 @import "~uikit/src/scss/mixins-theme.scss";
 
 @import "~uikit/src/scss/uikit-theme.scss";
+
+.background {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    z-index: -1000;
+    background-attachment: fixed;
+    background-size: cover;
+    background-image: url(/img/background.svg);
+}
+
+@media only screen and (min-width: 960px) {
+    .top-bar {
+      display: none;
+    }
+}

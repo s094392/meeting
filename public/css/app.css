@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
+@charset "UTF-8";
 
 /* ========================================================================
    Component: Base
@@ -15179,6 +15179,22 @@ iframe.uk-cover {
   h2,
   h3 {
     page-break-after: avoid;
+  }
+}
+
+.background {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  z-index: -1000;
+  background-attachment: fixed;
+  background-size: cover;
+  background-image: url(/img/background.svg);
+}
+
+@media only screen and (min-width: 960px) {
+  .top-bar {
+    display: none;
   }
 }
 

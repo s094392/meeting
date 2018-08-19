@@ -9,6 +9,7 @@
     <title>Meeting</title>
 </head>
 <body>
+    <div  class="background"></div>
     <div id="app">
         <app></app>
     </div>
