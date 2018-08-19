@@ -1,67 +1,67 @@
 <template>
 <div>
-    <h2>WWW 新生訓練</h2>
-    <div class="uk-card uk-card-default uk-card-body uk-card-small">
-        <ul uk-tab>
-            <li class="uk-active" @click="content = 1">
-                <a href="#">
-                    <span class="uk-text-large uk-text-lead">會議資料</span>
-                </a>
-            </li>
-            <li @click="content = 2">
-                <a href="#">
-                    <span class="uk-text-large uk-text-lead">會議內容</span>
-                </a>
-            </li>
-        </ul>
-        <div v-show="content == 1">
-            <table class="uk-table uk-table-small ">
-                <tr>
-                    <th>會議名稱:</th>
-                    <td>NET Meeting 暨 新生報告</td>
-                </tr>
-                <tr>
-                    <th>會議分類:</th>
-                    <td>Network</td>
-                </tr>
-                <tr>
-                    <th>開始時間:</th>
-                    <td>2018-08-16 19:36:03</td>
-                </tr>
-                <tr>
-                    <th>結束時間:</th>
-                    <td>Not set</td>
-                </tr>
-                <tr>
-                    <th>發起人:</th>
-                    <td>calee (李家安)</td>
-                </tr>
-                <tr>
-                    <th>會議狀態:</th>
-                    <td>會議結束，但會議記錄未確認</td>
-                </tr>
-                <tr>
-                    <th>會議時數:</th>
-                    <td>270 分鐘</td>
-                </tr>
-                <tr>
-                    <th>準時成員:</th>
-                    <td>tzuyu, ycchang, yaowen, yahsieh, syujy, youwei1129, wwchung, wangth</td>
-                </tr>
-                <tr>
-                    <th>遲到成員:</th>
-                    <td></td>
-                </tr>
-                <tr>
-                    <th>未到成員:</th>
-                    <td></td>
-                </tr>
-            </table>
-            <hr class="uk-divider-icon">
-            <MeetingControl />
-        </div>
+	<h2>WWW 新生訓練</h2>
+	<div class="uk-card uk-card-default uk-card-body uk-card-small">
+		<ul uk-tab>
+			<li class="uk-active" @click="content = 1">
+				<a href="#">
+					<span class="uk-text-large uk-text-lead">會議資料</span>
+				</a>
+			</li>
+			<li @click="content = 2">
+				<a href="#">
+					<span class="uk-text-large uk-text-lead">會議內容</span>
+				</a>
+			</li>
+		</ul>
+		<div v-show="content == 1">
+			<table class="uk-table uk-table-small ">
+				<tr>
+					<th>會議名稱:</th>
+					<td>NET Meeting 暨 新生報告</td>
+				</tr>
+				<tr>
+					<th>會議分類:</th>
+					<td>Network</td>
+				</tr>
+				<tr>
+					<th>開始時間:</th>
+					<td>2018-08-16 19:36:03</td>
+				</tr>
+				<tr>
+					<th>結束時間:</th>
+					<td>Not set</td>
+				</tr>
+				<tr>
+					<th>發起人:</th>
+					<td>calee (李家安)</td>
+				</tr>
+				<tr>
+					<th>會議狀態:</th>
+					<td>會議結束，但會議記錄未確認</td>
+				</tr>
+				<tr>
+					<th>會議時數:</th>
+					<td>270 分鐘</td>
+				</tr>
+				<tr>
+					<th>準時成員:</th>
+					<td>tzuyu, ycchang, yaowen, yahsieh, syujy, youwei1129, wwchung, wangth</td>
+				</tr>
+				<tr>
+					<th>遲到成員:</th>
+					<td></td>
+				</tr>
+				<tr>
+					<th>未到成員:</th>
+					<td></td>
+				</tr>
+			</table>
+			<hr class="uk-divider-icon">
+			<MeetingControl />
+		</div>
 
-        <VueMarkdown v-show ="content == 2" toc="true" toc-id="toc" toc-class="uk-list uk-list-bullet" >
+		<VueMarkdown v-show ="content == 2" toc="true" toc-id="toc" toc-class="uk-list uk-list-bullet" >
 ## Processing Jobs
 - calee
 ** 切網段規則 (8/16)
@@ -212,11 +212,11 @@ EIC 7F syujy
 netmon -- calee
 prtg -- syujy
 dhcp -- yaowen
-        </VueMarkdown>
+		</VueMarkdown>
 
 
 
-    </div>
+	</div>
 </div>
 </template>
 

@@ -16155,9 +16155,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 var app = new __WEBPACK_IMPORTED_MODULE_1_vue___default.a({
-    el: '#app',
-    components: { App: __WEBPACK_IMPORTED_MODULE_3__App___default.a },
-    router: __WEBPACK_IMPORTED_MODULE_2__router__["a" /* default */]
+  el: '#app',
+  components: { App: __WEBPACK_IMPORTED_MODULE_3__App___default.a },
+  router: __WEBPACK_IMPORTED_MODULE_2__router__["a" /* default */]
 });
 
 /***/ }),
@@ -48985,29 +48985,29 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
 
 
 /* harmony default export */ __webpack_exports__["a"] = (new __WEBPACK_IMPORTED_MODULE_1_vue_router__["a" /* default */]({
-    mode: 'history',
-    routes: [{
-        path: '/',
-        name: '/',
-        components: {
-            main: __WEBPACK_IMPORTED_MODULE_2__components_ActiveMeetings___default.a,
-            right: __WEBPACK_IMPORTED_MODULE_3__components_InactiveMeetings___default.a
-        }
-    }, {
-        path: '/list',
-        name: 'list',
-        components: {
-            main: __WEBPACK_IMPORTED_MODULE_4__components_MeetingList___default.a,
-            right: __WEBPACK_IMPORTED_MODULE_5__components_MeetingFilter___default.a
-        }
-    }, {
-        path: '/detail',
-        name: 'detail',
-        components: {
-            main: __WEBPACK_IMPORTED_MODULE_6__components_MeetingDetail___default.a,
-            right: __WEBPACK_IMPORTED_MODULE_7__components_Toc___default.a
-        }
-    }]
+  mode: 'history',
+  routes: [{
+    path: '/',
+    name: '/',
+    components: {
+      main: __WEBPACK_IMPORTED_MODULE_2__components_ActiveMeetings___default.a,
+      right: __WEBPACK_IMPORTED_MODULE_3__components_InactiveMeetings___default.a
+    }
+  }, {
+    path: '/list',
+    name: 'list',
+    components: {
+      main: __WEBPACK_IMPORTED_MODULE_4__components_MeetingList___default.a,
+      right: __WEBPACK_IMPORTED_MODULE_5__components_MeetingFilter___default.a
+    }
+  }, {
+    path: '/detail',
+    name: 'detail',
+    components: {
+      main: __WEBPACK_IMPORTED_MODULE_6__components_MeetingDetail___default.a,
+      right: __WEBPACK_IMPORTED_MODULE_7__components_Toc___default.a
+    }
+  }]
 }));
 
 /***/ }),
@@ -52245,7 +52245,7 @@ var staticRenderFns = [
           _c("p", [
             _vm._v("PC 新生報告 "),
             _c("br"),
-            _vm._v("\r\n        2018-08-17 13:22")
+            _vm._v("\r\n\t\t2018-08-17 13:22")
           ])
         ]
       )
@@ -72222,7 +72222,7 @@ var render = function() {
           },
           [
             _vm._v(
-              "\r\n## Processing Jobs\r\n- calee\r\n** 切網段規則 (8/16)\r\n** Colocation 新規劃\r\n** 網管訓練 -- 網路 debug SOP (8/31)\r\n** 小內網整理\r\n==== 小內網 EC318\r\n==== 防火牆規則\r\n==== 小內網 NAT ip 209 轉 235\r\n==== IPMI 網路\r\n- syujy\r\n** cacti (8/31)\r\n** 2.4 G 取締\r\n==== DEADLINE: 9/21\r\n==== 發信: 8/23\r\n==== 網管訓練宣導: 9/7\r\n==== 開始取締實驗室: 21\r\n** 網管訓練 -- 工三實驗室網路架構 (8/31)\r\n** 網管訓練 -- cacti 使用 (8/31)\r\n** 172.17 下線\r\n- wwchung\r\n** tacacs+\r\n- yahsieh\r\n** PRTG\r\n** Cisco Switch 安全設定 survey\r\n- yaowen\r\n** wifi 維護公告 (8/20)\r\n** nagios 新架構\r\n==== 8/20 前重灌 netmon\r\n==== 8/22 前設定完成 nagios\r\n** net 組服務優先序、dead lock (8/22)\r\n** 網管訓練 -- colocation 申請流程、進出規則、使用資源規範 (8/31)\r\n- youwei1129\r\n** EC037 網路架構 (8/31)\r\n** 2018 網管調查\r\n** 網管訓練 -- 資安通報流程 (8/31)\r\n- 各樓層\r\n** 2960/3750 config 確認\r\n- 各機器負責人\r\n\r\n## 本日大綱:\r\n- 新生報告\r\n- PRTG 進度報告\r\n- EC037 網路架構規劃\r\n- 實驗室網路架構 (N7K)\r\n- 切網段規則\r\n- CCNA 考試\r\n- nagios 簡單報告\r\n- net 組服務優先序 (忘記了)\r\n- 8/25, 26 斷電\r\n- 8/22 wifi\r\n- 2.4G 取締 (syujy)\r\n- 兩天內報 JOB\r\n- 新 colocation 規則\r\n- 小內網進度\r\n\r\n====================\r\n## Schedule\r\n8/10\r\n- NCTU Wireless 貼紙 (O)\r\n- Core Router 備援 (8/10 -> 235)\r\n- VPN 方案 (送交 團長)\r\n- PC Room 網路架構 (等 1G 光網卡)\r\n- pm2.5 (回報壞掉 1 台)\r\n8/31\r\n- 內網整理\r\n- EC037\r\n- cacti + weather map\r\n- PRTG\r\n9/21\r\n- New Colocation 規劃、規範 calee\r\n- Colocation IPMI\r\n\r\n====================\r\n## New job\r\n- KVM 規劃\r\n- config 備份 daemon\r\n- Colocation port security\r\n\r\n====================\r\n呆 Job (大禮包 Queue)\r\n- wiki 整理\r\n- KVM 整理\r\n- IP 分配表整理\r\n- DHCP 重建\r\n\r\n## 臨時動議\r\n\r\n## 提醒\r\n** 時數建議當天做完馬上填寫，並且詳細紀錄過程、Debug、日期、時間 **\r\n* 把 job 當 log 寫，把 wiki 當 code 寫\r\n* 寫 wiki、上 gitlab\r\n\r\n- 2960 config\r\n== 2960 / 3750 留 physical interface description: 查線，有線的都要留 des 到哪一個 int，請不要直接用 sh int status，沒有線的 interface default 掉並 disable，description 要知道連到哪一間實驗室，不需要知道教授 (教授是跟 vlan 的) ex. ### 318 ###\r\n== 2960 / 3750 確認 enable 密碼有存在\r\n== 3750 vlan 要有 description，井字號，哪一間實驗室，哪一個教授 ex. ### 318 cscc's lab ###\r\n== 如果 2960 沒在使用的 vlan 請把 uplink trunk 中拿掉\r\n== 2960 uplink 到 3750 要用 port-channel\r\n== 2960-3750, 3750-3750, 3750-N9K 檢查一下是用 port-channel\r\n== 端點 no cdp enable\r\n== VLAN 是否有帶錯\r\n== no lldp trasmit\r\n== vlan 1 shutdown\r\n== wiki net 2960 上基本設定確認都有: https://help.cs.nctu.edu.tw/wiki/index.php?title=Cisco_2960%E8%A8%AD%E5%AE%9A\r\n== wiki net 3750 上基本設定確認都有: https://help.cs.nctu.edu.tw/wiki/index.php?title=Cisco_3750%E8%A8%AD%E5%AE%9A\r\n\r\n- CSCC 使用網段 切割規則\r\n== 網段: 17, 23, 88, 168, 235\r\n== 分區\r\n**** vhosting\r\n**** YCC\r\n**** NASA\r\n**** TA in VM\r\n**** lxc\r\n**** TA in EC318\r\n**** tmachine (tlinux 15, tbsd 15, tmail 5, twww ?, tnet ?)\r\n\r\n- VPN Spec.\r\n== 支援 SSL VPN\r\n== NTD 10w 以下\r\n== 30 - 50 人 / 20 人 同時在線\r\n== 支援 LDAP\r\n== 支援 Windows, mac, Linux\r\n== 支援 mobile (optional)\r\n== 控制不同路由不同存取權限\r\n== 100M throughput (如果 feature, 也可以考慮 10M)\r\n== cisco / juniper / fortinet\r\n\r\n## 備註:\r\n- 網管部分討論\r\n**** 網管交接事項\r\n**** 網管須知\r\n**** mail group\r\n**** 網路 debug SOP\r\n**** 工三網路架構\r\n**** 機房進出流程、規則\r\n\r\n## 下次 Meeting:\r\n8/22 19:30\r\n-----\r\nOSPF Loopback IP\r\nEC B1, 1F yaowen\r\nEC 3F,4F calee\r\nEC 5F, 6F, 7F yahsieh, youwei1129\r\nEIC 7F syujy\r\n\r\nnetmon -- calee\r\nprtg -- syujy\r\ndhcp -- yaowen\r\n        "
+              "\n## Processing Jobs\n- calee\n** 切網段規則 (8/16)\n** Colocation 新規劃\n** 網管訓練 -- 網路 debug SOP (8/31)\n** 小內網整理\n==== 小內網 EC318\n==== 防火牆規則\n==== 小內網 NAT ip 209 轉 235\n==== IPMI 網路\n- syujy\n** cacti (8/31)\n** 2.4 G 取締\n==== DEADLINE: 9/21\n==== 發信: 8/23\n==== 網管訓練宣導: 9/7\n==== 開始取締實驗室: 21\n** 網管訓練 -- 工三實驗室網路架構 (8/31)\n** 網管訓練 -- cacti 使用 (8/31)\n** 172.17 下線\n- wwchung\n** tacacs+\n- yahsieh\n** PRTG\n** Cisco Switch 安全設定 survey\n- yaowen\n** wifi 維護公告 (8/20)\n** nagios 新架構\n==== 8/20 前重灌 netmon\n==== 8/22 前設定完成 nagios\n** net 組服務優先序、dead lock (8/22)\n** 網管訓練 -- colocation 申請流程、進出規則、使用資源規範 (8/31)\n- youwei1129\n** EC037 網路架構 (8/31)\n** 2018 網管調查\n** 網管訓練 -- 資安通報流程 (8/31)\n- 各樓層\n** 2960/3750 config 確認\n- 各機器負責人\n\n## 本日大綱:\n- 新生報告\n- PRTG 進度報告\n- EC037 網路架構規劃\n- 實驗室網路架構 (N7K)\n- 切網段規則\n- CCNA 考試\n- nagios 簡單報告\n- net 組服務優先序 (忘記了)\n- 8/25, 26 斷電\n- 8/22 wifi\n- 2.4G 取締 (syujy)\n- 兩天內報 JOB\n- 新 colocation 規則\n- 小內網進度\n\n====================\n## Schedule\n8/10\n- NCTU Wireless 貼紙 (O)\n- Core Router 備援 (8/10 -> 235)\n- VPN 方案 (送交 團長)\n- PC Room 網路架構 (等 1G 光網卡)\n- pm2.5 (回報壞掉 1 台)\n8/31\n- 內網整理\n- EC037\n- cacti + weather map\n- PRTG\n9/21\n- New Colocation 規劃、規範 calee\n- Colocation IPMI\n\n====================\n## New job\n- KVM 規劃\n- config 備份 daemon\n- Colocation port security\n\n====================\n呆 Job (大禮包 Queue)\n- wiki 整理\n- KVM 整理\n- IP 分配表整理\n- DHCP 重建\n\n## 臨時動議\n\n## 提醒\n** 時數建議當天做完馬上填寫，並且詳細紀錄過程、Debug、日期、時間 **\n* 把 job 當 log 寫，把 wiki 當 code 寫\n* 寫 wiki、上 gitlab\n\n- 2960 config\n== 2960 / 3750 留 physical interface description: 查線，有線的都要留 des 到哪一個 int，請不要直接用 sh int status，沒有線的 interface default 掉並 disable，description 要知道連到哪一間實驗室，不需要知道教授 (教授是跟 vlan 的) ex. ### 318 ###\n== 2960 / 3750 確認 enable 密碼有存在\n== 3750 vlan 要有 description，井字號，哪一間實驗室，哪一個教授 ex. ### 318 cscc's lab ###\n== 如果 2960 沒在使用的 vlan 請把 uplink trunk 中拿掉\n== 2960 uplink 到 3750 要用 port-channel\n== 2960-3750, 3750-3750, 3750-N9K 檢查一下是用 port-channel\n== 端點 no cdp enable\n== VLAN 是否有帶錯\n== no lldp trasmit\n== vlan 1 shutdown\n== wiki net 2960 上基本設定確認都有: https://help.cs.nctu.edu.tw/wiki/index.php?title=Cisco_2960%E8%A8%AD%E5%AE%9A\n== wiki net 3750 上基本設定確認都有: https://help.cs.nctu.edu.tw/wiki/index.php?title=Cisco_3750%E8%A8%AD%E5%AE%9A\n\n- CSCC 使用網段 切割規則\n== 網段: 17, 23, 88, 168, 235\n== 分區\n**** vhosting\n**** YCC\n**** NASA\n**** TA in VM\n**** lxc\n**** TA in EC318\n**** tmachine (tlinux 15, tbsd 15, tmail 5, twww ?, tnet ?)\n\n- VPN Spec.\n== 支援 SSL VPN\n== NTD 10w 以下\n== 30 - 50 人 / 20 人 同時在線\n== 支援 LDAP\n== 支援 Windows, mac, Linux\n== 支援 mobile (optional)\n== 控制不同路由不同存取權限\n== 100M throughput (如果 feature, 也可以考慮 10M)\n== cisco / juniper / fortinet\n\n## 備註:\n- 網管部分討論\n**** 網管交接事項\n**** 網管須知\n**** mail group\n**** 網路 debug SOP\n**** 工三網路架構\n**** 機房進出流程、規則\n\n## 下次 Meeting:\n8/22 19:30\n-----\nOSPF Loopback IP\nEC B1, 1F yaowen\nEC 3F,4F calee\nEC 5F, 6F, 7F yahsieh, youwei1129\nEIC 7F syujy\n\nnetmon -- calee\nprtg -- syujy\ndhcp -- yaowen\n\t\t"
             )
           ]
         )

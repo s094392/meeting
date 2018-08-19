@@ -11,31 +11,31 @@ import MeetingDetail from './components/MeetingDetail'
 import Toc from './components/Toc'
 
 export default new VueRouter({
-    mode: 'history',
-    routes: [
-        {
-            path: '/',
-            name: '/',
-            components: {
-                main: ActiveMeetings,
-                right: InactiveMeetings
-            }
-        },
-        {
-            path: '/list',
-            name: 'list',
-            components: {
-                main: MeetingList,
-                right: MeetingFilter
-            }
-        },
-        {
-            path: '/detail',
-            name: 'detail',
-            components: {
-                main: MeetingDetail,
-                right: Toc
-            }
-        }
-    ]
+  mode: 'history',
+  routes: [
+    {
+      path: '/',
+      name: '/',
+      components: {
+        main: ActiveMeetings,
+        right: InactiveMeetings
+      }
+    },
+    {
+      path: '/list',
+      name: 'list',
+      components: {
+        main: MeetingList,
+        right: MeetingFilter
+      }
+    },
+    {
+      path: '/detail',
+      name: 'detail',
+      components: {
+        main: MeetingDetail,
+        right: Toc
+      }
+    }
+  ]
 })
