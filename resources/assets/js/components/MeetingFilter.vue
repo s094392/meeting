@@ -16,12 +16,9 @@
 			</div>
 
 			<div class="uk-margin">
-				<DatePicker v-model="time1" :first-day-of-week="1"></DatePicker>
+				<FlatPickr v-model="date" :config="config"></FlatPickr>
 			</div>
 
-			<div class="uk-margin">
-				<DatePicker v-model="time1" :first-day-of-week="1"></DatePicker>
-			</div>
 
 			<div class="uk-margin">
 				<input class="uk-input" type="text" placeholder="發起人">
@@ -42,29 +39,20 @@
 </template>
 
 <script>
-import DatePicker from "vue2-datepicker";
+import FlatPickr from "vue-flatpickr-component";
+import "flatpickr/dist/flatpickr.css";
 
 export default {
-  components: { DatePicker },
   data() {
     return {
-      time1: "",
-      time2: "",
-      time3: "",
-      shortcuts: [
-        {
-          text: "今天",
-          onClick: () => {
-            this.time3 = [new Date(), new Date()];
-          }
-        }
-      ],
-      timePickerOptions: {
-        start: "00:00",
-        step: "00:30",
-        end: "23:30"
+      date: null,
+      config: {
+        mode: "range"
       }
     };
+  },
+  components: {
+    FlatPickr
   }
 };
 </script>

@@ -8,7 +8,12 @@
 					<span class="uk-text-large uk-text-lead">會議資料</span>
 				</a>
 			</li>
-			<li @click="content = 2">
+      <li @click="content = 2">
+				<a href="#">
+					<span class="uk-text-large uk-text-lead">參與人員</span>
+				</a>
+			</li>
+			<li @click="content = 3">
 				<a href="#">
 					<span class="uk-text-large uk-text-lead">會議內容</span>
 				</a>
@@ -17,12 +22,16 @@
 		<div v-show="content == 1">
 			<table class="uk-table uk-table-small ">
 				<tr>
-					<th>會議名稱:</th>
+					<th >會議名稱:</th>
 					<td>NET Meeting 暨 新生報告</td>
 				</tr>
 				<tr>
 					<th>會議分類:</th>
 					<td>Network</td>
+				</tr>
+        <tr>
+					<th>預定開始時間:</th>
+					<td>Not set</td>
 				</tr>
 				<tr>
 					<th>開始時間:</th>
@@ -44,24 +53,40 @@
 					<th>會議時數:</th>
 					<td>270 分鐘</td>
 				</tr>
-				<tr>
-					<th>準時成員:</th>
-					<td>tzuyu, ycchang, yaowen, yahsieh, syujy, youwei1129, wwchung, wangth</td>
-				</tr>
-				<tr>
-					<th>遲到成員:</th>
-					<td></td>
-				</tr>
-				<tr>
-					<th>未到成員:</th>
-					<td></td>
-				</tr>
 			</table>
 			<hr class="uk-divider-icon">
 			<MeetingControl />
 		</div>
 
-		<VueMarkdown v-show ="content == 2" toc="true" toc-id="toc" toc-class="uk-list uk-list-bullet" >
+    <div v-show="content == 2">
+      <h3>準時成員</h3>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>tzuyu</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>ycchang</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>yaowen</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>yahsieh</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>syujy</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>youwei1129</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wangth</button>
+		  <h3>遲到成員</h3>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>yahsieh</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>syujy</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>youwei1129</button>
+      <h3>早退成員</h3>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wangth</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color">
+          <span uk-icon="plus"></span>
+        </button>
+      <h3>請假成員</h3>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wangth</button>
+      <h3>翹咪成員</h3>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>syujy</button>
+        <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>youwei1129</button>
+     </div>
+		<VueMarkdown v-show ="content == 3" toc="true" toc-id="toc" toc-class="uk-list uk-list-bullet" >
 ## Processing Jobs
 - calee
 ** 切網段規則 (8/16)
@@ -219,6 +244,13 @@ dhcp -- yaowen
 	</div>
 </div>
 </template>
+
+<style lang="scss">
+.disabled-normal-color {
+  color: #333 !important;
+}
+</style>
+
 
 <script>
 import VueMarkdown from "vue-markdown";

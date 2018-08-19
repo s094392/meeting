@@ -23,3 +23,7 @@
       display: none;
     }
 }
+
+.flatpickr-input {
+  @extend .uk-input;
+}

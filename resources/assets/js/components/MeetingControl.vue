@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div class="buttons uk-display-inline-block">
-		<button  class="uk-button uk-button-default uk-button-primary">開始</button>
+		<router-link :to="{name:'checkin'}"  class="uk-button uk-button-default uk-button-primary">開始</router-link>
 			<button class="uk-button uk-button-default" type="button">請假</button>
 			<div uk-dropdown="mode: click;">
 				<ul class="uk-nav uk-dropdown-nav">

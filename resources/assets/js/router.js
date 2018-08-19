@@ -9,6 +9,8 @@ import MeetingList from './components/MeetingList'
 import MeetingFilter from './components/MeetingFilter'
 import MeetingDetail from './components/MeetingDetail'
 import Toc from './components/Toc'
+import CheckIn from './components/CheckIn'
+import NewMeeting from './components/NewMeeting'
 
 export default new VueRouter({
   mode: 'history',
@@ -35,6 +37,20 @@ export default new VueRouter({
       components: {
         main: MeetingDetail,
         right: Toc
+      }
+    },
+    {
+      path: '/checkin',
+      name: 'checkin',
+      components: {
+        main: CheckIn
+      }
+    },
+    {
+      path: '/new',
+      name: 'new',
+      components: {
+        main: NewMeeting
       }
     }
   ]
