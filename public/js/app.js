@@ -75724,14 +75724,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -75774,138 +75766,111 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("h2", [_vm._v("新增會議")]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "uk-card uk-card-default uk-card-body uk-card-small" },
-      [
-        _c("form", { staticClass: "uk-form-horizontal uk-margin-large" }, [
-          _vm._m(0),
-          _vm._v(" "),
-          _c("div", { staticClass: "uk-margin" }, [
-            _c(
-              "label",
-              {
-                staticClass: "uk-form-label",
-                attrs: { for: "form-horizontal-text" }
-              },
-              [_vm._v("會議類別")]
-            ),
+  return _c("div", { attrs: { "uk-grid": "" } }, [
+    _c("div", { staticClass: "uk-width-3-4@m" }, [
+      _c("h2", [_vm._v("新增會議")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "uk-card uk-card-default uk-card-body uk-card-small" },
+        [
+          _c("form", { staticClass: "uk-form-horizontal uk-margin-large" }, [
+            _vm._m(0),
             _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "uk-form-controls" },
-              [
-                _c("multiselect", {
-                  attrs: { options: _vm.categoryOptions },
-                  model: {
-                    value: _vm.categoryValue,
-                    callback: function($$v) {
-                      _vm.categoryValue = $$v
-                    },
-                    expression: "categoryValue"
-                  }
-                })
-              ],
-              1
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "uk-margin" }, [
-            _c(
-              "label",
-              {
-                staticClass: "uk-form-label",
-                attrs: { for: "form-horizontal-text" }
-              },
-              [_vm._v("開會日期")]
-            ),
+            _c("div", { staticClass: "uk-margin" }, [
+              _c(
+                "label",
+                {
+                  staticClass: "uk-form-label",
+                  attrs: { for: "form-horizontal-text" }
+                },
+                [_vm._v("會議類別")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "uk-form-controls" },
+                [
+                  _c("multiselect", {
+                    attrs: { options: _vm.categoryOptions },
+                    model: {
+                      value: _vm.categoryValue,
+                      callback: function($$v) {
+                        _vm.categoryValue = $$v
+                      },
+                      expression: "categoryValue"
+                    }
+                  })
+                ],
+                1
+              )
+            ]),
             _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "uk-form-controls" },
-              [
-                _c("FlatPickr", {
-                  attrs: { config: _vm.config },
-                  model: {
-                    value: _vm.dateTime,
-                    callback: function($$v) {
-                      _vm.dateTime = $$v
-                    },
-                    expression: "dateTime"
-                  }
-                })
-              ],
-              1
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "uk-margin" }, [
-            _c(
-              "label",
-              {
-                staticClass: "uk-form-label",
-                attrs: { for: "form-horizontal-text" }
-              },
-              [_vm._v("預計開始時間")]
-            ),
+            _c("div", { staticClass: "uk-margin" }, [
+              _c(
+                "label",
+                {
+                  staticClass: "uk-form-label",
+                  attrs: { for: "form-horizontal-text" }
+                },
+                [_vm._v("開會日期")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "uk-form-controls" },
+                [
+                  _c("FlatPickr", {
+                    attrs: { config: _vm.config },
+                    model: {
+                      value: _vm.dateTime,
+                      callback: function($$v) {
+                        _vm.dateTime = $$v
+                      },
+                      expression: "dateTime"
+                    }
+                  })
+                ],
+                1
+              )
+            ]),
             _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "uk-form-controls" },
-              [
-                _c("Multiselect", {
-                  attrs: { options: _vm.timeOptions, preserveSearch: true },
-                  model: {
-                    value: _vm.timeValue,
-                    callback: function($$v) {
-                      _vm.timeValue = $$v
-                    },
-                    expression: "timeValue"
-                  }
-                })
-              ],
-              1
-            )
-          ]),
-          _vm._v(" "),
-          _c("div", { staticClass: "uk-margin" }, [
-            _c(
-              "label",
-              {
-                staticClass: "uk-form-label",
-                attrs: { for: "form-horizontal-text" }
-              },
-              [_vm._v("參與人員")]
-            ),
+            _c("div", { staticClass: "uk-margin" }, [
+              _c(
+                "label",
+                {
+                  staticClass: "uk-form-label",
+                  attrs: { for: "form-horizontal-text" }
+                },
+                [_vm._v("參與人員")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "uk-form-controls" },
+                [
+                  _c("Multiselect", {
+                    attrs: { options: _vm.attendeeOptions, multiple: true },
+                    model: {
+                      value: _vm.attendeeValue,
+                      callback: function($$v) {
+                        _vm.attendeeValue = $$v
+                      },
+                      expression: "attendeeValue"
+                    }
+                  })
+                ],
+                1
+              )
+            ]),
             _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "uk-form-controls" },
-              [
-                _c("Multiselect", {
-                  attrs: { options: _vm.attendeeOptions, multiple: true },
-                  model: {
-                    value: _vm.attendeeValue,
-                    callback: function($$v) {
-                      _vm.attendeeValue = $$v
-                    },
-                    expression: "attendeeValue"
-                  }
-                })
-              ],
-              1
-            )
-          ]),
-          _vm._v(" "),
-          _vm._m(1),
-          _vm._v(" "),
-          _vm._m(2)
-        ])
-      ]
-    )
+            _vm._m(1),
+            _vm._v(" "),
+            _vm._m(2)
+          ])
+        ]
+      )
+    ])
   ])
 }
 var staticRenderFns = [
