@@ -2,7 +2,7 @@
 <div>
   <div class="uk-card uk-card-default uk-card-body uk-margin-top">
     <div>
-      <router-link :to="{name:'detail'}" class="uk-card-title">WWW 新生訓練</router-link>
+      <router-link :to="{name:'detail', params: {id: 1, view: 'data'}}" class="uk-card-title">WWW 新生訓練</router-link>
       <span class="uk-label uk-align-right">Badge</span>
     </div>
     <p>

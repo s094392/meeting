@@ -44,8 +44,6 @@
 <script>
 import FlatPickr from "vue-flatpickr-component";
 import Multiselect from "vue-multiselect";
-import "flatpickr/dist/flatpickr.css";
-import "vue-multiselect/dist/vue-multiselect.min.css";
 
 export default {
   data() {

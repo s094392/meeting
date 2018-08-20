@@ -23,7 +23,7 @@ export default new VueRouter({
       component: MeetingList
     },
     {
-      path: '/detail',
+      path: '/detail/:id/:view',
       name: 'detail',
       component: MeetingDetail
     },
