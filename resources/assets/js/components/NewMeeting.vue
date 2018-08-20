@@ -57,15 +57,12 @@
 </div>
 </template>
 
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-
-
-
 
 <script>
 import Multiselect from "vue-multiselect";
 import FlatPickr from "vue-flatpickr-component";
 import "flatpickr/dist/flatpickr.css";
+import "vue-multiselect/dist/vue-multiselect.min.css";
 
 export default {
   data() {

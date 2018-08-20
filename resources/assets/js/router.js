@@ -3,12 +3,9 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-import ActiveMeetings from './components/ActiveMeetings'
-import InactiveMeetings from './components/InactiveMeetings'
+import Home from './components/Home'
 import MeetingList from './components/MeetingList'
-import MeetingFilter from './components/MeetingFilter'
 import MeetingDetail from './components/MeetingDetail'
-import Toc from './components/Toc'
 import CheckIn from './components/CheckIn'
 import NewMeeting from './components/NewMeeting'
 
@@ -18,40 +15,27 @@ export default new VueRouter({
     {
       path: '/',
       name: '/',
-      components: {
-        main: ActiveMeetings,
-        right: InactiveMeetings
-      }
+      component: Home
     },
     {
       path: '/list',
       name: 'list',
-      components: {
-        main: MeetingList,
-        right: MeetingFilter
-      }
+      component: MeetingList
     },
     {
       path: '/detail',
       name: 'detail',
-      components: {
-        main: MeetingDetail,
-        right: Toc
-      }
+      component: MeetingDetail
     },
     {
       path: '/checkin',
       name: 'checkin',
-      components: {
-        main: CheckIn
-      }
+      component: CheckIn
     },
     {
       path: '/new',
       name: 'new',
-      components: {
-        main: NewMeeting
-      }
+      component: NewMeeting
     }
   ]
 })

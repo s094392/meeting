@@ -15277,9 +15277,3 @@ iframe.uk-cover {
   background-image: url(/img/background.svg);
 }
 
-@media only screen and (min-width: 960px) {
-  .top-bar {
-    display: none;
-  }
-}
-

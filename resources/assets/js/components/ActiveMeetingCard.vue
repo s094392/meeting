@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="uk-card uk-card-default uk-card-body uk-card-hover uk-margin-top">
+  <div class="uk-card uk-card-default uk-card-body uk-margin-top">
     <div>
       <router-link :to="{name:'detail'}" class="uk-card-title">WWW 新生訓練</router-link>
       <span class="uk-label uk-align-right">Badge</span>

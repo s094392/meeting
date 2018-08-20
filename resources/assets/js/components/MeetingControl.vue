@@ -20,6 +20,14 @@
 </div>
 </template>
 
+<style lang="scss">
+.buttons {
+  white-space: nowrap;
+  width: 100%;
+  overflow: auto;
+}
+</style>
+
 
 <script>
 export default {};

@@ -1,7 +1,5 @@
 <template>
 <div>
-	<h4>篩選器</h4>
-	<div class="uk-card uk-card-body uk-card-small uk-card-default">
 	<form>
 		<fieldset class="uk-fieldset">
 			<div class="uk-margin">
@@ -9,42 +7,53 @@
 			</div>
 
 			<div class="uk-margin">
-				<select class="uk-select">
-					<option>任何分類</option>
-					<option>Option 02</option>
-				</select>
+				<Multiselect v-model="categoryValue" :options="categoryOptions" placeholder="任何會議類別"></MultiSelect>
 			</div>
 
 			<div class="uk-margin">
-				<FlatPickr v-model="date" :config="config"></FlatPickr>
+				<FlatPickr v-model="date" :config="config" placeholder="會議日期"></FlatPickr>
 			</div>
 
 
 			<div class="uk-margin">
-				<input class="uk-input" type="text" placeholder="發起人">
+				<Multiselect v-model="organizerValue" :options="organizerOptions" placeholder="任何發起人"></MultiSelect>
 			</div>
 
 			<div class="uk-margin">
 				<select class="uk-select">
 					<option>任何狀態</option>
-					<option>Option 02</option>
+					<option>狀態1</option>
+					<option>狀態2</option>
+					<option>狀態</option>
 				</select>
 			</div>
 
 			<button class="uk-button uk-button-primary">搜尋</button>
 		</fieldset>
 	</form>
-	</div>
-	</div>
+</div>
 </template>
+
+<style lang="scss" scoped>
+.multiselect {
+  color: inherit;
+}
+</style>
+
 
 <script>
 import FlatPickr from "vue-flatpickr-component";
+import Multiselect from "vue-multiselect";
 import "flatpickr/dist/flatpickr.css";
+import "vue-multiselect/dist/vue-multiselect.min.css";
 
 export default {
   data() {
     return {
+      categoryValue: null,
+      categoryOptions: ["www", "NET", "Linux"],
+      organizerValue: null,
+      organizerOptions: ["tsengcy", "mullee", "weicc", "apple", "banana"],
       date: null,
       config: {
         mode: "range"
@@ -52,7 +61,8 @@ export default {
     };
   },
   components: {
-    FlatPickr
+    FlatPickr,
+    Multiselect
   }
 };
 </script>

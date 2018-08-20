@@ -4,11 +4,8 @@
 	<div class="uk-padding">
 		<div uk-grid>
 			<div class="uk-width-1-5@m"><LeftNav/></div>
-			<div class="uk-width-3-5@m">
-				<router-view name="main"></router-view>
-			</div>
-			<div class="uk-width-1-5@m">
-				<router-view name="right"></router-view>
+			<div class="uk-width-4-5@m">
+				<router-view></router-view>
 			</div>
 		</div>
 	</div>
