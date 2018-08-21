@@ -14,72 +14,61 @@ class AttendeeController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return Attendee::all();
     }
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  int $meeting_id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $meeting_id)
     {
-        //
+        $data = $request->all();
+        $data['meeting_id'] = $meeting_id;
+        return Attendee::create($data);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Attendee  $attendee
+     * @param  int $meeting_id
+     * @param  string $user_id
      * @return \Illuminate\Http\Response
      */
-    public function show(Attendee $attendee)
+    public function show($meeting_id, $user_id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Attendee  $attendee
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Attendee $attendee)
-    {
-        //
+        $attendee = Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first();
+        return $attendee;
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Attendee  $attendee
+     * @param  int $meeting_id
+     * @param  string $user_id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Attendee $attendee)
+    public function update(Request $request, $meeting_id, $user_id)
     {
-        //
+        Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->update($request->all());
+        $attendee =  Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first();
+        return $attendee;
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Attendee  $attendee
+     * @param  int $meeting_id
+     * @param  string $user_id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Attendee $attendee)
+    public function destroy($meeting_id, $user_id)
     {
-        //
+        $attendee = Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->delete();
+        return 204;
     }
 }

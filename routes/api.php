@@ -20,3 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResource('meeting', 'MeetingController')->except([
     'create', 'edit'
 ]);
+
+Route::apiResource('attendee/meeting_id.user_id', 'AttendeeController')->except([
+    'create', 'edit'
+]);
