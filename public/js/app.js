@@ -92515,7 +92515,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
@@ -92523,12 +92522,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      dateTime: null,
-      categoryValue: "",
-      categoryOptions: ["www", "linux"],
-      timeValue: null,
+      title: "",
+      description: "",
+      team: "",
+      scheduled_time: null,
+      owner: "mllee",
+      teamOptions: ["www", "linux"],
       timeOptions: ["10:00", "10:15"],
-      attendeeValue: null,
+      attendees: null,
       attendeeOptions: ["Linux", "mllee", "calee"],
       config: {
         enableTime: true
@@ -92539,6 +92540,23 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   components: {
     Multiselect: __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default.a,
     FlatPickr: __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component___default.a
+  },
+  methods: {
+    postMeeting: function postMeeting() {
+      var _this = this;
+
+      axios.post("/api/meeting", {
+        "title": this.title,
+        "description": this.description,
+        "team": this.team,
+        "scheduled_time": this.scheduled_time,
+        "owner": this.owner,
+        "record": "fff",
+        "status": "init"
+      }).then(function (response) {
+        _this.meetings = response.data;
+      });
+    }
   }
 });
 
@@ -92558,165 +92576,196 @@ var render = function() {
         "div",
         { staticClass: "uk-card uk-card-default uk-card-body uk-card-small" },
         [
-          _c("form", { staticClass: "uk-form-horizontal uk-margin-large" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("div", { staticClass: "uk-margin" }, [
-              _c(
-                "label",
-                {
-                  staticClass: "uk-form-label",
-                  attrs: { for: "form-horizontal-text" }
-                },
-                [_vm._v("會議類別")]
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "uk-form-controls" },
-                [
-                  _c("multiselect", {
-                    attrs: { options: _vm.categoryOptions },
-                    model: {
-                      value: _vm.categoryValue,
-                      callback: function($$v) {
-                        _vm.categoryValue = $$v
-                      },
-                      expression: "categoryValue"
+          _c(
+            "form",
+            {
+              staticClass: "uk-form-horizontal uk-margin-large",
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                }
+              }
+            },
+            [
+              _c("div", { staticClass: "uk-margin" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "uk-form-label",
+                    attrs: { for: "form-horizontal-text" }
+                  },
+                  [_vm._v("會議名稱")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "uk-form-controls" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.title,
+                        expression: "title"
+                      }
+                    ],
+                    staticClass: "uk-input",
+                    attrs: {
+                      id: "form-horizontal-text",
+                      type: "text",
+                      placeholder: "請輸入會議名稱..."
+                    },
+                    domProps: { value: _vm.title },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.title = $event.target.value
+                      }
                     }
                   })
-                ],
-                1
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "uk-margin" }, [
-              _c(
-                "label",
-                {
-                  staticClass: "uk-form-label",
-                  attrs: { for: "form-horizontal-text" }
-                },
-                [_vm._v("開會日期")]
-              ),
+                ])
+              ]),
               _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "uk-form-controls" },
-                [
-                  _c("FlatPickr", {
-                    attrs: { config: _vm.config },
-                    model: {
-                      value: _vm.dateTime,
-                      callback: function($$v) {
-                        _vm.dateTime = $$v
-                      },
-                      expression: "dateTime"
+              _c("div", { staticClass: "uk-margin" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "uk-form-label",
+                    attrs: { for: "form-horizontal-text" }
+                  },
+                  [_vm._v("會議類別")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "uk-form-controls" },
+                  [
+                    _c("multiselect", {
+                      attrs: { options: _vm.teamOptions },
+                      model: {
+                        value: _vm.team,
+                        callback: function($$v) {
+                          _vm.team = $$v
+                        },
+                        expression: "team"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "uk-margin" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "uk-form-label",
+                    attrs: { for: "form-horizontal-text" }
+                  },
+                  [_vm._v("開會日期")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "uk-form-controls" },
+                  [
+                    _c("FlatPickr", {
+                      attrs: { config: _vm.config },
+                      model: {
+                        value: _vm.scheduled_time,
+                        callback: function($$v) {
+                          _vm.scheduled_time = $$v
+                        },
+                        expression: "scheduled_time"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "uk-margin" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "uk-form-label",
+                    attrs: { for: "form-horizontal-text" }
+                  },
+                  [_vm._v("參與人員")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "uk-form-controls" },
+                  [
+                    _c("Multiselect", {
+                      attrs: { options: _vm.attendeeOptions, multiple: true },
+                      model: {
+                        value: _vm.attendees,
+                        callback: function($$v) {
+                          _vm.attendees = $$v
+                        },
+                        expression: "attendees"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "uk-margin" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "uk-form-label",
+                    attrs: { for: "form-horizontal-text" }
+                  },
+                  [_vm._v("會議說明")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "uk-form-controls" }, [
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.description,
+                        expression: "description"
+                      }
+                    ],
+                    staticClass: "uk-textarea",
+                    attrs: { rows: "10", placeholder: "Textarea" },
+                    domProps: { value: _vm.description },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.description = $event.target.value
+                      }
                     }
                   })
-                ],
-                1
-              )
-            ]),
-            _vm._v(" "),
-            _c("div", { staticClass: "uk-margin" }, [
-              _c(
-                "label",
-                {
-                  staticClass: "uk-form-label",
-                  attrs: { for: "form-horizontal-text" }
-                },
-                [_vm._v("參與人員")]
-              ),
+                ])
+              ]),
               _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "uk-form-controls" },
-                [
-                  _c("Multiselect", {
-                    attrs: { options: _vm.attendeeOptions, multiple: true },
-                    model: {
-                      value: _vm.attendeeValue,
-                      callback: function($$v) {
-                        _vm.attendeeValue = $$v
-                      },
-                      expression: "attendeeValue"
-                    }
-                  })
-                ],
-                1
-              )
-            ]),
-            _vm._v(" "),
-            _vm._m(1),
-            _vm._v(" "),
-            _vm._m(2)
-          ])
+              _c("div", { staticClass: "uk-margin uk-align-right" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "uk-button uk-button-primary",
+                    on: { click: _vm.postMeeting }
+                  },
+                  [_vm._v("Submit")]
+                )
+              ])
+            ]
+          )
         ]
       )
     ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "uk-margin" }, [
-      _c(
-        "label",
-        {
-          staticClass: "uk-form-label",
-          attrs: { for: "form-horizontal-text" }
-        },
-        [_vm._v("會議名稱")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "uk-form-controls" }, [
-        _c("input", {
-          staticClass: "uk-input",
-          attrs: {
-            id: "form-horizontal-text",
-            type: "text",
-            placeholder: "請輸入會議名稱..."
-          }
-        })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "uk-margin" }, [
-      _c(
-        "label",
-        {
-          staticClass: "uk-form-label",
-          attrs: { for: "form-horizontal-text" }
-        },
-        [_vm._v("會議說明")]
-      ),
-      _vm._v(" "),
-      _c("div", { staticClass: "uk-form-controls" }, [
-        _c("textarea", {
-          staticClass: "uk-textarea",
-          attrs: { rows: "10", placeholder: "Textarea" }
-        })
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "uk-margin uk-align-right" }, [
-      _c("button", { staticClass: "uk-button uk-button-primary" }, [
-        _vm._v("Submit")
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
