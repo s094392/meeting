@@ -67,19 +67,17 @@ export default {
   components: {
     MeetingFilter
   },
-  data(){
+  data() {
     return {
       meetings: []
     };
   },
   methods: {
     fetchMeetings: function() {
-      axios
-        .get("/api/meeting")
-        .then(response => {
-          this.meetings = response.data;
-        });
-    },
+      axios.get("/api/meeting").then(response => {
+        this.meetings = response.data;
+      });
+    }
   }
 };
 </script>

@@ -15,7 +15,7 @@ export default {
   created() {
     this.fetchMeetings();
   },
-  data(){
+  data() {
     return {
       meetings: []
     };
@@ -25,19 +25,15 @@ export default {
   },
   methods: {
     fetchMeetings: function() {
-      axios
-        .get("/api/meeting")
-        .then(response => {
-          this.meetings = response.data;
-        });
+      axios.get("/api/meeting").then(response => {
+        this.meetings = response.data;
+      });
     },
-    deleteMeeting: function(id){
-	    var self = this;
-      axios
-        .delete('/api/meeting/' + id)
-        .then(response=>{
-          this.fetchMeetings();
-        })
+    deleteMeeting: function(id) {
+      var self = this;
+      axios.delete("/api/meeting/" + id).then(response => {
+        this.fetchMeetings();
+      });
     }
   }
 };

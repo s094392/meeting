@@ -1,7 +1,7 @@
 <template>
 <div>
   <div>
-    <button class="uk-button uk-button-primary hidden" >編輯{{aa}}</button>
+    <button class="uk-button uk-button-primary visibility-hidden" >編輯{{aa}}</button>
     <button class="uk-button uk-button-primary uk-align-right" @click="edit = !edit">編輯{{aa}}</button>
   </div>
   <VueMarkdown v-if="!edit" :toc="true" toc-id="toc" toc-class="uk-list uk-list-bullet" :source="meeting.record" />
@@ -11,9 +11,6 @@
 
 <style>
 @import "~simplemde/dist/simplemde.min.css";
-.hidden {
-  visibility: hidden;
-}
 </style>
 
 
@@ -22,12 +19,11 @@ import VueMarkdown from "vue-markdown";
 import markdownEditor from "vue-simplemde/src/markdown-editor";
 
 export default {
-  props: ['meeting','aa'],
+  props: ["meeting"],
   data: function() {
     return {
       source: "",
       edit: false,
-      source: this.meeting.record,
       configs: {
         spellChecker: false
       }
@@ -37,8 +33,8 @@ export default {
     VueMarkdown,
     markdownEditor
   },
-   mounted : function(){
-    console.log(this.meeting) 
+  mounted: function() {
+    console.log(this.meeting);
   }
 };
 </script>

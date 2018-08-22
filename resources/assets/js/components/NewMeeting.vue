@@ -57,7 +57,7 @@ export default {
   data() {
     return {
       title: "",
-      description:"",
+      description: "",
       team: "",
       meeting: {},
       scheduled_time: null,
@@ -78,13 +78,13 @@ export default {
     postMeeting: function() {
       axios
         .post("/api/meeting", {
-          "title": this.title,
-          "description": this.description,
-          "team": this.team,
-          "scheduled_time": this.scheduled_time,
-          "owner": this.owner,
-          "record": this.description,
-          "status": "init"
+          title: this.title,
+          description: this.description,
+          team: this.team,
+          scheduled_time: this.scheduled_time,
+          owner: this.owner,
+          record: this.description,
+          status: "init"
         })
         .then(response => {
           this.meeting = response.data;
@@ -93,12 +93,11 @@ export default {
     },
     postAttendees: function() {
       var self = this;
-      this.attendees.forEach(function(attendee){
-        axios
-          .post("/api/attendee/meeting_id/" + self.meeting.id + "/user_id", {
-	          "user_id": attendee,
-	          "status": "init"
-          });
+      this.attendees.forEach(function(attendee) {
+        axios.post("/api/attendee/meeting_id/" + self.meeting.id + "/user_id", {
+          user_id: attendee,
+          status: "init"
+        });
       });
     }
   }

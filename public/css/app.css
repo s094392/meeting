@@ -16019,6 +16019,10 @@ iframe.uk-cover {
 }
 
 .uk-sticky-fixed {
-  z-index: 0;
+  z-index: 5;
+}
+
+.visibility-hidden {
+  visibility: hidden;
 }
 

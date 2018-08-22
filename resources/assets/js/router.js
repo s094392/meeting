@@ -3,9 +3,9 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-import Home from './components/Home'
-import MeetingList from './components/MeetingList'
-import MeetingDetail from './components/MeetingDetail'
+import Home from './components/Home/Root'
+import MeetingList from './components/MeetingList/Root'
+import MeetingDetail from './components/MeetingDetail/Root'
 import CheckIn from './components/CheckIn'
 import NewMeeting from './components/NewMeeting'
 
@@ -37,5 +37,9 @@ export default new VueRouter({
       name: 'new',
       component: NewMeeting
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    return { x: 0, y: 0 }
+  }
+
 })

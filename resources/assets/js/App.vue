@@ -22,8 +22,8 @@
 
 
 <script>
-import LeftNav from "./components/LeftNav";
-import TopNav from "./components/TopNav";
+import LeftNav from "./components/Shared/LeftNav";
+import TopNav from "./components/Shared/TopNav";
 
 export default {
   name: "App",

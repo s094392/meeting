@@ -44,9 +44,9 @@
 </template>
 
 <script>
-import MeetingControl from "./MeetingControl";
+import MeetingControl from "../Shared/MeetingControl";
 export default {
-  props: ['meeting'],
+  props: ["meeting"],
   components: {
     MeetingControl
   }

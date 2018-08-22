@@ -21,13 +21,13 @@
         </li>
       </ul>
 
-      <MeetingData v-show="view == 'data'" :meeting="meeting" />
-      <MeetingAttendees v-show="view == 'attendees'" :meeting="meeting" />
-      <MeetingContent v-show="view == 'content'" :meeting="meeting" :aa="aa"/>
+      <Properties v-show="view == 'data'" :meeting="meeting" />
+      <Attendees v-show="view == 'attendees'" :meeting="meeting" />
+      <Record v-show="view == 'content'" :meeting="meeting" :aa="aa"/>
     </div>
   </div>
 
-  <div class="uk-width-1-4@m" :class="{'hidden': view != 'content'}">
+  <div class="uk-width-1-4@m" :class="{'visibility-hidden': view != 'content'}">
     <h4>目錄</h4>
     <div class="uk-card uk-card-small uk-card-default uk-card-body" uk-sticky="offset:40;" id="toc"></div>
   </div>
@@ -39,17 +39,13 @@
 .disabled-normal-color {
   color: #333 !important;
 }
-
-.hidden {
-  visibility: hidden;
-}
 </style>
 
 
 <script>
-import MeetingData from "./MeetingData";
-import MeetingAttendees from "./MeetingAttendees";
-import MeetingContent from "./MeetingContent";
+import Properties from "./Properties";
+import Attendees from "./Attendees";
+import Record from "./Record";
 
 export default {
   created() {
@@ -59,23 +55,19 @@ export default {
     return {
       id: this.$route.params.id,
       view: this.$route.params.view,
-      meeting: {},
-      aa: "0"
+      meeting: {}
     };
   },
   components: {
-    MeetingData,
-    MeetingAttendees,
-    MeetingContent
+    Properties,
+    Attendees,
+    Record
   },
   methods: {
-    fetchMeeting: function(){
-      axios
-        .get("/api/meeting/" + this.id)
-        .then(response => {
-          this.meeting = response.data;
-          this.aa="2";
-        });
+    fetchMeeting: function() {
+      axios.get("/api/meeting/" + this.id).then(response => {
+        this.meeting = response.data;
+      });
     }
   }
 };

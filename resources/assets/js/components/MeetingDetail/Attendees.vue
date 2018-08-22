@@ -9,6 +9,7 @@
     <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>yahsieh</button>
     <h3>早退成員</h3>
     <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
+    <button class="uk-button uk-button-default uk-button-small disabled-normal-color">
       <span uk-icon="plus"></span>
     </button>
     <div uk-dropdown="mode: click">
