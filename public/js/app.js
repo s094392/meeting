@@ -766,6 +766,88 @@ module.exports = {
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+/*
+	MIT License http://www.opensource.org/licenses/mit-license.php
+	Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+module.exports = function(useSourceMap) {
+	var list = [];
+
+	// return the list of modules as css string
+	list.toString = function toString() {
+		return this.map(function (item) {
+			var content = cssWithMappingToString(item, useSourceMap);
+			if(item[2]) {
+				return "@media " + item[2] + "{" + content + "}";
+			} else {
+				return content;
+			}
+		}).join("");
+	};
+
+	// import a list of modules into the list
+	list.i = function(modules, mediaQuery) {
+		if(typeof modules === "string")
+			modules = [[null, modules, ""]];
+		var alreadyImportedModules = {};
+		for(var i = 0; i < this.length; i++) {
+			var id = this[i][0];
+			if(typeof id === "number")
+				alreadyImportedModules[id] = true;
+		}
+		for(i = 0; i < modules.length; i++) {
+			var item = modules[i];
+			// skip already imported module
+			// this implementation is not 100% perfect for weird media query combinations
+			//  when a module is imported multiple times with different media queries.
+			//  I hope this will never occur (Hey this way we have smaller bundles)
+			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+				if(mediaQuery && !item[2]) {
+					item[2] = mediaQuery;
+				} else if(mediaQuery) {
+					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+				}
+				list.push(item);
+			}
+		}
+	};
+	return list;
+};
+
+function cssWithMappingToString(item, useSourceMap) {
+	var content = item[1] || '';
+	var cssMapping = item[3];
+	if (!cssMapping) {
+		return content;
+	}
+
+	if (useSourceMap && typeof btoa === 'function') {
+		var sourceMapping = toComment(cssMapping);
+		var sourceURLs = cssMapping.sources.map(function (source) {
+			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
+		});
+
+		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
+	}
+
+	return [content].join('\n');
+}
+
+// Adapted from convert-source-map (MIT)
+function toComment(sourceMap) {
+	// eslint-disable-next-line no-undef
+	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
+	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
+
+	return '/*# ' + data + ' */';
+}
+
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
@@ -10467,116 +10549,7 @@ return CodeMirror$1;
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-/*
-	MIT License http://www.opensource.org/licenses/mit-license.php
-	Author Tobias Koppers @sokra
-*/
-// css base code, injected by the css-loader
-module.exports = function(useSourceMap) {
-	var list = [];
-
-	// return the list of modules as css string
-	list.toString = function toString() {
-		return this.map(function (item) {
-			var content = cssWithMappingToString(item, useSourceMap);
-			if(item[2]) {
-				return "@media " + item[2] + "{" + content + "}";
-			} else {
-				return content;
-			}
-		}).join("");
-	};
-
-	// import a list of modules into the list
-	list.i = function(modules, mediaQuery) {
-		if(typeof modules === "string")
-			modules = [[null, modules, ""]];
-		var alreadyImportedModules = {};
-		for(var i = 0; i < this.length; i++) {
-			var id = this[i][0];
-			if(typeof id === "number")
-				alreadyImportedModules[id] = true;
-		}
-		for(i = 0; i < modules.length; i++) {
-			var item = modules[i];
-			// skip already imported module
-			// this implementation is not 100% perfect for weird media query combinations
-			//  when a module is imported multiple times with different media queries.
-			//  I hope this will never occur (Hey this way we have smaller bundles)
-			if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-				if(mediaQuery && !item[2]) {
-					item[2] = mediaQuery;
-				} else if(mediaQuery) {
-					item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-				}
-				list.push(item);
-			}
-		}
-	};
-	return list;
-};
-
-function cssWithMappingToString(item, useSourceMap) {
-	var content = item[1] || '';
-	var cssMapping = item[3];
-	if (!cssMapping) {
-		return content;
-	}
-
-	if (useSourceMap && typeof btoa === 'function') {
-		var sourceMapping = toComment(cssMapping);
-		var sourceURLs = cssMapping.sources.map(function (source) {
-			return '/*# sourceURL=' + cssMapping.sourceRoot + source + ' */'
-		});
-
-		return [content].concat(sourceURLs).concat([sourceMapping]).join('\n');
-	}
-
-	return [content].join('\n');
-}
-
-// Adapted from convert-source-map (MIT)
-function toComment(sourceMap) {
-	// eslint-disable-next-line no-undef
-	var base64 = btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap))));
-	var data = 'sourceMappingURL=data:application/json;charset=utf-8;base64,' + base64;
-
-	return '/*# ' + data + ' */';
-}
-
-
-/***/ }),
 /* 5 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -10801,6 +10774,33 @@ function applyToTag (styleElement, obj) {
     styleElement.appendChild(document.createTextNode(css))
   }
 }
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
 
 
 /***/ }),
@@ -13462,7 +13462,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 38 */
@@ -24914,10 +24914,60 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(37).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(37).setImmediate))
 
 /***/ }),
-/* 46 */,
+/* 46 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(109)
+}
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(112)
+/* template */
+var __vue_template__ = __webpack_require__(113)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Shared/MeetingControl.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-830cb3f6", Component.options)
+  } else {
+    hotAPI.reload("data-v-830cb3f6", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
 /* 47 */
 /***/ (function(module, exports) {
 
@@ -27311,7 +27361,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 68 */
@@ -27650,7 +27700,7 @@ module.exports = {
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(3), __webpack_require__(72), __webpack_require__(279));
+    mod(__webpack_require__(4), __webpack_require__(72), __webpack_require__(279));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror", "../xml/xml", "../meta"], mod);
   else // Plain browser env
@@ -28538,7 +28588,7 @@ CodeMirror.defineMIME("text/x-markdown", "markdown");
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(3));
+    mod(__webpack_require__(4));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
   else // Plain browser env
@@ -28955,7 +29005,7 @@ if (!CodeMirror.mimeModes.hasOwnProperty("text/html"))
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(3));
+    mod(__webpack_require__(4));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
   else // Plain browser env
@@ -29038,7 +29088,7 @@ CodeMirror.overlayMode = function(base, overlay, combine) {
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(75);
-module.exports = __webpack_require__(314);
+module.exports = __webpack_require__(316);
 
 
 /***/ }),
@@ -29051,7 +29101,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__router__ = __webpack_require__(101);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__App__ = __webpack_require__(299);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__App__ = __webpack_require__(301);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__App___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__App__);
 
 
@@ -41147,7 +41197,7 @@ if (token) {
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(38)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(38)))
 
 /***/ }),
 /* 79 */
@@ -58425,7 +58475,7 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(39)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(39)(module)))
 
 /***/ }),
 /* 81 */
@@ -60966,7 +61016,7 @@ Popper.Defaults = Defaults;
 /* harmony default export */ __webpack_exports__["default"] = (Popper);
 //# sourceMappingURL=popper.js.map
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(6)))
 
 /***/ }),
 /* 82 */
@@ -61864,16 +61914,16 @@ module.exports = function spread(callback) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(45);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_router__ = __webpack_require__(102);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Home_Root__ = __webpack_require__(320);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Home_Root__ = __webpack_require__(103);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__components_Home_Root___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__components_Home_Root__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_MeetingList_Root__ = __webpack_require__(335);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_MeetingList_Root__ = __webpack_require__(123);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__components_MeetingList_Root___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__components_MeetingList_Root__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_MeetingDetail_Root__ = __webpack_require__(343);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_MeetingDetail_Root__ = __webpack_require__(132);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__components_MeetingDetail_Root___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__components_MeetingDetail_Root__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_CheckIn__ = __webpack_require__(291);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__components_CheckIn___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__components_CheckIn__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_NewMeeting__ = __webpack_require__(296);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_NewMeeting___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_NewMeeting__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_CreateMeeting__ = __webpack_require__(296);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__components_CreateMeeting___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__components_CreateMeeting__);
 
 
 
@@ -61900,13 +61950,13 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vue_
     name: 'detail',
     component: __WEBPACK_IMPORTED_MODULE_4__components_MeetingDetail_Root___default.a
   }, {
-    path: '/checkin',
+    path: '/checkin/:id',
     name: 'checkin',
     component: __WEBPACK_IMPORTED_MODULE_5__components_CheckIn___default.a
   }, {
-    path: '/new',
-    name: 'new',
-    component: __WEBPACK_IMPORTED_MODULE_6__components_NewMeeting___default.a
+    path: '/create',
+    name: 'create',
+    component: __WEBPACK_IMPORTED_MODULE_6__components_CreateMeeting___default.a
   }],
   scrollBehavior: function scrollBehavior(to, from, savedPosition) {
     return { x: 0, y: 0 };
@@ -64544,14 +64594,308 @@ if (inBrowser && window.Vue) {
 
 
 /***/ }),
-/* 103 */,
-/* 104 */,
-/* 105 */,
-/* 106 */,
-/* 107 */,
-/* 108 */,
-/* 109 */,
-/* 110 */,
+/* 103 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(104)
+/* template */
+var __vue_template__ = __webpack_require__(122)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Home/Root.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-7d25db0b", Component.options)
+  } else {
+    hotAPI.reload("data-v-7d25db0b", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 104 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ActiveMeetings__ = __webpack_require__(105);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ActiveMeetings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__ActiveMeetings__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__InactiveMeetings__ = __webpack_require__(116);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__InactiveMeetings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__InactiveMeetings__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    ActiveMeetings: __WEBPACK_IMPORTED_MODULE_0__ActiveMeetings___default.a,
+    InactiveMeetings: __WEBPACK_IMPORTED_MODULE_1__InactiveMeetings___default.a
+  }
+});
+
+/***/ }),
+/* 105 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(106)
+/* template */
+var __vue_template__ = __webpack_require__(115)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Home/ActiveMeetings.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-287074b2", Component.options)
+  } else {
+    hotAPI.reload("data-v-287074b2", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 106 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ActiveMeetingCard__ = __webpack_require__(107);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ActiveMeetingCard___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__ActiveMeetingCard__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    this.fetchMeetings();
+  },
+  data: function data() {
+    return {
+      meetings: []
+    };
+  },
+
+  components: {
+    ActiveMeetingCard: __WEBPACK_IMPORTED_MODULE_0__ActiveMeetingCard___default.a
+  },
+  methods: {
+    fetchMeetings: function fetchMeetings() {
+      var _this = this;
+
+      axios.get("/api/meeting").then(function (response) {
+        _this.meetings = response.data;
+      });
+    },
+    deleteMeeting: function deleteMeeting(id) {
+      var _this2 = this;
+
+      var self = this;
+      axios.delete("/api/meeting/" + id).then(function (response) {
+        _this2.fetchMeetings();
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 107 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(108)
+/* template */
+var __vue_template__ = __webpack_require__(114)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Home/ActiveMeetingCard.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0c7d402c", Component.options)
+  } else {
+    hotAPI.reload("data-v-0c7d402c", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 108 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["meeting"],
+  components: {
+    MeetingControl: __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl___default.a
+  }
+});
+
+/***/ }),
+/* 109 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(110);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(5)("71097a06", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-830cb3f6\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MeetingControl.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-830cb3f6\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MeetingControl.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 110 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.buttons {\n  white-space: nowrap;\n  width: 100%;\n  overflow: auto;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
 /* 111 */
 /***/ (function(module, exports) {
 
@@ -64585,23 +64929,830 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 112 */,
-/* 113 */,
-/* 114 */,
-/* 115 */,
-/* 116 */,
-/* 117 */,
-/* 118 */,
-/* 119 */,
-/* 120 */,
-/* 121 */,
-/* 122 */,
-/* 123 */,
-/* 124 */,
-/* 125 */,
-/* 126 */,
-/* 127 */,
-/* 128 */,
+/* 112 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["id"]
+});
+
+/***/ }),
+/* 113 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      { staticClass: "buttons uk-display-inline-block" },
+      [
+        _c(
+          "router-link",
+          {
+            staticClass: "uk-button uk-button-default uk-button-primary",
+            attrs: { to: { name: "checkin", params: { id: _vm.id } } }
+          },
+          [_vm._v("開始")]
+        ),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "uk-button uk-button-default",
+            attrs: { type: "button" }
+          },
+          [_vm._v("請假")]
+        ),
+        _vm._v(" "),
+        _vm._m(0),
+        _vm._v(" "),
+        _c("button", { staticClass: "uk-button uk-button-default" }, [
+          _vm._v("編輯")
+        ]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass: "uk-button uk-button-default",
+            on: {
+              click: function($event) {
+                _vm.$emit("delete")
+              }
+            }
+          },
+          [_vm._v("刪除")]
+        )
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { attrs: { "uk-dropdown": "mode: click;" } }, [
+      _c("ul", { staticClass: "uk-nav uk-dropdown-nav" }, [
+        _c("li", { staticClass: "uk-nav-header" }, [_vm._v("請假原因")]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("值班")])]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("實習")])]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("回家")])]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("大考")])]),
+        _vm._v(" "),
+        _c("li", { staticClass: "uk-nav-divider" }),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("其他")])])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-830cb3f6", module.exports)
+  }
+}
+
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      { staticClass: "uk-card uk-card-default uk-card-body uk-margin-top" },
+      [
+        _c(
+          "div",
+          [
+            _c(
+              "router-link",
+              {
+                staticClass: "uk-card-title",
+                attrs: {
+                  to: {
+                    name: "detail",
+                    params: { id: _vm.meeting.id, view: "properties" }
+                  }
+                }
+              },
+              [_vm._v(_vm._s(_vm.meeting.title))]
+            ),
+            _vm._v(" "),
+            _c("span", { staticClass: "uk-label uk-align-right" }, [
+              _vm._v("Badge")
+            ])
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c("p", [
+          _c("span", {
+            staticClass: "uk-margin-small-right",
+            attrs: { "uk-icon": "user" }
+          }),
+          _vm._v(_vm._s(_vm.meeting.owner)),
+          _c("br"),
+          _vm._v(" "),
+          _c("span", {
+            staticClass: "uk-margin-small-right",
+            attrs: { "uk-icon": "tag" }
+          }),
+          _vm._v(_vm._s(_vm.meeting.team)),
+          _c("br"),
+          _vm._v(" "),
+          _c("span", {
+            staticClass: "uk-margin-small-right",
+            attrs: { "uk-icon": "clock" }
+          }),
+          _vm._v(_vm._s(_vm.meeting.scheduled_time) + "\n    ")
+        ]),
+        _vm._v(" "),
+        _c("p", [_vm._v(_vm._s(_vm.meeting.description)), _c("br")]),
+        _vm._v(" "),
+        _c("MeetingControl", {
+          attrs: { id: _vm.meeting.id },
+          on: {
+            delete: function($event) {
+              _vm.$emit("delete", _vm.meeting.id)
+            }
+          }
+        })
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0c7d402c", module.exports)
+  }
+}
+
+/***/ }),
+/* 115 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c(
+        "div",
+        [
+          _c("h2", { staticClass: "uk-display-inline" }, [_vm._v("近期會議")]),
+          _vm._v(" "),
+          _c(
+            "router-link",
+            {
+              staticClass: "uk-button uk-button-primary uk-align-right",
+              attrs: { to: { name: "create" } }
+            },
+            [_vm._v("新增會議")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _vm._l(_vm.meetings, function(meeting) {
+        return _c("ActiveMeetingCard", {
+          key: meeting.id,
+          attrs: { meeting: meeting },
+          on: { delete: _vm.deleteMeeting }
+        })
+      })
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-287074b2", module.exports)
+  }
+}
+
+/***/ }),
+/* 116 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(117)
+/* template */
+var __vue_template__ = __webpack_require__(121)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Home/InactiveMeetings.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-3e1bb968", Component.options)
+  } else {
+    hotAPI.reload("data-v-3e1bb968", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 117 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__InactiveMeetingCard__ = __webpack_require__(118);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__InactiveMeetingCard___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__InactiveMeetingCard__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  components: {
+    InactiveMeetingCard: __WEBPACK_IMPORTED_MODULE_0__InactiveMeetingCard___default.a
+  }
+});
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(119)
+/* template */
+var __vue_template__ = __webpack_require__(120)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/Home/InactiveMeetingCard.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-39a4c467", Component.options)
+  } else {
+    hotAPI.reload("data-v-39a4c467", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 119 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({});
+
+/***/ }),
+/* 120 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      {
+        staticClass:
+          "uk-margin-small-bottom uk-card-default uk-card uk-card-body uk-card-small"
+      },
+      [
+        _c(
+          "p",
+          [
+            _c(
+              "router-link",
+              {
+                attrs: {
+                  to: { name: "detail", params: { id: 1, view: "data" } }
+                }
+              },
+              [_vm._v("PC 新生報告")]
+            ),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v("\n\t\t2018-08-17 13:22")
+          ],
+          1
+        )
+      ]
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-39a4c467", module.exports)
+  }
+}
+
+/***/ }),
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("h4", [_vm._v("已結束的會議")]),
+      _vm._v(" "),
+      _vm._l(5, function(n) {
+        return _c("InactiveMeetingCard", { key: n })
+      }),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "uk-text-right uk-margin-left" },
+        [
+          _c("router-link", { attrs: { to: { name: "list" } } }, [
+            _vm._v("顯示更多")
+          ])
+        ],
+        1
+      )
+    ],
+    2
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-3e1bb968", module.exports)
+  }
+}
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { "uk-grid": "" } }, [
+    _c("div", { staticClass: "uk-width-3-4@m" }, [_c("ActiveMeetings")], 1),
+    _vm._v(" "),
+    _c("div", { staticClass: "uk-width-1-4@m" }, [_c("InactiveMeetings")], 1)
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-7d25db0b", module.exports)
+  }
+}
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(124)
+/* template */
+var __vue_template__ = __webpack_require__(131)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/MeetingList/Root.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-261e2e0f", Component.options)
+  } else {
+    hotAPI.reload("data-v-261e2e0f", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 124 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__MeetingFilter__ = __webpack_require__(125);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__MeetingFilter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__MeetingFilter__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    this.fetchMeetings();
+  },
+
+  components: {
+    MeetingFilter: __WEBPACK_IMPORTED_MODULE_0__MeetingFilter___default.a
+  },
+  data: function data() {
+    return {
+      meetings: []
+    };
+  },
+
+  methods: {
+    fetchMeetings: function fetchMeetings() {
+      var _this = this;
+
+      axios.get("/api/meeting").then(function (response) {
+        _this.meetings = response.data;
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 125 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(126)
+}
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(128)
+/* template */
+var __vue_template__ = __webpack_require__(130)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-6ff45294"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/MeetingList/MeetingFilter.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-6ff45294", Component.options)
+  } else {
+    hotAPI.reload("data-v-6ff45294", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 126 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(127);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(5)("07618f17", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6ff45294\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MeetingFilter.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6ff45294\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MeetingFilter.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 127 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.multiselect[data-v-6ff45294] {\n  color: inherit;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 128 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_flatpickr_component__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_flatpickr_component___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_flatpickr_component__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_multiselect__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_multiselect___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_multiselect__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      teamValue: null,
+      teamOptions: ["www", "NET", "Linux"],
+      organizerValue: null,
+      organizerOptions: ["tsengcy", "mllee", "weicc", "apple", "banana"],
+      date: null,
+      config: {
+        mode: "range"
+      }
+    };
+  },
+
+  components: {
+    FlatPickr: __WEBPACK_IMPORTED_MODULE_0_vue_flatpickr_component___default.a,
+    Multiselect: __WEBPACK_IMPORTED_MODULE_1_vue_multiselect___default.a
+  }
+});
+
+/***/ }),
 /* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -66764,25 +67915,1042 @@ module.exports = function listToStyles (parentId, list) {
 
 
 /***/ }),
-/* 130 */,
-/* 131 */,
-/* 132 */,
-/* 133 */,
-/* 134 */,
-/* 135 */,
-/* 136 */,
-/* 137 */,
-/* 138 */,
-/* 139 */,
-/* 140 */,
-/* 141 */,
-/* 142 */,
-/* 143 */,
-/* 144 */,
+/* 130 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c("form", [
+      _c("fieldset", { staticClass: "uk-fieldset" }, [
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "uk-margin" },
+          [
+            _c("Multiselect", {
+              attrs: {
+                options: _vm.categoryOptions,
+                placeholder: "任何會議類別"
+              },
+              model: {
+                value: _vm.categoryValue,
+                callback: function($$v) {
+                  _vm.categoryValue = $$v
+                },
+                expression: "categoryValue"
+              }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "uk-margin" },
+          [
+            _c("FlatPickr", {
+              attrs: { config: _vm.config, placeholder: "會議日期" },
+              model: {
+                value: _vm.date,
+                callback: function($$v) {
+                  _vm.date = $$v
+                },
+                expression: "date"
+              }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "uk-margin" },
+          [
+            _c("Multiselect", {
+              attrs: {
+                options: _vm.organizerOptions,
+                placeholder: "任何發起人"
+              },
+              model: {
+                value: _vm.organizerValue,
+                callback: function($$v) {
+                  _vm.organizerValue = $$v
+                },
+                expression: "organizerValue"
+              }
+            })
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _vm._m(1),
+        _vm._v(" "),
+        _c("button", { staticClass: "uk-button uk-button-primary" }, [
+          _vm._v("搜尋")
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "uk-margin" }, [
+      _c("input", {
+        staticClass: "uk-input",
+        attrs: { type: "text", placeholder: "會議名稱" }
+      })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "uk-margin" }, [
+      _c("select", { staticClass: "uk-select" }, [
+        _c("option", [_vm._v("任何狀態")]),
+        _vm._v(" "),
+        _c("option", [_vm._v("狀態1")]),
+        _vm._v(" "),
+        _c("option", [_vm._v("狀態2")]),
+        _vm._v(" "),
+        _c("option", [_vm._v("狀態")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-6ff45294", module.exports)
+  }
+}
+
+/***/ }),
+/* 131 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { "uk-grid": "" } }, [
+    _c("div", { staticClass: "uk-width-3-4@m" }, [
+      _c("h2", { staticClass: "uk-display-inline" }, [_vm._v("所有會議")]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "uk-button uk-button-primary uk-align-right uk-hidden@m",
+          attrs: { "uk-toggle": "target: #meeting-filter" }
+        },
+        [_vm._v("篩選器")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass:
+            "uk-card uk-card-default uk-overflow-auto uk-width-1-1 uk-margin-top"
+        },
+        [
+          _c(
+            "table",
+            {
+              staticClass:
+                "uk-table uk-table-hover uk-table-divider meetings-table"
+            },
+            [
+              _vm._m(0),
+              _vm._v(" "),
+              _vm._l(_vm.meetings, function(meeting) {
+                return _c(
+                  "tbody",
+                  { key: meeting.id, attrs: { meeting: meeting } },
+                  [
+                    _c("tr", [
+                      _c("td", [_vm._v(_vm._s(meeting.id))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(meeting.team))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(meeting.title))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(meeting.start_time))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(meeting.end_time))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(meeting.owner))]),
+                      _vm._v(" "),
+                      _c("td", [_vm._v(_vm._s(meeting.status))])
+                    ])
+                  ]
+                )
+              })
+            ],
+            2
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _vm._m(1)
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "uk-width-1-4@m uk-visible@m" }, [
+      _c("h4", [_vm._v("篩選器")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "uk-card uk-card-body uk-card-small uk-card-default",
+          attrs: { "uk-sticky": "offset: 40;" }
+        },
+        [_c("MeetingFilter")],
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _c("div", { attrs: { id: "meeting-filter", "uk-modal": "" } }, [
+      _c(
+        "div",
+        { staticClass: "uk-modal-dialog uk-modal-body" },
+        [
+          _c("button", {
+            staticClass: "uk-modal-close-default",
+            attrs: { type: "button", "uk-close": "" }
+          }),
+          _vm._v(" "),
+          _c("h4", [_vm._v("篩選器")]),
+          _vm._v(" "),
+          _c("MeetingFilter")
+        ],
+        1
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("#")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("會議分類")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("會議名稱")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("開始時間")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("結束時間")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("發起人")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("會議狀態")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "ul",
+      {
+        staticClass: "uk-pagination uk-flex-center",
+        attrs: { "uk-margin": "" }
+      },
+      [
+        _c("li", [
+          _c("a", { attrs: { href: "#" } }, [
+            _c("span", { attrs: { "uk-pagination-previous": "" } })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("1")])]),
+        _vm._v(" "),
+        _c("li", { staticClass: "uk-disabled" }, [_c("span", [_vm._v("...")])]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("5")])]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("6")])]),
+        _vm._v(" "),
+        _c("li", { staticClass: "uk-active" }, [_c("span", [_vm._v("7")])]),
+        _vm._v(" "),
+        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("8")])]),
+        _vm._v(" "),
+        _c("li", [
+          _c("a", { attrs: { href: "#" } }, [
+            _c("span", { attrs: { "uk-pagination-next": "" } })
+          ])
+        ])
+      ]
+    )
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-261e2e0f", module.exports)
+  }
+}
+
+/***/ }),
+/* 132 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(133)
+}
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(135)
+/* template */
+var __vue_template__ = __webpack_require__(290)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/MeetingDetail/Root.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-392406bc", Component.options)
+  } else {
+    hotAPI.reload("data-v-392406bc", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(134);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(5)("7b270938", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-392406bc\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Root.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-392406bc\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Root.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.disabled-normal-color {\n  color: #333 !important;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 135 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Properties__ = __webpack_require__(136);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Properties___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Properties__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Attendees__ = __webpack_require__(139);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Attendees___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Attendees__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Record__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Record___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Record__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    this.fetchMeeting();
+  },
+
+  data: function data() {
+    return {
+      id: this.$route.params.id,
+      view: this.$route.params.view,
+      meeting: {}
+    };
+  },
+  components: {
+    Properties: __WEBPACK_IMPORTED_MODULE_0__Properties___default.a,
+    Attendees: __WEBPACK_IMPORTED_MODULE_1__Attendees___default.a,
+    Record: __WEBPACK_IMPORTED_MODULE_2__Record___default.a
+  },
+  methods: {
+    fetchMeeting: function fetchMeeting() {
+      var _this = this;
+
+      axios.get("/api/meeting/" + this.id).then(function (response) {
+        _this.meeting = response.data;
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 136 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(137)
+/* template */
+var __vue_template__ = __webpack_require__(138)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/MeetingDetail/Properties.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-0a07c90d", Component.options)
+  } else {
+    hotAPI.reload("data-v-0a07c90d", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 137 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl__ = __webpack_require__(46);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["meeting"],
+  components: {
+    MeetingControl: __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl___default.a
+  }
+});
+
+/***/ }),
+/* 138 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("table", { staticClass: "uk-table uk-table-small " }, [
+        _c("tr", [
+          _c("th", [_vm._v("會議名稱:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.title))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("會議分類:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.team))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("預定開始時間:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.scheduled_time))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("開始時間:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.start_time))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("結束時間:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.end_time))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("發起人:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.owner))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("會議狀態:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.status))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("會議時數:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.title))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("會議說明:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.description))])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("hr", { staticClass: "uk-divider-icon" }),
+      _vm._v(" "),
+      _c("MeetingControl", { attrs: { id: _vm.meeting.id } })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0a07c90d", module.exports)
+  }
+}
+
+/***/ }),
+/* 139 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(140)
+/* template */
+var __vue_template__ = __webpack_require__(141)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/MeetingDetail/Attendees.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-8308c3e2", Component.options)
+  } else {
+    hotAPI.reload("data-v-8308c3e2", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 140 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_multiselect__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_multiselect__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  created: function created() {
+    this.fetchAttendees();
+  },
+  data: function data() {
+    return {
+      config: {
+        enableTime: true,
+        noCalendar: true,
+        dateFormat: "H:i",
+        static: true
+      },
+      show: false,
+      time: "",
+      attendeeValue: null,
+      attendeeOptions: ["Linux", "mllee", "calee"],
+      attendees: [],
+      id: this.$route.params.id
+    };
+  },
+
+  components: {
+    Multiselect: __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default.a,
+    FlatPickr: __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component___default.a
+  },
+  methods: {
+    fetchAttendees: function fetchAttendees() {
+      var _this = this;
+
+      var self = this;
+      axios.get("/api/attendee/meeting_id/" + self.id + "/user_id").then(function (response) {
+        _this.attendees = response.data;
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 141 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "div",
+      [
+        _c("h3", [_vm._v("準時成員")]),
+        _vm._v(" "),
+        _vm._l(_vm.attendees, function(attendee) {
+          return _c(
+            "span",
+            { key: attendee.user_id, staticClass: "name-tag clickable" },
+            [_vm._v(_vm._s(attendee.user_id))]
+          )
+        }),
+        _vm._v(" "),
+        _c("h3", [_vm._v("遲到成員")]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass:
+              "uk-button uk-button-default uk-button-small disabled-normal-color"
+          },
+          [_vm._v("yahsieh")]
+        ),
+        _vm._v(" "),
+        _c("h3", [_vm._v("早退成員")]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass:
+              "uk-button uk-button-default uk-button-small disabled-normal-color",
+            attrs: { disabled: "" }
+          },
+          [_vm._v("wwchung")]
+        ),
+        _vm._v(" "),
+        _vm._m(0),
+        _vm._v(" "),
+        _c(
+          "div",
+          { attrs: { "uk-dropdown": "mode: click" } },
+          [
+            _vm._v("\n      成員: "),
+            _c("Multiselect", {
+              attrs: { options: _vm.attendeeOptions, autofocus: "" },
+              model: {
+                value: _vm.attendeeValue,
+                callback: function($$v) {
+                  _vm.attendeeValue = $$v
+                },
+                expression: "attendeeValue"
+              }
+            }),
+            _vm._v("\n      時間: "),
+            _c("br"),
+            _c("FlatPickr", {
+              attrs: { config: _vm.config },
+              model: {
+                value: _vm.time,
+                callback: function($$v) {
+                  _vm.time = $$v
+                },
+                expression: "time"
+              }
+            }),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c("br"),
+            _vm._v(" "),
+            _c(
+              "a",
+              {
+                staticClass: "uk-button uk-button-primary uk-button-small",
+                attrs: { href: "#" }
+              },
+              [_vm._v("確定")]
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c("h3", [_vm._v("請假成員")]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass:
+              "uk-button uk-button-default uk-button-small disabled-normal-color",
+            attrs: { disabled: "" }
+          },
+          [_vm._v("wwchung")]
+        ),
+        _vm._v(" "),
+        _c("h3", [_vm._v("翹咪成員")]),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass:
+              "uk-button uk-button-default uk-button-small disabled-normal-color",
+            attrs: { disabled: "" }
+          },
+          [_vm._v("wwchung")]
+        )
+      ],
+      2
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "button",
+      {
+        staticClass:
+          "uk-button uk-button-default uk-button-small disabled-normal-color"
+      },
+      [_c("span", { attrs: { "uk-icon": "plus" } })]
+    )
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-8308c3e2", module.exports)
+  }
+}
+
+/***/ }),
+/* 142 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(143)
+}
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(146)
+/* template */
+var __vue_template__ = __webpack_require__(289)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/MeetingDetail/Record.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-416f9a2b", Component.options)
+  } else {
+    hotAPI.reload("data-v-416f9a2b", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 143 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(144);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(5)("0ae0d134", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-416f9a2b\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Record.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-416f9a2b\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Record.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 144 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+exports.i(__webpack_require__(145), "");
+
+// module
+exports.push([module.i, "\n", ""]);
+
+// exports
+
+
+/***/ }),
 /* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -66793,7 +68961,56 @@ exports.push([module.i, "/**\n * simplemde v1.11.2\n * Copyright Next Step Webs,
 
 
 /***/ }),
-/* 146 */,
+/* 146 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_markdown__ = __webpack_require__(147);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_markdown___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_markdown__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor__ = __webpack_require__(271);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["meeting"],
+  data: function data() {
+    return {
+      source: "",
+      edit: false,
+      configs: {
+        spellChecker: false
+      }
+    };
+  },
+  components: {
+    VueMarkdown: __WEBPACK_IMPORTED_MODULE_0_vue_markdown___default.a,
+    markdownEditor: __WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor___default.a
+  },
+  mounted: function mounted() {
+    console.log(this.meeting);
+  }
+});
+
+/***/ }),
 /* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -74206,7 +76423,7 @@ exports.tpl_link_no_ip_fuzzy =
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(39)(module), __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(39)(module), __webpack_require__(6)))
 
 /***/ }),
 /* 227 */
@@ -84084,7 +86301,7 @@ var content = __webpack_require__(273);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(6)("2cc4fa37", content, false, {});
+var update = __webpack_require__(5)("2cc4fa37", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -84103,7 +86320,7 @@ if(false) {
 /* 273 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -84238,7 +86455,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 "use strict";
 /*global require,module*/
 
-var CodeMirror = __webpack_require__(3);
+var CodeMirror = __webpack_require__(4);
 __webpack_require__(276);
 __webpack_require__(277);
 __webpack_require__(278);
@@ -86274,7 +88491,7 @@ module.exports = SimpleMDE;
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(3));
+    mod(__webpack_require__(4));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
   else // Plain browser env
@@ -86367,7 +88584,7 @@ module.exports = SimpleMDE;
 // CodeMirror, copyright (c) by Marijn Haverbeke and others
 // Distributed under an MIT license: http://codemirror.net/LICENSE
 
-var CodeMirror = __webpack_require__(3);
+var CodeMirror = __webpack_require__(4);
 
 CodeMirror.commands.tabAndIndentMarkdownList = function (cm) {
 	var ranges = cm.listSelections();
@@ -86419,7 +88636,7 @@ CodeMirror.commands.shiftTabAndUnindentMarkdownList = function (cm) {
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(3));
+    mod(__webpack_require__(4));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
   else // Plain browser env
@@ -86466,7 +88683,7 @@ CodeMirror.commands.shiftTabAndUnindentMarkdownList = function (cm) {
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(3));
+    mod(__webpack_require__(4));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../lib/codemirror"], mod);
   else // Plain browser env
@@ -86689,7 +88906,7 @@ CodeMirror.commands.shiftTabAndUnindentMarkdownList = function (cm) {
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(3));
+    mod(__webpack_require__(4));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
   else // Plain browser env
@@ -86764,7 +88981,7 @@ CodeMirror.commands.shiftTabAndUnindentMarkdownList = function (cm) {
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(3));
+    mod(__webpack_require__(4));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror"], mod);
   else // Plain browser env
@@ -86883,7 +89100,7 @@ CodeMirror.commands.shiftTabAndUnindentMarkdownList = function (cm) {
 
 (function(mod) {
   if (true) // CommonJS
-    mod(__webpack_require__(3), __webpack_require__(71), __webpack_require__(73));
+    mod(__webpack_require__(4), __webpack_require__(71), __webpack_require__(73));
   else if (typeof define == "function" && define.amd) // AMD
     define(["../../lib/codemirror", "../markdown/markdown", "../../addon/mode/overlay"], mod);
   else // Plain browser env
@@ -89655,7 +91872,7 @@ if (true) {
 }
 })(this || (typeof window !== 'undefined' ? window : global));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 287 */
@@ -91050,7 +93267,7 @@ if (true) {
 }
 })(this || (typeof window !== 'undefined' ? window : global));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 288 */
@@ -91080,2879 +93297,7 @@ if (false) {
 }
 
 /***/ }),
-/* 289 */,
-/* 290 */,
-/* 291 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(292)
-}
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(294)
-/* template */
-var __vue_template__ = __webpack_require__(295)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = "data-v-5da3f9e6"
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/CheckIn.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-5da3f9e6", Component.options)
-  } else {
-    hotAPI.reload("data-v-5da3f9e6", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 292 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(293);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(6)("11c6b610", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-5da3f9e6\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CheckIn.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-5da3f9e6\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/sass-loader/lib/loader.js!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CheckIn.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 293 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.disabled-normal-color[data-v-5da3f9e6] {\n  color: #333 !important;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 294 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      presentMembers: [],
-      notPresentMembers: ["wangtr", "apple", "weicc", "hwlin1414", "hyili", "tzuyu"],
-      onLeaveMembers: ["youwei1129", "wwchung"]
-    };
-  },
-  methods: {
-    toNotPresent: function toNotPresent(idx) {
-      this.notPresentMembers.push(this.presentMembers[idx]);
-      this.$set(this.presentMembers, idx, null);
-    },
-    toPresent: function toPresent(idx) {
-      this.presentMembers.push(this.notPresentMembers[idx]);
-      this.$set(this.notPresentMembers, idx, null);
-    }
-  }
-});
-
-/***/ }),
-/* 295 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { attrs: { "uk-grid": "" } }, [
-    _c("div", { staticClass: "uk-width-3-4@m" }, [
-      _c("h2", [_vm._v("WWW 新生訓練 - 點名")]),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "uk-card uk-card-default uk-card-body uk-card-small" },
-        [
-          _c("h3", [_vm._v("已到成員")]),
-          _vm._v(" "),
-          _vm._l(_vm.presentMembers, function(member, idx) {
-            return member
-              ? _c(
-                  "button",
-                  {
-                    key: member.id,
-                    staticClass:
-                      "uk-button uk-button-default uk-button-small uk-margin-small-right",
-                    on: {
-                      click: function($event) {
-                        _vm.toNotPresent(idx)
-                      }
-                    }
-                  },
-                  [_vm._v("\n        " + _vm._s(member) + "\n      ")]
-                )
-              : _vm._e()
-          }),
-          _vm._v(" "),
-          _c("h3", [_vm._v("未到成員")]),
-          _vm._v(" "),
-          _vm._l(_vm.notPresentMembers, function(member, idx) {
-            return member
-              ? _c(
-                  "button",
-                  {
-                    key: member.id,
-                    staticClass:
-                      "uk-button uk-button-default uk-button-small uk-margin-small-right",
-                    on: {
-                      click: function($event) {
-                        _vm.toPresent(idx)
-                      }
-                    }
-                  },
-                  [_vm._v("\n        " + _vm._s(member) + "\n      ")]
-                )
-              : _vm._e()
-          }),
-          _vm._v(" "),
-          _c("h3", [_vm._v("請假成員")]),
-          _vm._v(" "),
-          _vm._l(_vm.onLeaveMembers, function(member) {
-            return member
-              ? _c(
-                  "button",
-                  {
-                    key: member.id,
-                    staticClass:
-                      "uk-button uk-button-default uk-button-small uk-margin-small-right disabled-normal-color",
-                    attrs: { disabled: "" }
-                  },
-                  [_vm._v("\n        " + _vm._s(member) + "\n      ")]
-                )
-              : _vm._e()
-          }),
-          _vm._v(" "),
-          _c("br"),
-          _vm._v(" "),
-          _c(
-            "router-link",
-            {
-              staticClass:
-                "uk-button uk-button-default uk-button-primary uk-margin-large",
-              attrs: { to: { name: "detail", params: { id: 1, view: "data" } } }
-            },
-            [_vm._v("會議開始")]
-          )
-        ],
-        2
-      )
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-5da3f9e6", module.exports)
-  }
-}
-
-/***/ }),
-/* 296 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(297)
-/* template */
-var __vue_template__ = __webpack_require__(298)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/NewMeeting.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-76fc871c", Component.options)
-  } else {
-    hotAPI.reload("data-v-76fc871c", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 297 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_multiselect__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_multiselect__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      title: "",
-      description: "",
-      team: "",
-      meeting: {},
-      scheduled_time: null,
-      teamOptions: ["www", "linux"],
-      timeOptions: ["10:00", "10:15"],
-      attendees: null,
-      attendeeOptions: ["Linux", "mllee", "calee"],
-      config: {
-        enableTime: true
-      }
-    };
-  },
-
-  components: {
-    Multiselect: __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default.a,
-    FlatPickr: __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component___default.a
-  },
-  methods: {
-    postMeeting: function postMeeting() {
-      var _this = this;
-
-      axios.post("/api/meeting", {
-        title: this.title,
-        description: this.description,
-        team: this.team,
-        scheduled_time: this.scheduled_time,
-        owner: this.owner,
-        record: this.description,
-        status: "init"
-      }).then(function (response) {
-        _this.meeting = response.data;
-        _this.postAttendees();
-      });
-    },
-    postAttendees: function postAttendees() {
-      var self = this;
-      this.attendees.forEach(function (attendee) {
-        axios.post("/api/attendee/meeting_id/" + self.meeting.id + "/user_id", {
-          user_id: attendee,
-          status: "init"
-        });
-      });
-    }
-  }
-});
-
-/***/ }),
-/* 298 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { attrs: { "uk-grid": "" } }, [
-    _c("div", { staticClass: "uk-width-3-4@m" }, [
-      _c("h2", [_vm._v("新增會議")]),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "uk-card uk-card-default uk-card-body uk-card-small" },
-        [
-          _c(
-            "form",
-            {
-              staticClass: "uk-form-horizontal uk-margin-large",
-              on: {
-                submit: function($event) {
-                  $event.preventDefault()
-                }
-              }
-            },
-            [
-              _c("div", { staticClass: "uk-margin" }, [
-                _c(
-                  "label",
-                  {
-                    staticClass: "uk-form-label",
-                    attrs: { for: "form-horizontal-text" }
-                  },
-                  [_vm._v("會議名稱")]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "uk-form-controls" }, [
-                  _c("input", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.title,
-                        expression: "title"
-                      }
-                    ],
-                    staticClass: "uk-input",
-                    attrs: {
-                      id: "form-horizontal-text",
-                      type: "text",
-                      placeholder: "請輸入會議名稱..."
-                    },
-                    domProps: { value: _vm.title },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.title = $event.target.value
-                      }
-                    }
-                  })
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "uk-margin" }, [
-                _c(
-                  "label",
-                  {
-                    staticClass: "uk-form-label",
-                    attrs: { for: "form-horizontal-text" }
-                  },
-                  [_vm._v("會議類別")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "uk-form-controls" },
-                  [
-                    _c("multiselect", {
-                      attrs: { options: _vm.teamOptions },
-                      model: {
-                        value: _vm.team,
-                        callback: function($$v) {
-                          _vm.team = $$v
-                        },
-                        expression: "team"
-                      }
-                    })
-                  ],
-                  1
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "uk-margin" }, [
-                _c(
-                  "label",
-                  {
-                    staticClass: "uk-form-label",
-                    attrs: { for: "form-horizontal-text" }
-                  },
-                  [_vm._v("開會日期")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "uk-form-controls" },
-                  [
-                    _c("FlatPickr", {
-                      attrs: { config: _vm.config },
-                      model: {
-                        value: _vm.scheduled_time,
-                        callback: function($$v) {
-                          _vm.scheduled_time = $$v
-                        },
-                        expression: "scheduled_time"
-                      }
-                    })
-                  ],
-                  1
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "uk-margin" }, [
-                _c(
-                  "label",
-                  {
-                    staticClass: "uk-form-label",
-                    attrs: { for: "form-horizontal-text" }
-                  },
-                  [_vm._v("參與人員")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "uk-form-controls" },
-                  [
-                    _c("Multiselect", {
-                      attrs: { options: _vm.attendeeOptions, multiple: true },
-                      model: {
-                        value: _vm.attendees,
-                        callback: function($$v) {
-                          _vm.attendees = $$v
-                        },
-                        expression: "attendees"
-                      }
-                    })
-                  ],
-                  1
-                )
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "uk-margin" }, [
-                _c(
-                  "label",
-                  {
-                    staticClass: "uk-form-label",
-                    attrs: { for: "form-horizontal-text" }
-                  },
-                  [_vm._v("會議說明")]
-                ),
-                _vm._v(" "),
-                _c("div", { staticClass: "uk-form-controls" }, [
-                  _c("textarea", {
-                    directives: [
-                      {
-                        name: "model",
-                        rawName: "v-model",
-                        value: _vm.description,
-                        expression: "description"
-                      }
-                    ],
-                    staticClass: "uk-textarea",
-                    attrs: { rows: "10", placeholder: "Textarea" },
-                    domProps: { value: _vm.description },
-                    on: {
-                      input: function($event) {
-                        if ($event.target.composing) {
-                          return
-                        }
-                        _vm.description = $event.target.value
-                      }
-                    }
-                  })
-                ])
-              ]),
-              _vm._v(" "),
-              _c("div", { staticClass: "uk-margin uk-align-right" }, [
-                _c(
-                  "button",
-                  {
-                    staticClass: "uk-button uk-button-primary",
-                    on: { click: _vm.postMeeting }
-                  },
-                  [_vm._v("Submit")]
-                )
-              ])
-            ]
-          )
-        ]
-      )
-    ])
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-76fc871c", module.exports)
-  }
-}
-
-/***/ }),
-/* 299 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(300)
-}
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(302)
-/* template */
-var __vue_template__ = __webpack_require__(313)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = "data-v-66ab2f82"
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/App.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-66ab2f82", Component.options)
-  } else {
-    hotAPI.reload("data-v-66ab2f82", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 300 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(301);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(6)("086e00da", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-66ab2f82\",\"scoped\":true,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./App.vue", function() {
-     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-66ab2f82\",\"scoped\":true,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./App.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 301 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n@media only screen and (max-width: 640px) {\n.uk-padding[data-v-66ab2f82] {\n    padding-top: 15px;\n}\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 302 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Shared_LeftNav__ = __webpack_require__(364);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Shared_LeftNav___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_Shared_LeftNav__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav__ = __webpack_require__(369);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  name: "App",
-  components: {
-    LeftNav: __WEBPACK_IMPORTED_MODULE_0__components_Shared_LeftNav___default.a,
-    TopNav: __WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav___default.a
-  }
-});
-
-/***/ }),
-/* 303 */,
-/* 304 */,
-/* 305 */,
-/* 306 */,
-/* 307 */,
-/* 308 */,
-/* 309 */,
-/* 310 */,
-/* 311 */,
-/* 312 */,
-/* 313 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("TopNav"),
-      _vm._v(" "),
-      _c("div", { staticClass: "uk-padding" }, [
-        _c("div", { attrs: { "uk-grid": "" } }, [
-          _c("div", { staticClass: "uk-width-1-5@m" }, [_c("LeftNav")], 1),
-          _vm._v(" "),
-          _c("div", { staticClass: "uk-width-4-5@m" }, [_c("router-view")], 1)
-        ])
-      ])
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-66ab2f82", module.exports)
-  }
-}
-
-/***/ }),
-/* 314 */
-/***/ (function(module, exports) {
-
-// removed by extract-text-webpack-plugin
-
-/***/ }),
-/* 315 */,
-/* 316 */,
-/* 317 */,
-/* 318 */,
-/* 319 */,
-/* 320 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(321)
-/* template */
-var __vue_template__ = __webpack_require__(334)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/Home/Root.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-7d25db0b", Component.options)
-  } else {
-    hotAPI.reload("data-v-7d25db0b", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 321 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ActiveMeetings__ = __webpack_require__(322);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ActiveMeetings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__ActiveMeetings__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__InactiveMeetings__ = __webpack_require__(328);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__InactiveMeetings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__InactiveMeetings__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  components: {
-    ActiveMeetings: __WEBPACK_IMPORTED_MODULE_0__ActiveMeetings___default.a,
-    InactiveMeetings: __WEBPACK_IMPORTED_MODULE_1__InactiveMeetings___default.a
-  }
-});
-
-/***/ }),
-/* 322 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(323)
-/* template */
-var __vue_template__ = __webpack_require__(327)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/Home/ActiveMeetings.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-287074b2", Component.options)
-  } else {
-    hotAPI.reload("data-v-287074b2", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 323 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ActiveMeetingCard__ = __webpack_require__(324);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ActiveMeetingCard___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__ActiveMeetingCard__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  created: function created() {
-    this.fetchMeetings();
-  },
-  data: function data() {
-    return {
-      meetings: []
-    };
-  },
-
-  components: {
-    ActiveMeetingCard: __WEBPACK_IMPORTED_MODULE_0__ActiveMeetingCard___default.a
-  },
-  methods: {
-    fetchMeetings: function fetchMeetings() {
-      var _this = this;
-
-      axios.get("/api/meeting").then(function (response) {
-        _this.meetings = response.data;
-      });
-    },
-    deleteMeeting: function deleteMeeting(id) {
-      var _this2 = this;
-
-      var self = this;
-      axios.delete("/api/meeting/" + id).then(function (response) {
-        _this2.fetchMeetings();
-      });
-    }
-  }
-});
-
-/***/ }),
-/* 324 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(325)
-/* template */
-var __vue_template__ = __webpack_require__(326)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/Home/ActiveMeetingCard.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0c7d402c", Component.options)
-  } else {
-    hotAPI.reload("data-v-0c7d402c", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 325 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl__ = __webpack_require__(359);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["meeting"],
-  components: {
-    MeetingControl: __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl___default.a
-  }
-});
-
-/***/ }),
-/* 326 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "div",
-      { staticClass: "uk-card uk-card-default uk-card-body uk-margin-top" },
-      [
-        _c(
-          "div",
-          [
-            _c(
-              "router-link",
-              {
-                staticClass: "uk-card-title",
-                attrs: {
-                  to: {
-                    name: "detail",
-                    params: { id: _vm.meeting.id, view: "data" }
-                  }
-                }
-              },
-              [_vm._v(_vm._s(_vm.meeting.title))]
-            ),
-            _vm._v(" "),
-            _c("span", { staticClass: "uk-label uk-align-right" }, [
-              _vm._v("Badge")
-            ])
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("p", [
-          _c("span", {
-            staticClass: "uk-margin-small-right",
-            attrs: { "uk-icon": "user" }
-          }),
-          _vm._v(_vm._s(_vm.meeting.owner)),
-          _c("br"),
-          _vm._v(" "),
-          _c("span", {
-            staticClass: "uk-margin-small-right",
-            attrs: { "uk-icon": "tag" }
-          }),
-          _vm._v(_vm._s(_vm.meeting.team)),
-          _c("br"),
-          _vm._v(" "),
-          _c("span", {
-            staticClass: "uk-margin-small-right",
-            attrs: { "uk-icon": "clock" }
-          }),
-          _vm._v(_vm._s(_vm.meeting.scheduled_time) + "\n    ")
-        ]),
-        _vm._v(" "),
-        _c("p", [_vm._v(_vm._s(_vm.meeting.description)), _c("br")]),
-        _vm._v(" "),
-        _c("MeetingControl", {
-          on: {
-            delete: function($event) {
-              _vm.$emit("delete", _vm.meeting.id)
-            }
-          }
-        })
-      ],
-      1
-    )
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-0c7d402c", module.exports)
-  }
-}
-
-/***/ }),
-/* 327 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "div",
-        [
-          _c("h2", { staticClass: "uk-display-inline" }, [_vm._v("近期會議")]),
-          _vm._v(" "),
-          _c(
-            "router-link",
-            {
-              staticClass: "uk-button uk-button-primary uk-align-right",
-              attrs: { to: { name: "new" } }
-            },
-            [_vm._v("新增會議")]
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _vm._l(_vm.meetings, function(meeting) {
-        return _c("ActiveMeetingCard", {
-          key: meeting.id,
-          attrs: { meeting: meeting },
-          on: { delete: _vm.deleteMeeting }
-        })
-      })
-    ],
-    2
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-287074b2", module.exports)
-  }
-}
-
-/***/ }),
-/* 328 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(329)
-/* template */
-var __vue_template__ = __webpack_require__(333)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/Home/InactiveMeetings.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-3e1bb968", Component.options)
-  } else {
-    hotAPI.reload("data-v-3e1bb968", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 329 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__InactiveMeetingCard__ = __webpack_require__(330);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__InactiveMeetingCard___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__InactiveMeetingCard__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  components: {
-    InactiveMeetingCard: __WEBPACK_IMPORTED_MODULE_0__InactiveMeetingCard___default.a
-  }
-});
-
-/***/ }),
-/* 330 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(331)
-/* template */
-var __vue_template__ = __webpack_require__(332)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/Home/InactiveMeetingCard.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-39a4c467", Component.options)
-  } else {
-    hotAPI.reload("data-v-39a4c467", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 331 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-/* harmony default export */ __webpack_exports__["default"] = ({});
-
-/***/ }),
-/* 332 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "div",
-      {
-        staticClass:
-          "uk-margin-small-bottom uk-card-default uk-card uk-card-body uk-card-small"
-      },
-      [
-        _c(
-          "p",
-          [
-            _c(
-              "router-link",
-              {
-                attrs: {
-                  to: { name: "detail", params: { id: 1, view: "data" } }
-                }
-              },
-              [_vm._v("PC 新生報告")]
-            ),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v("\n\t\t2018-08-17 13:22")
-          ],
-          1
-        )
-      ]
-    )
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-39a4c467", module.exports)
-  }
-}
-
-/***/ }),
-/* 333 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("h4", [_vm._v("已結束的會議")]),
-      _vm._v(" "),
-      _vm._l(5, function(n) {
-        return _c("InactiveMeetingCard", { key: n })
-      }),
-      _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "uk-text-right uk-margin-left" },
-        [
-          _c("router-link", { attrs: { to: { name: "list" } } }, [
-            _vm._v("顯示更多")
-          ])
-        ],
-        1
-      )
-    ],
-    2
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-3e1bb968", module.exports)
-  }
-}
-
-/***/ }),
-/* 334 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { attrs: { "uk-grid": "" } }, [
-    _c("div", { staticClass: "uk-width-3-4@m" }, [_c("ActiveMeetings")], 1),
-    _vm._v(" "),
-    _c("div", { staticClass: "uk-width-1-4@m" }, [_c("InactiveMeetings")], 1)
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-7d25db0b", module.exports)
-  }
-}
-
-/***/ }),
-/* 335 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(336)
-/* template */
-var __vue_template__ = __webpack_require__(342)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/MeetingList/Root.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-261e2e0f", Component.options)
-  } else {
-    hotAPI.reload("data-v-261e2e0f", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 336 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__MeetingFilter__ = __webpack_require__(337);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__MeetingFilter___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__MeetingFilter__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  created: function created() {
-    this.fetchMeetings();
-  },
-
-  components: {
-    MeetingFilter: __WEBPACK_IMPORTED_MODULE_0__MeetingFilter___default.a
-  },
-  data: function data() {
-    return {
-      meetings: []
-    };
-  },
-
-  methods: {
-    fetchMeetings: function fetchMeetings() {
-      var _this = this;
-
-      axios.get("/api/meeting").then(function (response) {
-        _this.meetings = response.data;
-      });
-    }
-  }
-});
-
-/***/ }),
-/* 337 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(338)
-}
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(340)
-/* template */
-var __vue_template__ = __webpack_require__(341)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = "data-v-6ff45294"
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/MeetingList/MeetingFilter.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-6ff45294", Component.options)
-  } else {
-    hotAPI.reload("data-v-6ff45294", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 338 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(339);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(6)("07618f17", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6ff45294\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MeetingFilter.vue", function() {
-     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-6ff45294\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MeetingFilter.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 339 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.multiselect[data-v-6ff45294] {\n  color: inherit;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 340 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_flatpickr_component__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_flatpickr_component___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_flatpickr_component__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_multiselect__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_multiselect___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_multiselect__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      teamValue: null,
-      teamOptions: ["www", "NET", "Linux"],
-      organizerValue: null,
-      organizerOptions: ["tsengcy", "mllee", "weicc", "apple", "banana"],
-      date: null,
-      config: {
-        mode: "range"
-      }
-    };
-  },
-
-  components: {
-    FlatPickr: __WEBPACK_IMPORTED_MODULE_0_vue_flatpickr_component___default.a,
-    Multiselect: __WEBPACK_IMPORTED_MODULE_1_vue_multiselect___default.a
-  }
-});
-
-/***/ }),
-/* 341 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("form", [
-      _c("fieldset", { staticClass: "uk-fieldset" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "uk-margin" },
-          [
-            _c("Multiselect", {
-              attrs: {
-                options: _vm.categoryOptions,
-                placeholder: "任何會議類別"
-              },
-              model: {
-                value: _vm.categoryValue,
-                callback: function($$v) {
-                  _vm.categoryValue = $$v
-                },
-                expression: "categoryValue"
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "uk-margin" },
-          [
-            _c("FlatPickr", {
-              attrs: { config: _vm.config, placeholder: "會議日期" },
-              model: {
-                value: _vm.date,
-                callback: function($$v) {
-                  _vm.date = $$v
-                },
-                expression: "date"
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "uk-margin" },
-          [
-            _c("Multiselect", {
-              attrs: {
-                options: _vm.organizerOptions,
-                placeholder: "任何發起人"
-              },
-              model: {
-                value: _vm.organizerValue,
-                callback: function($$v) {
-                  _vm.organizerValue = $$v
-                },
-                expression: "organizerValue"
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _vm._m(1),
-        _vm._v(" "),
-        _c("button", { staticClass: "uk-button uk-button-primary" }, [
-          _vm._v("搜尋")
-        ])
-      ])
-    ])
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "uk-margin" }, [
-      _c("input", {
-        staticClass: "uk-input",
-        attrs: { type: "text", placeholder: "會議名稱" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "uk-margin" }, [
-      _c("select", { staticClass: "uk-select" }, [
-        _c("option", [_vm._v("任何狀態")]),
-        _vm._v(" "),
-        _c("option", [_vm._v("狀態1")]),
-        _vm._v(" "),
-        _c("option", [_vm._v("狀態2")]),
-        _vm._v(" "),
-        _c("option", [_vm._v("狀態")])
-      ])
-    ])
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-6ff45294", module.exports)
-  }
-}
-
-/***/ }),
-/* 342 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", { attrs: { "uk-grid": "" } }, [
-    _c("div", { staticClass: "uk-width-3-4@m" }, [
-      _c("h2", { staticClass: "uk-display-inline" }, [_vm._v("所有會議")]),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "uk-button uk-button-primary uk-align-right uk-hidden@m",
-          attrs: { "uk-toggle": "target: #meeting-filter" }
-        },
-        [_vm._v("篩選器")]
-      ),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass:
-            "uk-card uk-card-default uk-overflow-auto uk-width-1-1 uk-margin-top"
-        },
-        [
-          _c(
-            "table",
-            {
-              staticClass:
-                "uk-table uk-table-hover uk-table-divider meetings-table"
-            },
-            [
-              _vm._m(0),
-              _vm._v(" "),
-              _vm._l(_vm.meetings, function(meeting) {
-                return _c(
-                  "tbody",
-                  { key: meeting.id, attrs: { meeting: meeting } },
-                  [
-                    _c("tr", [
-                      _c("td", [_vm._v(_vm._s(meeting.id))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(meeting.team))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(meeting.title))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(meeting.start_time))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(meeting.end_time))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(meeting.owner))]),
-                      _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(meeting.status))])
-                    ])
-                  ]
-                )
-              })
-            ],
-            2
-          )
-        ]
-      ),
-      _vm._v(" "),
-      _vm._m(1)
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "uk-width-1-4@m uk-visible@m" }, [
-      _c("h4", [_vm._v("篩選器")]),
-      _vm._v(" "),
-      _c(
-        "div",
-        {
-          staticClass: "uk-card uk-card-body uk-card-small uk-card-default",
-          attrs: { "uk-sticky": "offset: 40;" }
-        },
-        [_c("MeetingFilter")],
-        1
-      )
-    ]),
-    _vm._v(" "),
-    _c("div", { attrs: { id: "meeting-filter", "uk-modal": "" } }, [
-      _c(
-        "div",
-        { staticClass: "uk-modal-dialog uk-modal-body" },
-        [
-          _c("button", {
-            staticClass: "uk-modal-close-default",
-            attrs: { type: "button", "uk-close": "" }
-          }),
-          _vm._v(" "),
-          _c("h4", [_vm._v("篩選器")]),
-          _vm._v(" "),
-          _c("MeetingFilter")
-        ],
-        1
-      )
-    ])
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("#")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("會議分類")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("會議名稱")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("開始時間")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("結束時間")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("發起人")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("會議狀態")])
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "ul",
-      {
-        staticClass: "uk-pagination uk-flex-center",
-        attrs: { "uk-margin": "" }
-      },
-      [
-        _c("li", [
-          _c("a", { attrs: { href: "#" } }, [
-            _c("span", { attrs: { "uk-pagination-previous": "" } })
-          ])
-        ]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("1")])]),
-        _vm._v(" "),
-        _c("li", { staticClass: "uk-disabled" }, [_c("span", [_vm._v("...")])]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("5")])]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("6")])]),
-        _vm._v(" "),
-        _c("li", { staticClass: "uk-active" }, [_c("span", [_vm._v("7")])]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("8")])]),
-        _vm._v(" "),
-        _c("li", [
-          _c("a", { attrs: { href: "#" } }, [
-            _c("span", { attrs: { "uk-pagination-next": "" } })
-          ])
-        ])
-      ]
-    )
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-261e2e0f", module.exports)
-  }
-}
-
-/***/ }),
-/* 343 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(344)
-}
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(346)
-/* template */
-var __vue_template__ = __webpack_require__(358)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/MeetingDetail/Root.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-392406bc", Component.options)
-  } else {
-    hotAPI.reload("data-v-392406bc", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 344 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(345);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(6)("7b270938", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-392406bc\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Root.vue", function() {
-     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-392406bc\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Root.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 345 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.disabled-normal-color {\n  color: #333 !important;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 346 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Properties__ = __webpack_require__(347);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Properties___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Properties__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Attendees__ = __webpack_require__(350);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Attendees___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__Attendees__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Record__ = __webpack_require__(353);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Record___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Record__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  created: function created() {
-    this.fetchMeeting();
-  },
-
-  data: function data() {
-    return {
-      id: this.$route.params.id,
-      view: this.$route.params.view,
-      meeting: {}
-    };
-  },
-  components: {
-    Properties: __WEBPACK_IMPORTED_MODULE_0__Properties___default.a,
-    Attendees: __WEBPACK_IMPORTED_MODULE_1__Attendees___default.a,
-    Record: __WEBPACK_IMPORTED_MODULE_2__Record___default.a
-  },
-  methods: {
-    fetchMeeting: function fetchMeeting() {
-      var _this = this;
-
-      axios.get("/api/meeting/" + this.id).then(function (response) {
-        _this.meeting = response.data;
-      });
-    }
-  }
-});
-
-/***/ }),
-/* 347 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(348)
-/* template */
-var __vue_template__ = __webpack_require__(349)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/MeetingDetail/Properties.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-0a07c90d", Component.options)
-  } else {
-    hotAPI.reload("data-v-0a07c90d", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 348 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl__ = __webpack_require__(359);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["meeting"],
-  components: {
-    MeetingControl: __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl___default.a
-  }
-});
-
-/***/ }),
-/* 349 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("table", { staticClass: "uk-table uk-table-small " }, [
-        _c("tr", [
-          _c("th", [_vm._v("會議名稱:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.title))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("會議分類:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.team))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("預定開始時間:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.scheduled_time))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("開始時間:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.start_time))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("結束時間:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.end_time))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("發起人:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.owner))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("會議狀態:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.status))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("會議時數:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.title))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("會議說明:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.description))])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("hr", { staticClass: "uk-divider-icon" }),
-      _vm._v(" "),
-      _c("MeetingControl")
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-0a07c90d", module.exports)
-  }
-}
-
-/***/ }),
-/* 350 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(351)
-/* template */
-var __vue_template__ = __webpack_require__(352)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = null
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/MeetingDetail/Attendees.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-8308c3e2", Component.options)
-  } else {
-    hotAPI.reload("data-v-8308c3e2", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 351 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_multiselect__ = __webpack_require__(25);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_multiselect__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component__ = __webpack_require__(24);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  created: function created() {
-    this.fetchAttendees();
-  },
-  data: function data() {
-    return {
-      config: {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        static: true
-      },
-      show: false,
-      time: "",
-      attendeeValue: null,
-      attendeeOptions: ["Linux", "mllee", "calee"],
-      attendees: [],
-      id: this.$route.params.id
-    };
-  },
-
-  components: {
-    Multiselect: __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default.a,
-    FlatPickr: __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component___default.a
-  },
-  methods: {
-    fetchAttendees: function fetchAttendees() {
-      var _this = this;
-
-      var self = this;
-      axios.get("/api/attendee/meeting_id/" + self.id + "/user_id").then(function (response) {
-        _this.attendees = response.data;
-      });
-    }
-  }
-});
-
-/***/ }),
-/* 352 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "div",
-      [
-        _c("h3", [_vm._v("準時成員")]),
-        _vm._v(" "),
-        _vm._l(_vm.attendees, function(attendee) {
-          return _c("div", { key: attendee.user_id }, [
-            _c(
-              "button",
-              {
-                staticClass:
-                  "uk-button uk-button-default uk-button-small disabled-normal-color",
-                attrs: { disabled: "" }
-              },
-              [_vm._v(_vm._s(attendee.user_id))]
-            )
-          ])
-        }),
-        _vm._v(" "),
-        _c("h3", [_vm._v("遲到成員")]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass:
-              "uk-button uk-button-default uk-button-small disabled-normal-color",
-            attrs: { disabled: "" }
-          },
-          [_vm._v("yahsieh")]
-        ),
-        _vm._v(" "),
-        _c("h3", [_vm._v("早退成員")]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass:
-              "uk-button uk-button-default uk-button-small disabled-normal-color",
-            attrs: { disabled: "" }
-          },
-          [_vm._v("wwchung")]
-        ),
-        _vm._v(" "),
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "div",
-          { attrs: { "uk-dropdown": "mode: click" } },
-          [
-            _vm._v("\n      成員: "),
-            _c("Multiselect", {
-              attrs: { options: _vm.attendeeOptions, autofocus: "" },
-              model: {
-                value: _vm.attendeeValue,
-                callback: function($$v) {
-                  _vm.attendeeValue = $$v
-                },
-                expression: "attendeeValue"
-              }
-            }),
-            _vm._v("\n      時間: "),
-            _c("br"),
-            _c("FlatPickr", {
-              attrs: { config: _vm.config },
-              model: {
-                value: _vm.time,
-                callback: function($$v) {
-                  _vm.time = $$v
-                },
-                expression: "time"
-              }
-            }),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c("br"),
-            _vm._v(" "),
-            _c(
-              "a",
-              {
-                staticClass: "uk-button uk-button-primary uk-button-small",
-                attrs: { href: "#" }
-              },
-              [_vm._v("確定")]
-            )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("h3", [_vm._v("請假成員")]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass:
-              "uk-button uk-button-default uk-button-small disabled-normal-color",
-            attrs: { disabled: "" }
-          },
-          [_vm._v("wwchung")]
-        ),
-        _vm._v(" "),
-        _c("h3", [_vm._v("翹咪成員")]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass:
-              "uk-button uk-button-default uk-button-small disabled-normal-color",
-            attrs: { disabled: "" }
-          },
-          [_vm._v("wwchung")]
-        )
-      ],
-      2
-    )
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "button",
-      {
-        staticClass:
-          "uk-button uk-button-default uk-button-small disabled-normal-color"
-      },
-      [_c("span", { attrs: { "uk-icon": "plus" } })]
-    )
-  }
-]
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-8308c3e2", module.exports)
-  }
-}
-
-/***/ }),
-/* 353 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(354)
-}
-var normalizeComponent = __webpack_require__(1)
-/* script */
-var __vue_script__ = __webpack_require__(356)
-/* template */
-var __vue_template__ = __webpack_require__(357)
-/* template functional */
-var __vue_template_functional__ = false
-/* styles */
-var __vue_styles__ = injectStyle
-/* scopeId */
-var __vue_scopeId__ = null
-/* moduleIdentifier (server only) */
-var __vue_module_identifier__ = null
-var Component = normalizeComponent(
-  __vue_script__,
-  __vue_template__,
-  __vue_template_functional__,
-  __vue_styles__,
-  __vue_scopeId__,
-  __vue_module_identifier__
-)
-Component.options.__file = "resources/assets/js/components/MeetingDetail/Record.vue"
-
-/* hot reload */
-if (false) {(function () {
-  var hotAPI = require("vue-hot-reload-api")
-  hotAPI.install(require("vue"), false)
-  if (!hotAPI.compatible) return
-  module.hot.accept()
-  if (!module.hot.data) {
-    hotAPI.createRecord("data-v-416f9a2b", Component.options)
-  } else {
-    hotAPI.reload("data-v-416f9a2b", Component.options)
-  }
-  module.hot.dispose(function (data) {
-    disposed = true
-  })
-})()}
-
-module.exports = Component.exports
-
-
-/***/ }),
-/* 354 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(355);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(6)("0ae0d134", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-416f9a2b\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Record.vue", function() {
-     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-416f9a2b\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Record.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 355 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)(false);
-// imports
-exports.i(__webpack_require__(145), "");
-
-// module
-exports.push([module.i, "\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 356 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_markdown__ = __webpack_require__(147);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_markdown___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_markdown__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor__ = __webpack_require__(271);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["meeting"],
-  data: function data() {
-    return {
-      source: "",
-      edit: false,
-      configs: {
-        spellChecker: false
-      }
-    };
-  },
-  components: {
-    VueMarkdown: __WEBPACK_IMPORTED_MODULE_0_vue_markdown___default.a,
-    markdownEditor: __WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor___default.a
-  },
-  mounted: function mounted() {
-    console.log(this.meeting);
-  }
-});
-
-/***/ }),
-/* 357 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -93966,7 +93311,7 @@ var render = function() {
         _c(
           "button",
           { staticClass: "uk-button uk-button-primary visibility-hidden" },
-          [_vm._v("編輯" + _vm._s(_vm.aa))]
+          [_vm._v("編輯")]
         ),
         _vm._v(" "),
         _c(
@@ -93979,7 +93324,7 @@ var render = function() {
               }
             }
           },
-          [_vm._v("編輯" + _vm._s(_vm.aa))]
+          [_vm._v("編輯")]
         )
       ]),
       _vm._v(" "),
@@ -94022,7 +93367,7 @@ if (false) {
 }
 
 /***/ }),
-/* 358 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -94041,10 +93386,10 @@ var render = function() {
             _c(
               "li",
               {
-                class: { "uk-active": _vm.view == "data" },
+                class: { "uk-active": _vm.view == "properties" },
                 on: {
                   click: function($event) {
-                    _vm.view = "data"
+                    _vm.view = "properties"
                   }
                 }
               },
@@ -94055,7 +93400,7 @@ var render = function() {
                     attrs: {
                       to: {
                         name: "detail",
-                        params: { id: _vm.id, view: "data" }
+                        params: { id: _vm.id, view: "properties" }
                       },
                       replace: ""
                     }
@@ -94105,10 +93450,10 @@ var render = function() {
             _c(
               "li",
               {
-                class: { "uk-active": _vm.view == "content" },
+                class: { "uk-active": _vm.view == "record" },
                 on: {
                   click: function($event) {
-                    _vm.view = "content"
+                    _vm.view = "record"
                   }
                 }
               },
@@ -94119,7 +93464,7 @@ var render = function() {
                     attrs: {
                       to: {
                         name: "detail",
-                        params: { id: _vm.id, view: "content" }
+                        params: { id: _vm.id, view: "record" }
                       },
                       replace: ""
                     }
@@ -94140,8 +93485,8 @@ var render = function() {
               {
                 name: "show",
                 rawName: "v-show",
-                value: _vm.view == "data",
-                expression: "view == 'data'"
+                value: _vm.view == "properties",
+                expression: "view == 'properties'"
               }
             ],
             attrs: { meeting: _vm.meeting }
@@ -94164,11 +93509,11 @@ var render = function() {
               {
                 name: "show",
                 rawName: "v-show",
-                value: _vm.view == "content",
-                expression: "view == 'content'"
+                value: _vm.view == "record",
+                expression: "view == 'record'"
               }
             ],
-            attrs: { meeting: _vm.meeting, aa: _vm.aa }
+            attrs: { meeting: _vm.meeting }
           })
         ],
         1
@@ -94179,7 +93524,7 @@ var render = function() {
       "div",
       {
         staticClass: "uk-width-1-4@m",
-        class: { "visibility-hidden": _vm.view != "content" }
+        class: { "visibility-hidden": _vm.view != "record" }
       },
       [
         _c("h4", [_vm._v("目錄")]),
@@ -94203,23 +93548,19 @@ if (false) {
 }
 
 /***/ }),
-/* 359 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
-function injectStyle (ssrContext) {
-  if (disposed) return
-  __webpack_require__(360)
-}
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(362)
+var __vue_script__ = __webpack_require__(294)
 /* template */
-var __vue_template__ = __webpack_require__(363)
+var __vue_template__ = __webpack_require__(322)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = injectStyle
+var __vue_styles__ = null
 /* scopeId */
 var __vue_scopeId__ = null
 /* moduleIdentifier (server only) */
@@ -94232,7 +93573,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/assets/js/components/Shared/MeetingControl.vue"
+Component.options.__file = "resources/assets/js/components/CheckIn.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -94241,9 +93582,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-830cb3f6", Component.options)
+    hotAPI.createRecord("data-v-5da3f9e6", Component.options)
   } else {
-    hotAPI.reload("data-v-830cb3f6", Component.options)
+    hotAPI.reload("data-v-5da3f9e6", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -94254,47 +93595,9 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 360 */
-/***/ (function(module, exports, __webpack_require__) {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(361);
-if(typeof content === 'string') content = [[module.i, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var update = __webpack_require__(6)("71097a06", content, false, {});
-// Hot Module Replacement
-if(false) {
- // When the styles change, update the <style> tags
- if(!content.locals) {
-   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-830cb3f6\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MeetingControl.vue", function() {
-     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-830cb3f6\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MeetingControl.vue");
-     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-     update(newContent);
-   });
- }
- // When the module is disposed, remove the <style> tags
- module.hot.dispose(function() { update(); });
-}
-
-/***/ }),
-/* 361 */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(4)(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.buttons {\n  white-space: nowrap;\n  width: 100%;\n  overflow: auto;\n}\n", ""]);
-
-// exports
-
-
-/***/ }),
-/* 362 */
+/* 292 */,
+/* 293 */,
+/* 294 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -94326,115 +93629,709 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["id"]
+  data: function data() {
+    return {
+      presentAttendees: [],
+      absentAttendees: [],
+      onLeaveAttendees: [],
+      meetingId: this.$route.params.id,
+      promises: []
+    };
+  },
+  created: function created() {
+    this.fetchAttendees();
+  },
+
+  methods: {
+    fetchAttendees: function fetchAttendees() {
+      var _this = this;
+
+      axios.get("/api/attendee/meeting_id/" + this.meetingId + "/user_id").then(function (response) {
+        _this.presentAttendees = response.data.filter(function (attendee) {
+          return attendee.status == "OnTime";
+        });
+        _this.absentAttendees = response.data.filter(function (attendee) {
+          return attendee.status == "Initialized";
+        });
+        _this.onLeaveAttendees = response.data.filter(function (attendee) {
+          return attendee.status == "RequestedLeave";
+        });
+      });
+    },
+    toAbsent: function toAbsent(idx) {
+      var _this2 = this;
+
+      var user_id = this.presentAttendees[idx].user_id;
+      this.$set(this.presentAttendees[idx], "loading", true);
+      this.promises.push(axios.put("/api/attendee/meeting_id/" + this.meetingId + "/user_id/" + user_id, {
+        status: "Initialized"
+      }).then(function () {
+        _this2.absentAttendees.push(_this2.presentAttendees[idx]);
+        _this2.$set(_this2.presentAttendees[idx], "loading", false);
+        _this2.presentAttendees.splice(idx, 1);
+      }));
+    },
+    toPresent: function toPresent(idx) {
+      var _this3 = this;
+
+      var user_id = this.absentAttendees[idx].user_id;
+      this.$set(this.absentAttendees[idx], "loading", true);
+      this.promises.push(axios.put("/api/attendee/meeting_id/" + this.meetingId + "/user_id/" + user_id, {
+        status: "OnTime"
+      }).then(function () {
+        _this3.presentAttendees.push(_this3.absentAttendees[idx]);
+        _this3.$set(_this3.absentAttendees[idx], "loading", false);
+        _this3.absentAttendees.splice(idx, 1);
+      }));
+    },
+    startMeeting: function startMeeting() {
+      var _this4 = this;
+
+      this.promises.push(axios.put("/api/meeting/" + this.meetingId, {
+        status: "Started"
+      }));
+      axios.all(this.promises).then(function () {
+        _this4.$router.push({
+          name: "detail",
+          params: { id: _this4.meetingId, view: "record" }
+        });
+      });
+    }
+  }
 });
 
 /***/ }),
-/* 363 */
+/* 295 */,
+/* 296 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(297)
+}
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(299)
+/* template */
+var __vue_template__ = __webpack_require__(300)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-9a628510"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/CreateMeeting.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-9a628510", Component.options)
+  } else {
+    hotAPI.reload("data-v-9a628510", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 297 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(298);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(5)("47f30896", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-9a628510\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CreateMeeting.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-9a628510\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./CreateMeeting.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 298 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.multi-select[data-v-9a628510] {\n  -webkit-transition: border 0.2s ease-in-out;\n  transition: border 0.2s ease-in-out;\n  border: 1px solid transparent;\n}\n.form-danger[data-v-9a628510] {\n  border: 1px solid #f0506e;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 299 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_multiselect__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_multiselect__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      triedPost: false,
+      title: "",
+      description: "",
+      team: "",
+      teamOptions: ["www", "linux"],
+      meeting: {},
+      scheduled_time: "",
+      attendees: [],
+      attendeeOptions: ["mllee", "calee", "chenshh", "yanglin", "calee", "hcchuang", "hcdai", "yysung", "fuyu0425", "yca", "hchsu042", "wangtr", "yaowen", "linsc04", "youwei11", "yenck", "syujy", "zswu", "yahsieh", "tsengcy", "wengyc", "kuohh", "Linux"],
+      flatPickrConfig: {
+        enableTime: true
+      }
+    };
+  },
+
+  components: {
+    Multiselect: __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default.a,
+    FlatPickr: __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component___default.a
+  },
+  methods: {
+    attendeeSelected: function attendeeSelected(selectedOption, id) {
+      if (_.last(selectedOption) == "Linux") {
+        _.remove(this.attendeeOptions, function (option) {
+          return option == "Linux";
+        });
+        this.attendees.pop();
+        this.attendees.push("tsengcy", "wengyc", "mllee", "apple");
+        this.attendees = _.uniq(this.attendees);
+      }
+    },
+    postMeeting: function postMeeting() {
+      var _this = this;
+
+      this.triedPost = true;
+      if (!!this.title && !!this.description && !!this.team && !!this.scheduled_time && !!this.attendees && !!this.description) {
+        axios.post("/api/meeting", {
+          title: this.title,
+          description: this.description,
+          team: this.team,
+          scheduled_time: this.scheduled_time,
+          record: this.description,
+          status: "Initialized"
+        }).then(function (response) {
+          _this.postAttendees(response.data.id);
+        });
+      }
+    },
+    postAttendees: function postAttendees(meetingId) {
+      var _this2 = this;
+
+      var promises = [];
+      this.attendees.forEach(function (attendee) {
+        promises.push(axios.post("/api/attendee/meeting_id/" + meetingId + "/user_id", {
+          user_id: attendee,
+          status: "Initialized"
+        }));
+      });
+
+      axios.all(promises).then(function () {
+        _this2.$router.push({
+          name: "detail",
+          params: { id: meetingId, view: "properties" }
+        });
+      });
+    }
+  }
+});
+
+/***/ }),
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "div",
-      { staticClass: "buttons uk-display-inline-block" },
-      [
-        _c(
-          "router-link",
-          {
-            staticClass: "uk-button uk-button-default uk-button-primary",
-            attrs: { to: { name: "checkin" } }
-          },
-          [_vm._v("開始")]
-        ),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "uk-button uk-button-default",
-            attrs: { type: "button" }
-          },
-          [_vm._v("請假")]
-        ),
-        _vm._v(" "),
-        _vm._m(0),
-        _vm._v(" "),
-        _c("button", { staticClass: "uk-button uk-button-default" }, [
-          _vm._v("編輯")
-        ]),
-        _vm._v(" "),
-        _c(
-          "button",
-          {
-            staticClass: "uk-button uk-button-default",
-            on: {
-              click: function($event) {
-                _vm.$emit("delete")
+  return _c("div", { attrs: { "uk-grid": "" } }, [
+    _c("div", { staticClass: "uk-width-3-4@m" }, [
+      _c("h2", [_vm._v("新增會議")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "uk-card uk-card-default uk-card-body uk-card-small" },
+        [
+          _c(
+            "form",
+            {
+              staticClass: "uk-form-horizontal uk-margin-large",
+              on: {
+                submit: function($event) {
+                  $event.preventDefault()
+                }
               }
-            }
-          },
-          [_vm._v("刪除")]
-        )
-      ],
-      1
-    )
+            },
+            [
+              _c("div", { staticClass: "uk-margin" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "uk-form-label",
+                    attrs: { for: "form-horizontal-text" }
+                  },
+                  [_vm._v("會議名稱")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "uk-form-controls" }, [
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.title,
+                        expression: "title"
+                      }
+                    ],
+                    staticClass: "uk-input",
+                    class: { "form-danger": !_vm.title && _vm.triedPost },
+                    attrs: { type: "text", placeholder: "輸入會議名稱..." },
+                    domProps: { value: _vm.title },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.title = $event.target.value
+                      }
+                    }
+                  })
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "uk-margin" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "uk-form-label",
+                    attrs: { for: "form-horizontal-text" }
+                  },
+                  [_vm._v("會議組別")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "uk-form-controls" },
+                  [
+                    _c("multiselect", {
+                      staticClass: "multi-select",
+                      class: { "form-danger": !_vm.team && _vm.triedPost },
+                      attrs: {
+                        placeholder: "選擇會議組別...",
+                        options: _vm.teamOptions
+                      },
+                      model: {
+                        value: _vm.team,
+                        callback: function($$v) {
+                          _vm.team = $$v
+                        },
+                        expression: "team"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "uk-margin" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "uk-form-label",
+                    attrs: { for: "form-horizontal-text" }
+                  },
+                  [_vm._v("開會時間")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "uk-form-controls" },
+                  [
+                    _c("FlatPickr", {
+                      staticClass: "flatpickr-input",
+                      class: {
+                        "form-danger": !_vm.scheduled_time && _vm.triedPost
+                      },
+                      attrs: {
+                        config: _vm.flatPickrConfig,
+                        placeholder: "選擇開會時間..."
+                      },
+                      model: {
+                        value: _vm.scheduled_time,
+                        callback: function($$v) {
+                          _vm.scheduled_time = $$v
+                        },
+                        expression: "scheduled_time"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "uk-margin" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "uk-form-label",
+                    attrs: { for: "form-horizontal-text" }
+                  },
+                  [_vm._v("參與人員")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "uk-form-controls" },
+                  [
+                    _c("Multiselect", {
+                      staticClass: "multi-select",
+                      class: {
+                        "form-danger":
+                          _vm.attendees.length == 0 && _vm.triedPost
+                      },
+                      attrs: {
+                        placeholder: "選擇參與人員...",
+                        options: _vm.attendeeOptions,
+                        hideSelected: true,
+                        multiple: true,
+                        closeOnSelect: false
+                      },
+                      on: { input: _vm.attendeeSelected },
+                      model: {
+                        value: _vm.attendees,
+                        callback: function($$v) {
+                          _vm.attendees = $$v
+                        },
+                        expression: "attendees"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "uk-margin" }, [
+                _c(
+                  "label",
+                  {
+                    staticClass: "uk-form-label",
+                    attrs: { for: "form-horizontal-text" }
+                  },
+                  [_vm._v("會議說明")]
+                ),
+                _vm._v(" "),
+                _c("div", { staticClass: "uk-form-controls" }, [
+                  _c("textarea", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: _vm.description,
+                        expression: "description"
+                      }
+                    ],
+                    staticClass: "uk-textarea",
+                    class: { "form-danger": !_vm.description && _vm.triedPost },
+                    attrs: { rows: "10", placeholder: "會議說明..." },
+                    domProps: { value: _vm.description },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.description = $event.target.value
+                      }
+                    }
+                  })
+                ])
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "uk-margin uk-align-right" }, [
+                _c(
+                  "button",
+                  {
+                    staticClass: "uk-button uk-button-primary",
+                    on: { click: _vm.postMeeting }
+                  },
+                  [_vm._v("送出")]
+                )
+              ])
+            ]
+          )
+        ]
+      )
+    ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { attrs: { "uk-dropdown": "mode: click;" } }, [
-      _c("ul", { staticClass: "uk-nav uk-dropdown-nav" }, [
-        _c("li", { staticClass: "uk-nav-header" }, [_vm._v("請假原因")]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("值班")])]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("實習")])]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("回家")])]),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("大考")])]),
-        _vm._v(" "),
-        _c("li", { staticClass: "uk-nav-divider" }),
-        _vm._v(" "),
-        _c("li", [_c("a", { attrs: { href: "#" } }, [_vm._v("其他")])])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-830cb3f6", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-9a628510", module.exports)
   }
 }
 
 /***/ }),
-/* 364 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(365)
+  __webpack_require__(302)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(367)
+var __vue_script__ = __webpack_require__(304)
 /* template */
-var __vue_template__ = __webpack_require__(368)
+var __vue_template__ = __webpack_require__(315)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-66ab2f82"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/App.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-66ab2f82", Component.options)
+  } else {
+    hotAPI.reload("data-v-66ab2f82", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 302 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(303);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(5)("086e00da", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-66ab2f82\",\"scoped\":true,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./App.vue", function() {
+     var newContent = require("!!../../../node_modules/css-loader/index.js!../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-66ab2f82\",\"scoped\":true,\"hasInlineConfig\":true}!../../../node_modules/sass-loader/lib/loader.js!../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./App.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 303 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n@media only screen and (max-width: 640px) {\n.uk-padding[data-v-66ab2f82] {\n    padding-top: 15px;\n}\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 304 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Shared_LeftNav__ = __webpack_require__(305);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Shared_LeftNav___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_Shared_LeftNav__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav__ = __webpack_require__(310);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  name: "App",
+  components: {
+    LeftNav: __WEBPACK_IMPORTED_MODULE_0__components_Shared_LeftNav___default.a,
+    TopNav: __WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav___default.a
+  }
+});
+
+/***/ }),
+/* 305 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(306)
+}
+var normalizeComponent = __webpack_require__(1)
+/* script */
+var __vue_script__ = __webpack_require__(308)
+/* template */
+var __vue_template__ = __webpack_require__(309)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -94473,17 +94370,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 365 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(366);
+var content = __webpack_require__(307);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(6)("d750d100", content, false, {});
+var update = __webpack_require__(5)("d750d100", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -94499,10 +94396,10 @@ if(false) {
 }
 
 /***/ }),
-/* 366 */
+/* 307 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -94513,7 +94410,7 @@ exports.push([module.i, "\n.logo[data-v-56e698c9] {\n  width: 50px;\n}\n", ""]);
 
 
 /***/ }),
-/* 367 */
+/* 308 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -94552,7 +94449,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
-/* 368 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -94656,19 +94553,19 @@ if (false) {
 }
 
 /***/ }),
-/* 369 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 function injectStyle (ssrContext) {
   if (disposed) return
-  __webpack_require__(370)
+  __webpack_require__(311)
 }
 var normalizeComponent = __webpack_require__(1)
 /* script */
-var __vue_script__ = __webpack_require__(372)
+var __vue_script__ = __webpack_require__(313)
 /* template */
-var __vue_template__ = __webpack_require__(373)
+var __vue_template__ = __webpack_require__(314)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -94707,17 +94604,17 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 370 */
+/* 311 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // style-loader: Adds some css to the DOM by adding a <style> tag
 
 // load the styles
-var content = __webpack_require__(371);
+var content = __webpack_require__(312);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(6)("f61c8c48", content, false, {});
+var update = __webpack_require__(5)("f61c8c48", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
@@ -94733,10 +94630,10 @@ if(false) {
 }
 
 /***/ }),
-/* 371 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(4)(false);
+exports = module.exports = __webpack_require__(3)(false);
 // imports
 
 
@@ -94747,7 +94644,7 @@ exports.push([module.i, "\n.top-nav-text[data-v-5a7df3f1] {\n  height: 60px;\n}\
 
 
 /***/ }),
-/* 372 */
+/* 313 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -94797,7 +94694,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({});
 
 /***/ }),
-/* 373 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -94935,6 +94832,152 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-5a7df3f1", module.exports)
+  }
+}
+
+/***/ }),
+/* 315 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("TopNav"),
+      _vm._v(" "),
+      _c("div", { staticClass: "uk-padding" }, [
+        _c("div", { attrs: { "uk-grid": "" } }, [
+          _c("div", { staticClass: "uk-width-1-5@m" }, [_c("LeftNav")], 1),
+          _vm._v(" "),
+          _c("div", { staticClass: "uk-width-4-5@m" }, [_c("router-view")], 1)
+        ])
+      ])
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-66ab2f82", module.exports)
+  }
+}
+
+/***/ }),
+/* 316 */
+/***/ (function(module, exports) {
+
+// removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 317 */,
+/* 318 */,
+/* 319 */,
+/* 320 */,
+/* 321 */,
+/* 322 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { attrs: { "uk-grid": "" } }, [
+    _c("div", { staticClass: "uk-width-3-4@m" }, [
+      _c("h2", [_vm._v("WWW 新生訓練 - 點名")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "uk-card uk-card-default uk-card-body uk-card-small" },
+        [
+          _c("h3", [_vm._v("已到成員")]),
+          _vm._v(" "),
+          _vm._l(_vm.presentAttendees, function(member, idx) {
+            return member
+              ? _c(
+                  "span",
+                  {
+                    key: member.id,
+                    staticClass: "name-tag clickable ",
+                    class: { disabled: member.loading },
+                    on: {
+                      click: function($event) {
+                        _vm.toAbsent(idx)
+                      }
+                    }
+                  },
+                  [_vm._v("\n        " + _vm._s(member.user_id) + "\n      ")]
+                )
+              : _vm._e()
+          }),
+          _vm._v(" "),
+          _c("h3", [_vm._v("未到成員")]),
+          _vm._v(" "),
+          _vm._l(_vm.absentAttendees, function(member, idx) {
+            return member
+              ? _c(
+                  "span",
+                  {
+                    key: member.id,
+                    staticClass: "name-tag clickable",
+                    class: { disabled: member.loading },
+                    on: {
+                      click: function($event) {
+                        _vm.toPresent(idx)
+                      }
+                    }
+                  },
+                  [_vm._v("\n        " + _vm._s(member.user_id) + "\n      ")]
+                )
+              : _vm._e()
+          }),
+          _vm._v(" "),
+          _c("h3", [_vm._v("請假成員")]),
+          _vm._v(" "),
+          _vm._l(_vm.onLeaveAttendees, function(member) {
+            return member
+              ? _c(
+                  "span",
+                  {
+                    key: member.id,
+                    staticClass: "name-tag",
+                    attrs: { disabled: "" }
+                  },
+                  [_vm._v("\n        " + _vm._s(member.user_id) + "\n      ")]
+                )
+              : _vm._e()
+          }),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass:
+                "uk-button uk-button-default uk-button-primary uk-margin-large",
+              on: { click: _vm.startMeeting }
+            },
+            [_vm._v("會議開始")]
+          )
+        ],
+        2
+      )
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5da3f9e6", module.exports)
   }
 }
 

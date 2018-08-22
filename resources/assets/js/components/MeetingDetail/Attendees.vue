@@ -2,11 +2,9 @@
 <div>
   <div>
     <h3>準時成員</h3>
-    <div v-for="attendee in attendees" :key="attendee.user_id">
-      <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>{{ attendee.user_id }}</button>
-    </div>
+    <span v-for="attendee in attendees" :key="attendee.user_id" class="name-tag clickable" >{{ attendee.user_id }}</span>
     <h3>遲到成員</h3>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>yahsieh</button>
+    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" >yahsieh</button>
     <h3>早退成員</h3>
     <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
     <button class="uk-button uk-button-default uk-button-small disabled-normal-color">

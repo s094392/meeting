@@ -39,7 +39,7 @@
     </tr>
   </table>
   <hr class="uk-divider-icon">
-  <MeetingControl />
+  <MeetingControl :id="meeting.id" />
 </div>
 </template>
 
