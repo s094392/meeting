@@ -15,7 +15,7 @@
 				</ul>
 			</div>
 		<button class="uk-button uk-button-default">編輯</button>
-		<button class="uk-button uk-button-default">刪除</button>
+		<button v-on:click="$emit('delete')" class="uk-button uk-button-default">刪除</button>
 	</div>
 </div>
 </template>
@@ -28,7 +28,8 @@
 }
 </style>
 
-
 <script>
-export default {};
+export default {
+  props: ['id']
+};
 </script>

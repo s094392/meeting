@@ -2,22 +2,13 @@
 <div>
   <div>
     <h3>準時成員</h3>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>tzuyu</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>ycchang</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>yaowen</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>yahsieh</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>syujy</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>youwei1129</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wangth</button>
+    <div v-for="attendee in attendees" :key="attendee.user_id">
+      <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>{{ attendee.user_id }}</button>
+    </div>
     <h3>遲到成員</h3>
     <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>yahsieh</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>syujy</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>youwei1129</button>
     <h3>早退成員</h3>
     <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wangth</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" >
       <span uk-icon="plus"></span>
     </button>
     <div uk-dropdown="mode: click">
@@ -32,11 +23,8 @@
 
     <h3>請假成員</h3>
     <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wangth</button>
     <h3>翹咪成員</h3>
     <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>syujy</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>youwei1129</button>
   </div>
 
 </div>
@@ -49,6 +37,9 @@ import Multiselect from "vue-multiselect";
 import FlatPickr from "vue-flatpickr-component";
 
 export default {
+  created() {
+    this.fetchAttendees();
+  },
   data() {
     return {
       config: {
@@ -60,12 +51,24 @@ export default {
       show: false,
       time: "",
       attendeeValue: null,
-      attendeeOptions: ["Linux", "mllee", "calee"]
+      attendeeOptions: ["Linux", "mllee", "calee"],
+      attendees: [],
+      id: this.$route.params.id
     };
   },
   components: {
     Multiselect,
     FlatPickr
+  },
+  methods: {
+    fetchAttendees: function() {
+      var self = this;
+      axios
+        .get("/api/attendee/meeting_id/" + self.id + "/user_id")
+        .then(response => {
+          this.attendees = response.data;
+        });
+    }
   }
 };
 </script>

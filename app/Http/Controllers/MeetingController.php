@@ -25,7 +25,9 @@ class MeetingController extends Controller
      */
     public function store(Request $request)
     {
-        return Meeting::create($request->all());
+        $data = $request->all();
+        $data['owner'] = "test";
+        return Meeting::create($data);
     }
 
     /**

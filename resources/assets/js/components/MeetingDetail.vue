@@ -1,7 +1,7 @@
 <template>
 <div uk-grid>
   <div class="uk-width-3-4@m">
-    <h2>WWW 新生訓練</h2>
+    <h2>{{ meeting.title }}</h2>
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
       <ul uk-tab>
         <li :class="{'uk-active': view == 'data'}" @click="view = 'data'">
@@ -21,9 +21,9 @@
         </li>
       </ul>
 
-      <MeetingData v-show="view == 'data'" />
-      <MeetingAttendees v-show="view == 'attendees'" />
-      <MeetingContent v-show="view == 'content'" />
+      <MeetingData v-show="view == 'data'" :meeting="meeting" />
+      <MeetingAttendees v-show="view == 'attendees'" :meeting="meeting" />
+      <MeetingContent v-show="view == 'content'" :meeting="meeting" :aa="aa"/>
     </div>
   </div>
 
@@ -52,16 +52,31 @@ import MeetingAttendees from "./MeetingAttendees";
 import MeetingContent from "./MeetingContent";
 
 export default {
+  created() {
+    this.fetchMeeting();
+  },
   data: function() {
     return {
       id: this.$route.params.id,
-      view: this.$route.params.view
+      view: this.$route.params.view,
+      meeting: {},
+      aa: "0"
     };
   },
   components: {
     MeetingData,
     MeetingAttendees,
     MeetingContent
+  },
+  methods: {
+    fetchMeeting: function(){
+      axios
+        .get("/api/meeting/" + this.id)
+        .then(response => {
+          this.meeting = response.data;
+          this.aa="2";
+        });
+    }
   }
 };
 </script>

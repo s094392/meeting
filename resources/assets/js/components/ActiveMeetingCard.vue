@@ -6,12 +6,12 @@
       <span class="uk-label uk-align-right">Badge</span>
     </div>
     <p>
-      <span class="uk-margin-small-right" uk-icon="user" />fddf{{ meeting.owner }}<br>
+      <span class="uk-margin-small-right" uk-icon="user" />{{ meeting.owner }}<br>
       <span class="uk-margin-small-right" uk-icon="tag" />{{ meeting.team }}<br>
       <span class="uk-margin-small-right" uk-icon="clock" />{{ meeting.scheduled_time }}
     </p>
     <p>{{ meeting.description }}<br></p>
-    <MeetingControl />
+    <MeetingControl v-on:delete="$emit('delete', meeting.id);"/>
   </div>
 </div>
 </template>

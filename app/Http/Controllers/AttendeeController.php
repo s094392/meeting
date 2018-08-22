@@ -10,11 +10,12 @@ class AttendeeController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  int $meeting_id
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($meeting_id)
     {
-        return Attendee::all();
+        return Attendee::where('meeting_id', $meeting_id)->get();
     }
 
     /**

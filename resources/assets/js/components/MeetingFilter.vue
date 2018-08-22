@@ -48,10 +48,10 @@ import Multiselect from "vue-multiselect";
 export default {
   data() {
     return {
-      categoryValue: null,
-      categoryOptions: ["www", "NET", "Linux"],
+      teamValue: null,
+      teamOptions: ["www", "NET", "Linux"],
       organizerValue: null,
-      organizerOptions: ["tsengcy", "mullee", "weicc", "apple", "banana"],
+      organizerOptions: ["tsengcy", "mllee", "weicc", "apple", "banana"],
       date: null,
       config: {
         mode: "range"

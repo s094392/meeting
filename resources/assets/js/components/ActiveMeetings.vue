@@ -4,7 +4,7 @@
       <h2 class="uk-display-inline">近期會議</h2>
       <router-link :to="{name:'new'}" class="uk-button uk-button-primary uk-align-right">新增會議</router-link>
     </div>
-    <ActiveMeetingCard v-for="meeting in meetings" :key="meeting.id" :meeting="meeting"/>
+    <ActiveMeetingCard v-for="meeting in meetings" :key="meeting.id" :meeting="meeting" v-on:delete="deleteMeeting" />
   </div>
 </template>
 
@@ -31,6 +31,14 @@ export default {
           this.meetings = response.data;
         });
     },
+    deleteMeeting: function(id){
+	    var self = this;
+      axios
+        .delete('/api/meeting/' + id)
+        .then(response=>{
+          this.fetchMeetings();
+        })
+    }
   }
 };
 </script>

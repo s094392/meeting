@@ -17,60 +17,14 @@
             <th>會議狀態</th>
           </tr>
         </thead>
-        <tbody>
-          <tr><td>100</td>
-            <td >NET</td>
-            <td >Meeting 暨 新生報告</td>
-            <td >2018-08-16 19:36</td>
-            <td>2018-08-17 13:22</td>
-            <td >0000000000</td>
-            <td >會議結束</td>
-          </tr>
-          <tr>
-            <td>100</td>
-            <td>Net</td>
-            <td>Meeting 暨 新生報告</td>
-            <td>2018-08-16 19:36</td>
-            <td>2018-08-17 13:22</td>
-            <td>0000000000</td>
-            <td>會議結束</td>
-          </tr>
-          <tr>
-            <td>100</td>
-            <td>Net</td>
-            <td>Meeting 暨 新生報告</td>
-            <td>2018-08-16 19:36</td>
-            <td>2018-08-17 13:22</td>
-            <td>0000000000</td>
-            <td>會議結束</td>
-          </tr>
-          <tr>
-            <td>100</td>
-            <td>Net</td>
-            <td>Meeting 暨 新生報告</td>
-            <td>2018-08-16 19:36</td>
-            <td>2018-08-17 13:22</td>
-            <td>0000000000</td>
-            <td>會議結束</td>
-          </tr>
-          <tr>
-            <td>100</td>
-            <td>Net</td>
-            <td>Meeting 暨 新生報告</td>
-            <td>2018-08-16 19:36</td>
-            <td>2018-08-17 13:22</td>
-            <td>0000000000</td>
-            <td>會議結束</td>
-          </tr>
-          <tr>
-            <td>100</td>
-            <td>NET</td>
-            <td>Meeting 暨 新生報告</td>
-
-            <td>2018-08-16 19:36</td>
-            <td>2018-08-17 13:22</td>
-            <td>0000000000</td>
-            <td>會議結束</td>
+        <tbody v-for="meeting in meetings" :key="meeting.id" :meeting="meeting">
+          <tr><td>{{ meeting.id }}</td>
+            <td >{{ meeting.team }}</td>
+            <td >{{ meeting.title }}</td>
+            <td >{{ meeting.start_time }}</td>
+            <td>{{ meeting.end_time }}</td>
+            <td>{{ meeting.owner }}</td>
+            <td>{{ meeting.status }}</td>
           </tr>
         </tbody>
       </table>
@@ -107,8 +61,25 @@
 <script>
 import MeetingFilter from "./MeetingFilter";
 export default {
+  created() {
+    this.fetchMeetings();
+  },
   components: {
     MeetingFilter
+  },
+  data(){
+    return {
+      meetings: []
+    };
+  },
+  methods: {
+    fetchMeetings: function() {
+      axios
+        .get("/api/meeting")
+        .then(response => {
+          this.meetings = response.data;
+        });
+    },
   }
 };
 </script>

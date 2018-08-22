@@ -59,8 +59,8 @@ export default {
       title: "",
       description:"",
       team: "",
+      meeting: {},
       scheduled_time: null,
-      owner: "mllee",
       teamOptions: ["www", "linux"],
       timeOptions: ["10:00", "10:15"],
       attendees: null,
@@ -83,13 +83,24 @@ export default {
           "team": this.team,
           "scheduled_time": this.scheduled_time,
           "owner": this.owner,
-          "record": "fff",
+          "record": this.description,
           "status": "init"
         })
         .then(response => {
-          this.meetings = response.data;
+          this.meeting = response.data;
+          this.postAttendees();
         });
     },
+    postAttendees: function() {
+      var self = this;
+      this.attendees.forEach(function(attendee){
+        axios
+          .post("/api/attendee/meeting_id/" + self.meeting.id + "/user_id", {
+	          "user_id": attendee,
+	          "status": "init"
+          });
+      });
+    }
   }
 };
 </script>
