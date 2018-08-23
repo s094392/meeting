@@ -25,6 +25,10 @@
   @extend .uk-input;
 }
 
+.router-link-exact-active {
+  color: #666 !important;
+}
+
 .uk-sticky-fixed{
   z-index: 5;
 }
@@ -64,6 +68,4 @@
   &.disabled {
     color: #999;
   }
-
-  
 }

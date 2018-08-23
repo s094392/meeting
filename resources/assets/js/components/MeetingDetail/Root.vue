@@ -3,6 +3,7 @@
   <div class="uk-width-3-4@m">
     <h2>{{ meeting.title }}</h2>
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
+      
       <ul uk-tab>
         <li :class="{'uk-active': view == 'properties'}" @click="view = 'properties'">
           <router-link :to="{name:'detail', params: {id: id, view: 'properties'}}" replace="">
@@ -36,8 +37,9 @@
 </template>
 
 <style lang="scss">
-.disabled-normal-color {
-  color: #333 !important;
+#toc {
+  max-height: 85vh;
+  overflow: auto;
 }
 </style>
 

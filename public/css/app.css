@@ -16018,6 +16018,10 @@ iframe.uk-cover {
   background-image: url(/img/background.svg);
 }
 
+.router-link-exact-active {
+  color: #666 !important;
+}
+
 .uk-sticky-fixed {
   z-index: 5;
 }

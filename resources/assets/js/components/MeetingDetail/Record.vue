@@ -1,16 +1,19 @@
 <template>
 <div>
-  <div>
-    <button class="uk-button uk-button-primary visibility-hidden" >編輯</button>
-    <button class="uk-button uk-button-primary uk-align-right" @click="edit = !edit">編輯</button>
-  </div>
-  <VueMarkdown v-if="!edit" :toc="true" toc-id="toc" toc-class="uk-list uk-list-bullet" :source="meeting.record" />
+    <button class="uk-button uk-button-primary uk-align-right edit-button" v-if="!edit" @click="edit = true">編輯</button>
+    <button class="uk-button uk-button-primary uk-align-right edit-button" v-else @click="saveClicked">完成</button>
+  <VueMarkdown v-if="!edit" :toc-anchor-link="false" :toc="true" toc-id="toc" :source="meeting.record" />
   <markdown-editor v-if="edit" v-model="meeting.record" :configs="configs" ref="markdownEditor"></markdown-editor>
 </div>
 </template>
 
-<style>
+<style lang="scss" scoped>
 @import "~simplemde/dist/simplemde.min.css";
+.edit-button {
+  margin: 5px 5px 0 0;
+  z-index: 5;
+  position: relative;
+}
 </style>
 
 
@@ -22,8 +25,8 @@ export default {
   props: ["meeting"],
   data: function() {
     return {
-      source: "",
       edit: false,
+      recordTimer: "",
       configs: {
         spellChecker: false
       }
@@ -33,8 +36,27 @@ export default {
     VueMarkdown,
     markdownEditor
   },
-  mounted: function() {
-    console.log(this.meeting);
+  created: function() {
+    this.recordTimer = setInterval(this.saveRecord, 10000);
+  },
+  beforeDestroy: function() {
+    clearInterval(this.recordTimer);
+  },
+  methods: {
+    saveClicked: function() {
+      this.saveRecord();
+      this.edit = false;
+    },
+    editClicked: function() {
+      this.edit = true;
+    },
+    saveRecord: function() {
+      if (this.edit) {
+        axios.put(`/api/meeting/${this.meeting.id}`, {
+          record: this.meeting.record
+        });
+      }
+    }
   }
 };
 </script>

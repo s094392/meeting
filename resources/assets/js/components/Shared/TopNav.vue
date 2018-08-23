@@ -2,7 +2,7 @@
  <div class="uk-hidden@m" uk-sticky="show-on-up: true; animation: uk-animation-slide-top; sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; bottom: #scrollup-dropbar">
 	<nav class="uk-navbar-container" uk-navbar="mode: click">
 		<div class="uk-container-expand">
-			<div uk-navbar="dropbar: true; dropbar-anchor: !.uk-navbar-container">
+			<div uk-navbar="dropbar: true; dropbar-anchor: !.uk-navbar-container; duration:150">
 				<div class="uk-navbar-left">
 					<ul class="uk-navbar-nav">
 						<li>
@@ -10,10 +10,10 @@
 							<span uk-navbar-toggle-icon></span>
 							<span class="uk-margin-small-left">Menu</span>
 						</a>
-						<div class="uk-navbar-dropdown uk-padding-small">
+						<div ref="dropdown" class="uk-navbar-dropdown uk-padding-small">
 							<ul class="uk-nav uk-navbar-dropdown-nav">
-								<li><router-link :to="{ name: 'list'}">首頁</router-link></li>
-								<li><router-link :to="{ name: 'list'}">會議列表</router-link></li>
+								<li><a @click="routerPush('/')" href="#">首頁</a></li>
+								<li><a @click="routerPush('list')" href="#">會議列表</a></li>
 								<li><a href="#">個人報表</a></li>
 								<li><a href="#">登出</a></li>
 							</ul>
@@ -40,5 +40,11 @@
 
 
 <script>
-export default {};
+export default {
+  methods: {
+    routerPush: function(name) {
+      this.$router.push({ name: name });
+    }
+  }
+};
 </script>
