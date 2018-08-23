@@ -17,7 +17,7 @@
             <th>會議狀態</th>
           </tr>
         </thead>
-        <tbody v-for="meeting in meetings" :key="meeting.id" :meeting="meeting">
+        <tbody @click="toMeeting(meeting.id)" v-for="meeting in meetings" :key="meeting.id" :meeting="meeting">
           <tr><td>{{ meeting.id }}</td>
             <td >{{ meeting.team }}</td>
             <td >{{ meeting.title }}</td>
@@ -58,6 +58,13 @@
 </div>
 </template>
 
+<style lang="scss">
+tr {
+  cursor: pointer;
+}
+</style>
+
+
 <script>
 import MeetingFilter from "./MeetingFilter";
 export default {
@@ -76,6 +83,12 @@ export default {
     fetchMeetings: function() {
       axios.get("/api/meeting").then(response => {
         this.meetings = response.data;
+      });
+    },
+    toMeeting: function(meetingId) {
+      this.$router.push({
+        name: "detail",
+        params: { id: meetingId, view: "properties" }
       });
     }
   }

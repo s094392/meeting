@@ -7,7 +7,7 @@ import Home from './components/Home/Root'
 import MeetingList from './components/MeetingList/Root'
 import MeetingDetail from './components/MeetingDetail/Root'
 import CheckIn from './components/CheckIn'
-import CreateMeeting from './components/CreateMeeting'
+import MeetingEditor from './components/Shared/MeetingEditor'
 
 export default new VueRouter({
   mode: 'history',
@@ -35,7 +35,12 @@ export default new VueRouter({
     {
       path: '/create',
       name: 'create',
-      component: CreateMeeting
+      component: MeetingEditor
+    },
+    {
+      path: '/edit/:id',
+      name: 'edit',
+      component: MeetingEditor
     }
   ],
   scrollBehavior(to, from, savedPosition) {

@@ -2,28 +2,18 @@
 <div>
   <div>
     <h3>準時成員</h3>
-    <span v-for="attendee in attendees" :key="attendee.user_id" class="name-tag clickable" >{{ attendee.user_id }}</span>
+    <span v-for="attendee in onTime" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
     <h3>遲到成員</h3>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" >yahsieh</button>
+    <span v-for="attendee in late" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
     <h3>早退成員</h3>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color">
-      <span uk-icon="plus"></span>
-    </button>
-    <div uk-dropdown="mode: click">
-      成員: <Multiselect v-model="attendeeValue" :options="attendeeOptions" autofocus></MultiSelect>
-      時間: <br/><FlatPickr v-model="time" :config="config"></FlatPickr>
-      <br/>
-      <br/>
-      <br/>
-      <a href="#" class="uk-button uk-button-primary uk-button-small">確定</a>
-    </div>
-
-
+    <span v-for="attendee in leaveEarly" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
+    <AttendeeAdder :attendeeOptions="onTime.map(a => a.user_id)" :status="'LeaveEarly'" @selected="changeStatus"/>
     <h3>請假成員</h3>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
+    <span v-for="attendee in onLeave" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
+    <h3>未到成員</h3>
+    <span v-for="attendee in absent" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
     <h3>翹咪成員</h3>
-    <button class="uk-button uk-button-default uk-button-small disabled-normal-color" disabled>wwchung</button>
+    <span v-for="attendee in cut" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
   </div>
 
 </div>
@@ -32,8 +22,7 @@
 
 
 <script>
-import Multiselect from "vue-multiselect";
-import FlatPickr from "vue-flatpickr-component";
+import AttendeeAdder from "./AttendeeAdder";
 
 export default {
   created() {
@@ -41,31 +30,44 @@ export default {
   },
   data() {
     return {
-      config: {
-        enableTime: true,
-        noCalendar: true,
-        dateFormat: "H:i",
-        static: true
-      },
-      show: false,
-      time: "",
-      attendeeValue: null,
-      attendeeOptions: ["Linux", "mllee", "calee"],
-      attendees: [],
+      onTime: [],
+      late: [],
+      leaveEarly: [],
+      onLeave: [],
+      absent: [],
+      cut: [],
       id: this.$route.params.id
     };
   },
   components: {
-    Multiselect,
-    FlatPickr
+    AttendeeAdder
   },
   methods: {
     fetchAttendees: function() {
       var self = this;
       axios
-        .get("/api/attendee/meeting_id/" + self.id + "/user_id")
+        .get(`/api/attendee/meeting_id/${self.id}/user_id`)
         .then(response => {
-          this.attendees = response.data;
+          this.onTime = response.data.filter(
+            attendee => attendee.status == "OnTime"
+          );
+          this.leaveEarly = response.data.filter(
+            attendee => attendee.status == "LeaveEarly"
+          );
+          this.absent = response.data.filter(
+            attendee => attendee.status == "Initialized"
+          );
+          this.cut = response.data.filter(attendee => attendee.status == "Cut");
+        });
+    },
+    changeStatus: function(status, attendee, time) {
+      axios
+        .put(`/api/attendee/meeting_id/${this.id}/user_id/${attendee}`, {
+          status: status
+        })
+        .then(response => {
+          _.remove(this.onTime, a => a.user_id === attendee);
+          this.leaveEarly.push(response.data);
         });
     }
   }

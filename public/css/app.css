@@ -16030,6 +16030,7 @@ iframe.uk-cover {
   display: inline-block;
   padding: 0px 15px;
   margin-right: 4px;
+  margin-bottom: 4px;
   line-height: 28px;
   font-size: 0.875rem;
   border: 1px solid #e5e5e5;
@@ -16038,6 +16039,10 @@ iframe.uk-cover {
   text-transform: uppercase;
   color: #333;
   cursor: default;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 .name-tag.clickable {
@@ -16048,11 +16053,11 @@ iframe.uk-cover {
   transition-property: color, background-color, border-color;
 }
 
-.name-tag.disabled {
-  color: #999;
+.name-tag.clickable:hover:not(.disabled) {
+  border-color: #b2b2b2;
 }
 
-.name-tag:hover:not(.disabled) {
-  border-color: #b2b2b2;
+.name-tag.disabled {
+  color: #999;
 }
 
