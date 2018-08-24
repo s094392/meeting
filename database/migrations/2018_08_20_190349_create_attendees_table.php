@@ -17,7 +17,8 @@ class CreateAttendeesTable extends Migration
             $table->integer('meeting_id');
             $table->string('user_id');
             $table->string('status');
-            $table->integer('delay_time')->nullable();
+            $table->dateTime('arrive_time')->nullable();
+            $table->dateTime('leave_time')->nullable();            
             $table->string('reason')->nullable();
             $table->timestamps();
             $table->primary(array('meeting_id', 'user_id'));

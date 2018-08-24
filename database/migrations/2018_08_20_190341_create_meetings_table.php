@@ -17,7 +17,7 @@ class CreateMeetingsTable extends Migration
             $table->increments('id');
             $table->string('title');
             $table->text('description');
-            $table->string('team');
+            $table->string('group');
             $table->dateTime('scheduled_time');
             $table->dateTime('start_time')->nullable();
             $table->dateTime('end_time')->nullable();
