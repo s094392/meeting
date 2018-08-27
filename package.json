@@ -21,7 +21,7 @@
         "uikit": "^3.0.0-rc.11",
         "vue-flatpickr-component": "^7.0.6",
         "vue-markdown": "^2.2.4",
-        "vue-multiselect": "^2.1.0",
+        "vue-multiselect": "2.0.3",
         "vue-router": "^3.0.1",
         "vue-simplemde": "^0.4.8"
     }

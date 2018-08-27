@@ -27,6 +27,7 @@ class MeetingController extends Controller
     {
         $data = $request->all();
         $data['owner'] = "test";
+        $data['status'] = 1;
         return Meeting::create($data);
     }
 

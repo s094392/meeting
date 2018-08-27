@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div class="buttons uk-display-inline-block">
-		<div v-if="status=='Initialized'" >
+		<div v-if="status==this.$meetingStatus.Initialize" >
 			<router-link :to="{name: 'checkin', params: {id: id}}"  
 				class="uk-button uk-button-default uk-button-primary">開始</router-link>
 			<router-link :to="{name: 'edit', params: {id: id}}"   class="uk-button uk-button-default">編輯</router-link>

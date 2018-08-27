@@ -7338,9 +7338,9 @@ vue-markdown@^2.2.4:
     markdown-it-task-lists "^2.0.1"
     markdown-it-toc-and-anchor "^4.1.2"
 
-vue-multiselect@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/vue-multiselect/-/vue-multiselect-2.1.0.tgz#9e8ee7087658f029d06778cdb8da0b34ee3f1e28"
+vue-multiselect@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/vue-multiselect/-/vue-multiselect-2.0.3.tgz#bec58f84586022f82c2a3169be1b869f6d9715fc"
 
 vue-router@^3.0.1:
   version "3.0.1"

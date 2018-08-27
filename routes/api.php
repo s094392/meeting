@@ -24,3 +24,5 @@ Route::apiResource('meeting', 'MeetingController')->except([
 Route::apiResource('attendee/meeting_id.user_id', 'AttendeeController')->except([
     'create', 'edit'
 ]);
+
+Route::apiResource('tas', 'TAsController');

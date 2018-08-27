@@ -20,5 +20,3 @@ Route::get('/auth/callback', 'AuthController@callback');
 
 Route::get('/{page}', 'VueController')->where('page', '^(api.+|(?!api).*)$');
 use Illuminate\Http\Request;
-
-

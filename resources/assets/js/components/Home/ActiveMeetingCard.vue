@@ -7,7 +7,7 @@
     </div>
     <p>
       <span class="uk-margin-small-right" uk-icon="user" />{{ meeting.owner }}<br>
-      <span class="uk-margin-small-right" uk-icon="tag" />{{ meeting.team }}<br>
+      <span class="uk-margin-small-right" uk-icon="tag" />{{ meeting.group }}<br>
       <span class="uk-margin-small-right" uk-icon="clock" />{{ meeting.scheduled_time }}
     </p>
     <p>{{ meeting.description }}<br></p>

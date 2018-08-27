@@ -7,7 +7,7 @@
     </tr>
     <tr>
       <th>會議分類:</th>
-      <td>{{ meeting.team }}</td>
+      <td>{{ meeting.group }}</td>
     </tr>
     <tr>
       <th>預定開始時間:</th>

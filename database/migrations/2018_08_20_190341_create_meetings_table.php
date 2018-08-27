@@ -22,9 +22,9 @@ class CreateMeetingsTable extends Migration
             $table->dateTime('start_time')->nullable();
             $table->dateTime('end_time')->nullable();
             $table->string('owner');
-            $table->text('record');
-            $table->integer('duration')->nullable();
-            $table->string('status');
+            $table->text('record')->nullable();
+            $table->integer('duration')->nullable();
+            $table->smallInteger('status');
             $table->timestamps();
         });
     }

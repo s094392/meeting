@@ -17,8 +17,8 @@
 	  <div class="uk-margin">
 		<label class="uk-form-label" for="form-horizontal-text">會議組別</label>
 		<div class="uk-form-controls">
-		  <multiselect class="multi-select" v-model="meeting.team" placeholder="選擇會議組別..." 
-		  :class="{'form-danger': !meeting.team && triedPost}" :options="teamOptions" ></multiselect>
+		  <multiselect class="multi-select" v-model="meeting.group" placeholder="選擇會議組別..." 
+		  :class="{'form-danger': !meeting.group && triedPost}" :options="groupOptions" ></multiselect>
 		</div>
 	  </div>
 
@@ -74,35 +74,12 @@ export default {
     return {
       editMode: !!this.$route.params.id,
       meeting: {},
+      tas: {},
       triedPost: false,
-      teamOptions: ["www", "linux"],
+      groupOptions: [],
       originalAttendees: [],
       attendees: [],
-      attendeeOptions: [
-        "mllee",
-        "calee",
-        "chenshh",
-        "yanglin",
-        "calee",
-        "hcchuang",
-        "hcdai",
-        "yysung",
-        "fuyu0425",
-        "yca",
-        "hchsu042",
-        "wangtr",
-        "yaowen",
-        "linsc04",
-        "youwei11",
-        "yenck",
-        "syujy",
-        "zswu",
-        "yahsieh",
-        "tsengcy",
-        "wengyc",
-        "kuohh",
-        "Linux"
-      ],
+      attendeeOptions: [],
       flatPickrConfig: {
         enableTime: true
       }
@@ -113,9 +90,17 @@ export default {
     FlatPickr
   },
   created() {
+    this.fetchTAs();
     this.fetchMeeting();
   },
   methods: {
+    fetchTAs: function() {
+      axios.get("/api/tas").then(response => {
+        this.tas = response.data;
+        this.groupOptions = Object.keys(response.data);
+        this.attendeeOptions = this.groupOptions.concat(response.data["cs-ta"]);
+      });
+    },
     fetchMeeting: function() {
       if (this.editMode) {
         axios
@@ -131,10 +116,11 @@ export default {
     },
 
     attendeeSelected: function(selectedOption, id) {
-      if (_.last(selectedOption) == "Linux") {
-        _.remove(this.attendeeOptions, option => option == "Linux");
+      let selected = _.last(selectedOption);
+      if (this.groupOptions.includes(selected)) {
+        _.remove(this.attendeeOptions, option => option == selected);
         this.attendees.pop();
-        this.attendees.push("tsengcy", "wengyc", "mllee", "apple");
+        this.attendees = this.attendees.concat(this.tas[selected]);
         this.attendees = _.uniq(this.attendees);
       }
     },
@@ -144,13 +130,10 @@ export default {
       if (
         !!this.meeting.title &&
         !!this.meeting.description &&
-        !!this.meeting.team &&
+        !!this.meeting.group &&
         !!this.meeting.scheduled_time &&
         !!this.attendees
       ) {
-        this.meeting.record = "RECORD"; //TODO REMOVE these
-        this.meeting.owner = "me";
-
         if (this.editMode) {
           axios
             .put(`/api/meeting/${this.$route.params.id}`, this.meeting)
@@ -158,7 +141,6 @@ export default {
               this.postAttendees(response.data.id);
             });
         } else {
-          this.meeting.status = "Initialized";
           axios.post("/api/meeting/", this.meeting).then(response => {
             this.postAttendees(response.data.id);
           });
@@ -176,8 +158,7 @@ export default {
       newAttendees.forEach(attendee => {
         promises.push(
           axios.post(`/api/attendee/meeting_id/${meetingId}/user_id`, {
-            user_id: attendee,
-            status: "Initialized"
+            user_id: attendee
           })
         );
       });

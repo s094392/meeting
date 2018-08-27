@@ -12,12 +12,12 @@ class AuthController extends Controller
     private $_server_url;
     private $_client_secret;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->_client_url = env("CALLBACK_URL", null);
         $this->_client_id = env("CLIENT_ID", null);
         $this->_server_url = env("SERVER_URL", null);
         $this->_client_secret = env("CLIENT_SECRET", null);
-    
     }
     /**
      * Display a listing of the resource.
@@ -52,8 +52,7 @@ class AuthController extends Controller
                 'redirect_uri' => $this->_client_url,
                 'code' => $request->code,
                 ]
-            ]
-        );
+            ]);
         return $this->getUser(json_decode((string) $response->getBody(), true)["access_token"]);
     }
 
@@ -67,8 +66,7 @@ class AuthController extends Controller
             'headers' => [
                 'Authorization' => $auth,
                 ]
-            ]
-        );
+            ]);
         return json_decode((string) $response->getBody(), true);
     }
 }
