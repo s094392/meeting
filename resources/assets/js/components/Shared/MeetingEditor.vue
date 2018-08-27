@@ -1,6 +1,6 @@
 <template>
 <div uk-grid>
-  <div class="uk-width-3-4@m">
+  <div class="uk-width-3-4@l">
   <h2 v-if="editMode">編輯會議</h2>
 	<h2 v-else>新增會議</h2>
 	<div class="uk-card uk-card-default uk-card-body uk-card-small">

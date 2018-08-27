@@ -64993,7 +64993,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["id", "status"]
+  props: ["meetingId", "status"],
+  methods: {
+    startMeeting: function startMeeting() {
+      var _this = this;
+
+      axios.put("/api/meeting/" + this.meetingId, {
+        status: this.$meetingStatus.Start
+      }).then(function () {
+        _this.$router.push({
+          name: "detail",
+          params: { id: _this.meetingId, view: "attendees" }
+        });
+      });
+    }
+  }
 });
 
 /***/ }),
@@ -65011,10 +65025,10 @@ var render = function() {
             "div",
             [
               _c(
-                "router-link",
+                "button",
                 {
                   staticClass: "uk-button uk-button-default uk-button-primary",
-                  attrs: { to: { name: "checkin", params: { id: _vm.id } } }
+                  on: { click: _vm.startMeeting }
                 },
                 [_vm._v("開始")]
               ),
@@ -65023,7 +65037,7 @@ var render = function() {
                 "router-link",
                 {
                   staticClass: "uk-button uk-button-default",
-                  attrs: { to: { name: "edit", params: { id: _vm.id } } }
+                  attrs: { to: { name: "edit", params: { id: _vm.meetingId } } }
                 },
                 [_vm._v("編輯")]
               ),
@@ -65186,7 +65200,7 @@ var render = function() {
         _c("p", [_vm._v(_vm._s(_vm.meeting.description)), _c("br")]),
         _vm._v(" "),
         _c("MeetingControl", {
-          attrs: { id: _vm.meeting.id, status: _vm.meeting.status },
+          attrs: { meetingId: _vm.meeting.id, status: _vm.meeting.status },
           on: {
             delete: function($event) {
               _vm.$emit("delete", _vm.meeting.id)
@@ -65495,9 +65509,9 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { "uk-grid": "" } }, [
-    _c("div", { staticClass: "uk-width-3-4@m" }, [_c("ActiveMeetings")], 1),
+    _c("div", { staticClass: "uk-width-3-4@l" }, [_c("ActiveMeetings")], 1),
     _vm._v(" "),
-    _c("div", { staticClass: "uk-width-1-4@m" }, [_c("InactiveMeetings")], 1)
+    _c("div", { staticClass: "uk-width-1-4@l" }, [_c("InactiveMeetings")], 1)
   ])
 }
 var staticRenderFns = []
@@ -68168,13 +68182,13 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { "uk-grid": "" } }, [
-    _c("div", { staticClass: "uk-width-3-4@m" }, [
+    _c("div", { staticClass: "uk-width-3-4@l" }, [
       _c("h2", { staticClass: "uk-display-inline" }, [_vm._v("所有會議")]),
       _vm._v(" "),
       _c(
         "button",
         {
-          staticClass: "uk-button uk-button-primary uk-align-right uk-hidden@m",
+          staticClass: "uk-button uk-button-primary uk-align-right uk-hidden@l",
           attrs: { "uk-toggle": "target: #meeting-filter" }
         },
         [_vm._v("篩選器")]
@@ -68236,7 +68250,7 @@ var render = function() {
       _vm._m(1)
     ]),
     _vm._v(" "),
-    _c("div", { staticClass: "uk-width-1-4@m uk-visible@m" }, [
+    _c("div", { staticClass: "uk-width-1-4@l uk-visible@l" }, [
       _c("h4", [_vm._v("篩選器")]),
       _vm._v(" "),
       _c(
@@ -68700,7 +68714,7 @@ var render = function() {
       _c("hr", { staticClass: "uk-divider-icon" }),
       _vm._v(" "),
       _c("MeetingControl", {
-        attrs: { id: _vm.meeting.id, status: _vm.meeting.status }
+        attrs: { meetingId: _vm.meeting.id, status: _vm.meeting.status }
       })
     ],
     1
@@ -68721,17 +68735,21 @@ if (false) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(327)
+}
 var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(142)
 /* template */
-var __vue_template__ = __webpack_require__(148)
+var __vue_template__ = __webpack_require__(329)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = null
+var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-8308c3e2"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
@@ -68794,60 +68812,227 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  created: function created() {
-    this.fetchAttendees();
-  },
-  data: function data() {
-    return {
-      onTime: [],
-      late: [],
-      leaveEarly: [],
-      onLeave: [],
-      absent: [],
-      cut: [],
-      id: this.$route.params.id
-    };
-  },
-
   components: {
     AttendeeAdder: __WEBPACK_IMPORTED_MODULE_0__AttendeeAdder___default.a
   },
+  data: function data() {
+    return {
+      attendees: [],
+      present: [],
+      absent: [],
+      dayoff: [],
+      leaveEarly: [],
+      late: [],
+      meetingId: this.$route.params.id
+    };
+  },
+
   methods: {
     fetchAttendees: function fetchAttendees() {
       var _this = this;
 
-      var self = this;
-      axios.get("/api/attendee/meeting_id/" + self.id + "/user_id").then(function (response) {
-        _this.onTime = response.data.filter(function (attendee) {
-          return attendee.status == "OnTime";
-        });
-        _this.leaveEarly = response.data.filter(function (attendee) {
-          return attendee.status == "LeaveEarly";
+      axios.get("/api/attendee/meeting_id/" + this.meetingId + "/user_id").then(function (response) {
+        _this.attendees = response.data;
+        _this.present = response.data.filter(function (attendee) {
+          return attendee.present == "1";
         });
         _this.absent = response.data.filter(function (attendee) {
-          return attendee.status == "Initialized";
+          return attendee.present == "0";
         });
-        _this.cut = response.data.filter(function (attendee) {
-          return attendee.status == "Cut";
+        _this.dayoff = response.data.filter(function (attendee) {
+          return attendee.absent_reason;
+        });
+        _this.leaveEarly = response.data.filter(function (attendee) {
+          return attendee.estimate_leave_time || attendee.leave_time;
+        });
+        _this.late = response.data.filter(function (attendee) {
+          return attendee.estimate_arrive_time || attendee.arrive_time;
         });
       });
     },
-    changeStatus: function changeStatus(status, attendee, time) {
+    toAbsents: function toAbsents(idx) {
       var _this2 = this;
 
-      axios.put("/api/attendee/meeting_id/" + this.id + "/user_id/" + attendee, {
-        status: status
+      var user_id = this.present[idx].user_id;
+      axios.put("/api/attendee/meeting_id/" + this.meetingId + "/user_id/" + user_id, {
+        present: false
+      }).then(function () {
+        _this2.absent.push(_this2.present[idx]);
+        _this2.present.splice(idx, 1);
+      });
+    },
+    toPresents: function toPresents(idx) {
+      var _this3 = this;
+
+      var user_id = this.absent[idx].user_id;
+      axios.put("/api/attendee/meeting_id/" + this.meetingId + "/user_id/" + user_id, {
+        present: true
+      }).then(function () {
+        _this3.present.push(_this3.absent[idx]);
+        _this3.absent.splice(idx, 1);
+      });
+    },
+    addLate: function addLate(attendee, time, reason) {
+      var _this4 = this;
+
+      axios.put("/api/attendee/meeting_id/" + this.meetingId + "/user_id/" + attendee, {
+        present: true,
+        arrive_time: time,
+        late_reason: reason
       }).then(function (response) {
-        _.remove(_this2.onTime, function (a) {
-          return a.user_id === attendee;
+        if (!_.includes(_this4.present, attendee)) {
+          _this4.present.push(response.data);
+        }
+        _this4.late.push(response.data);
+      });
+    },
+    addLeaveEarly: function addLeaveEarly(attendee, time, reason) {
+      var _this5 = this;
+
+      axios.put("/api/attendee/meeting_id/" + this.meetingId + "/user_id/" + attendee, {
+        present: true,
+        leave_time: time,
+        leave_early_reason: reason
+      }).then(function (response) {
+        if (!_.includes(_this5.present, attendee)) {
+          _this5.present.push(response.data);
+        }
+        _this5.leaveEarly.push(response.data);
+      });
+    },
+    removeLate: function removeLate(userId) {
+      var _this6 = this;
+
+      axios.put("/api/attendee/meeting_id/" + this.meetingId + "/user_id/" + userId, {
+        arrive_time: null,
+        late_reason: null,
+        estimate_arrive_time: null
+      }).then(function () {
+        _this6.late = _.remove(_this6.late, function (a) {
+          return a.user_id != userId;
         });
-        _this2.leaveEarly.push(response.data);
+      });
+    },
+    removeLeaveEarly: function removeLeaveEarly(userId) {
+      var _this7 = this;
+
+      axios.put("/api/attendee/meeting_id/" + this.meetingId + "/user_id/" + userId, {
+        leave_time: null,
+        leave_early_reason: null,
+        estimate_leave_time: null
+      }).then(function () {
+        _this7.leaveEarly = _.remove(_this7.leaveEarly, function (a) {
+          return a.user_id != userId;
+        });
       });
     }
+  },
+  created: function created() {
+    this.fetchAttendees();
   }
 });
 
@@ -68973,12 +69158,35 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ["attendeeOptions", "status"],
+  props: ["attendees", "type"],
   components: {
     Multiselect: __WEBPACK_IMPORTED_MODULE_0_vue_multiselect___default.a,
     FlatPickr: __WEBPACK_IMPORTED_MODULE_1_vue_flatpickr_component___default.a
@@ -68991,13 +69199,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         inline: true
       },
       attendeeValue: null,
+      reason: "",
       time: new Date()
     };
   },
 
   methods: {
     selected: function selected() {
-      this.$emit("selected", this.status, this.attendeeValue, this.time);
+      this.$emit("selected", this.attendeeValue, this.time, this.reason);
       this.time = new Date();
       this.attendeeValue = null;
     }
@@ -69012,63 +69221,142 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("span", [
-    _vm._m(0),
+  return _c("div", { staticClass: "uk-modal-dialog uk-modal-body" }, [
+    _vm.type === "late"
+      ? _c("h2", { staticClass: "uk-modal-title" }, [_vm._v("新增遲到成員")])
+      : _c("h2", { staticClass: "uk-modal-title" }, [_vm._v("新增早退成員")]),
     _vm._v(" "),
-    _c(
-      "div",
-      { attrs: { "uk-dropdown": "mode: click" } },
-      [
-        _vm._v("\n    成員: "),
-        _c("Multiselect", {
-          attrs: { options: _vm.attendeeOptions, autofocus: "" },
-          model: {
-            value: _vm.attendeeValue,
-            callback: function($$v) {
-              _vm.attendeeValue = $$v
-            },
-            expression: "attendeeValue"
-          }
-        }),
-        _vm._v("\n    時間: "),
-        _c("br"),
-        _c("FlatPickr", {
-          attrs: { config: _vm.flatPickrConfig },
-          model: {
-            value: _vm.time,
-            callback: function($$v) {
-              _vm.time = $$v
-            },
-            expression: "time"
-          }
-        }),
-        _vm._v(" "),
-        _c("br"),
+    _c("div", { staticClass: "uk-form-stacked" }, [
+      _c("div", { staticClass: "uk-margin" }, [
+        _c(
+          "label",
+          { staticClass: "uk-form-label", attrs: { for: "form-stacked-text" } },
+          [_vm._v("ID")]
+        ),
         _vm._v(" "),
         _c(
-          "a",
+          "div",
+          { staticClass: "uk-form-controls" },
+          [
+            _c("Multiselect", {
+              attrs: {
+                options: _vm.attendees.map(function(a) {
+                  return a.user_id
+                })
+              },
+              model: {
+                value: _vm.attendeeValue,
+                callback: function($$v) {
+                  _vm.attendeeValue = $$v
+                },
+                expression: "attendeeValue"
+              }
+            })
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "uk-margin" }, [
+        _vm.type === "late"
+          ? _c(
+              "label",
+              {
+                staticClass: "uk-form-label",
+                attrs: { for: "form-stacked-text" }
+              },
+              [_vm._v("抵達時間")]
+            )
+          : _c(
+              "label",
+              {
+                staticClass: "uk-form-label",
+                attrs: { for: "form-stacked-text" }
+              },
+              [_vm._v("離開時間")]
+            ),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "uk-form-controls" },
+          [
+            _c("FlatPickr", {
+              attrs: { config: _vm.flatPickrConfig },
+              model: {
+                value: _vm.time,
+                callback: function($$v) {
+                  _vm.time = $$v
+                },
+                expression: "time"
+              }
+            })
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "uk-margin" }, [
+        _vm.type === "late"
+          ? _c(
+              "label",
+              {
+                staticClass: "uk-form-label",
+                attrs: { for: "form-stacked-text" }
+              },
+              [_vm._v("遲到原因")]
+            )
+          : _c(
+              "label",
+              {
+                staticClass: "uk-form-label",
+                attrs: { for: "form-stacked-text" }
+              },
+              [_vm._v("早退原因")]
+            ),
+        _vm._v(" "),
+        _c("div", { staticClass: "uk-form-controls" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.reason,
+                expression: "reason"
+              }
+            ],
+            staticClass: "uk-input",
+            attrs: {
+              id: "form-stacked-text",
+              type: "text",
+              placeholder: "Some text..."
+            },
+            domProps: { value: _vm.reason },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.reason = $event.target.value
+              }
+            }
+          })
+        ])
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "uk-margin" }, [
+        _c(
+          "button",
           {
-            staticClass: "uk-button uk-button-primary uk-button-small",
-            attrs: { href: "#" },
+            staticClass: "uk-button uk-button-primary uk-modal-close",
             on: { click: _vm.selected }
           },
-          [_vm._v("確定")]
+          [_vm._v("送出")]
         )
-      ],
-      1
-    )
+      ])
+    ])
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("span", { staticClass: "name-tag clickable" }, [
-      _c("span", { attrs: { "uk-icon": "plus" } })
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -69079,102 +69367,7 @@ if (false) {
 }
 
 /***/ }),
-/* 148 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c("div", [
-    _c(
-      "div",
-      [
-        _c("h3", [_vm._v("準時成員")]),
-        _vm._v(" "),
-        _vm._l(_vm.onTime, function(attendee) {
-          return _c(
-            "span",
-            { key: attendee.user_id, staticClass: "name-tag" },
-            [_vm._v(_vm._s(attendee.user_id))]
-          )
-        }),
-        _vm._v(" "),
-        _c("h3", [_vm._v("遲到成員")]),
-        _vm._v(" "),
-        _vm._l(_vm.late, function(attendee) {
-          return _c(
-            "span",
-            { key: attendee.user_id, staticClass: "name-tag" },
-            [_vm._v(_vm._s(attendee.user_id))]
-          )
-        }),
-        _vm._v(" "),
-        _c("h3", [_vm._v("早退成員")]),
-        _vm._v(" "),
-        _vm._l(_vm.leaveEarly, function(attendee) {
-          return _c(
-            "span",
-            { key: attendee.user_id, staticClass: "name-tag" },
-            [_vm._v(_vm._s(attendee.user_id))]
-          )
-        }),
-        _vm._v(" "),
-        _c("AttendeeAdder", {
-          attrs: {
-            attendeeOptions: _vm.onTime.map(function(a) {
-              return a.user_id
-            }),
-            status: "LeaveEarly"
-          },
-          on: { selected: _vm.changeStatus }
-        }),
-        _vm._v(" "),
-        _c("h3", [_vm._v("請假成員")]),
-        _vm._v(" "),
-        _vm._l(_vm.onLeave, function(attendee) {
-          return _c(
-            "span",
-            { key: attendee.user_id, staticClass: "name-tag" },
-            [_vm._v(_vm._s(attendee.user_id))]
-          )
-        }),
-        _vm._v(" "),
-        _c("h3", [_vm._v("未到成員")]),
-        _vm._v(" "),
-        _vm._l(_vm.absent, function(attendee) {
-          return _c(
-            "span",
-            { key: attendee.user_id, staticClass: "name-tag" },
-            [_vm._v(_vm._s(attendee.user_id))]
-          )
-        }),
-        _vm._v(" "),
-        _c("h3", [_vm._v("翹咪成員")]),
-        _vm._v(" "),
-        _vm._l(_vm.cut, function(attendee) {
-          return _c(
-            "span",
-            { key: attendee.user_id, staticClass: "name-tag" },
-            [_vm._v(_vm._s(attendee.user_id))]
-          )
-        })
-      ],
-      2
-    )
-  ])
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-8308c3e2", module.exports)
-  }
-}
-
-/***/ }),
+/* 148 */,
 /* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -93719,7 +93912,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { "uk-grid": "" } }, [
-    _c("div", { staticClass: "uk-width-3-4@m" }, [
+    _c("div", { staticClass: "uk-width-3-4@l" }, [
       _c("h2", [_vm._v(_vm._s(_vm.meeting.title))]),
       _vm._v(" "),
       _c(
@@ -93867,7 +94060,7 @@ var render = function() {
     _c(
       "div",
       {
-        staticClass: "uk-width-1-4@m",
+        staticClass: "uk-width-1-4@l",
         class: { "visibility-hidden": _vm.view != "record" }
       },
       [
@@ -94053,7 +94246,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { "uk-grid": "" } }, [
-    _c("div", { staticClass: "uk-width-3-4@m" }, [
+    _c("div", { staticClass: "uk-width-3-4@l" }, [
       _c("h2", [_vm._v("WWW 新生訓練 - 點名")]),
       _vm._v(" "),
       _c(
@@ -94437,7 +94630,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { attrs: { "uk-grid": "" } }, [
-    _c("div", { staticClass: "uk-width-3-4@m" }, [
+    _c("div", { staticClass: "uk-width-3-4@l" }, [
       _vm.editMode
         ? _c("h2", [_vm._v("編輯會議")])
         : _c("h2", [_vm._v("新增會議")]),
@@ -95383,6 +95576,368 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 322 */,
+/* 323 */,
+/* 324 */,
+/* 325 */,
+/* 326 */,
+/* 327 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(328);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(4)("7b117418", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-8308c3e2\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Attendees.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-8308c3e2\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Attendees.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 328 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(3)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n.section-title[data-v-8308c3e2] {\n  margin-top: 40px;\n  margin-bottom: 10px;\n}\n.add-button[data-v-8308c3e2] {\n  margin-bottom: 8px;\n}\n.uk-icon-button[data-v-8308c3e2] {\n  cursor: pointer;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 329 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _vm._l(_vm.present, function(member, idx) {
+        return _c(
+          "span",
+          {
+            key: member.user_id,
+            staticClass: "name-tag clickable",
+            on: {
+              click: function($event) {
+                _vm.toAbsents(idx)
+              }
+            }
+          },
+          [_vm._v("\n    " + _vm._s(member.user_id) + "\n  ")]
+        )
+      }),
+      _vm._v(" "),
+      _vm._m(1),
+      _vm._v(" "),
+      _vm._l(_vm.absent, function(member, idx) {
+        return _c(
+          "span",
+          {
+            key: member.user_id,
+            staticClass: "name-tag clickable",
+            on: {
+              click: function($event) {
+                _vm.toPresents(idx)
+              }
+            }
+          },
+          [_vm._v("\n    " + _vm._s(member.user_id) + "\n  ")]
+        )
+      }),
+      _vm._v(" "),
+      _vm._m(2),
+      _vm._v(" "),
+      _c("div", { staticClass: "uk-overflow-auto uk-width-1-1" }, [
+        _c(
+          "table",
+          {
+            staticClass:
+              "uk-table uk-table-responsive uk-table-divider uk-table-small uk-table-middle"
+          },
+          [
+            _vm._m(3),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.late, function(member) {
+                return _c("tr", { key: member.id }, [
+                  _c("td", [_vm._v(_vm._s(member.user_id))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.estimate_arrive_time))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.arrive_time))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.late_reason))]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("span", {
+                      staticClass: "uk-icon-button",
+                      attrs: { "uk-icon": "close" },
+                      on: {
+                        click: function($event) {
+                          _vm.removeLate(member.user_id)
+                        }
+                      }
+                    })
+                  ])
+                ])
+              })
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _vm._m(4),
+      _vm._v(" "),
+      _c("div", { staticClass: "uk-overflow-auto" }, [
+        _c(
+          "table",
+          {
+            staticClass:
+              "uk-table uk-table-responsive uk-table-divider uk-table-small"
+          },
+          [
+            _vm._m(5),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.leaveEarly, function(member) {
+                return _c("tr", { key: member.id }, [
+                  _c("td", [_vm._v(_vm._s(member.user_id))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.estimate_leave_time))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.leave_time))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.leave_early_reason))]),
+                  _vm._v(" "),
+                  _c("td", [
+                    _c("span", {
+                      staticClass: "uk-icon-button",
+                      attrs: { "uk-icon": "close" },
+                      on: {
+                        click: function($event) {
+                          _vm.removeLeaveEarly(member.user_id)
+                        }
+                      }
+                    })
+                  ])
+                ])
+              })
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _vm._m(6),
+      _vm._v(" "),
+      _c("div", { staticClass: "uk-overflow-auto" }, [
+        _c(
+          "table",
+          {
+            staticClass:
+              "uk-table uk-table-responsive uk-table-divider uk-table-small"
+          },
+          [
+            _vm._m(7),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.dayoff, function(member) {
+                return _c("tr", { key: member.id }, [
+                  _c("td", [_vm._v(_vm._s(member.user_id))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.absent_reason))])
+                ])
+              })
+            )
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { attrs: { id: "add-late", "uk-modal": "" } },
+        [
+          _c("AttendeeAdder", {
+            attrs: { attendees: _vm.attendees, type: "late" },
+            on: { selected: _vm.addLate }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { attrs: { id: "add-leave-early", "uk-modal": "" } },
+        [
+          _c("AttendeeAdder", {
+            attrs: { attendees: _vm.attendees, type: "leaveEarly" },
+            on: { selected: _vm.addLeaveEarly }
+          })
+        ],
+        1
+      )
+    ],
+    2
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "uk-width-1-1 section-title" }, [
+      _c("span", { staticClass: "uk-text-large uk-text-lead" }, [
+        _vm._v("已到成員")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "uk-width-1-1 section-title" }, [
+      _c("span", { staticClass: "uk-text-large uk-text-lead" }, [
+        _vm._v("未到成員")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "uk-width-1-1 section-title" }, [
+      _c("span", { staticClass: "uk-text-large uk-text-lead" }, [
+        _vm._v("遲到成員")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "uk-button uk-button-default uk-button-small add-button",
+          attrs: { type: "button", "uk-toggle": "target: #add-late" }
+        },
+        [
+          _c("span", { attrs: { "uk-icon": "plus" } }),
+          _vm._v("\n      新增\n    ")
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("預計到達")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("實際到達")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("原因")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("移除")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "uk-width-1-1 section-title" }, [
+      _c("span", { staticClass: "uk-text-large uk-text-lead" }, [
+        _vm._v("早退成員")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "uk-button uk-button-default uk-button-small add-button",
+          attrs: { type: "button", "uk-toggle": "target: #add-leave-early" }
+        },
+        [
+          _c("span", { attrs: { "uk-icon": "plus" } }),
+          _vm._v("\n      新增\n    ")
+        ]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("預計離開")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("實際離開")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("原因")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("移除")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "uk-width-1-1 section-title" }, [
+      _c("span", { staticClass: "uk-text-large uk-text-lead" }, [
+        _vm._v("請假成員")
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("原因")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-8308c3e2", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

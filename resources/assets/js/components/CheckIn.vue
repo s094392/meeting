@@ -1,6 +1,6 @@
 <template>
 <div uk-grid>
-  <div class="uk-width-3-4@m">
+  <div class="uk-width-3-4@l">
     <h2>WWW 新生訓練 - 點名</h2>
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
       <h3>已到成員</h3>

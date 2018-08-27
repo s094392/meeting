@@ -2,9 +2,9 @@
 <div>
 	<div class="buttons uk-display-inline-block">
 		<div v-if="status==this.$meetingStatus.Initialize" >
-			<router-link :to="{name: 'checkin', params: {id: id}}"  
-				class="uk-button uk-button-default uk-button-primary">開始</router-link>
-			<router-link :to="{name: 'edit', params: {id: id}}"   class="uk-button uk-button-default">編輯</router-link>
+			<button @click="startMeeting"  
+				class="uk-button uk-button-default uk-button-primary">開始</button>
+			<router-link :to="{name: 'edit', params: {id: meetingId}}"   class="uk-button uk-button-default">編輯</router-link>
 			<button v-on:click="$emit('delete')" class="uk-button uk-button-default">取消</button>
 			<button class="uk-button uk-button-default" type="button">請假</button>
 				<div uk-dropdown="mode: click;">
@@ -38,6 +38,20 @@
 
 <script>
 export default {
-  props: ["id", "status"]
+  props: ["meetingId", "status"],
+  methods: {
+    startMeeting: function() {
+      axios
+        .put(`/api/meeting/${this.meetingId}`, {
+          status: this.$meetingStatus.Start
+        })
+        .then(() => {
+          this.$router.push({
+            name: "detail",
+            params: { id: this.meetingId, view: "attendees" }
+          });
+        });
+    }
+  }
 };
 </script>

@@ -1,9 +1,9 @@
 <template>
 <div uk-grid>
-    <div class="uk-width-3-4@m">
+    <div class="uk-width-3-4@l">
         <ActiveMeetings/>
     </div>
-    <div class="uk-width-1-4@m">
+    <div class="uk-width-1-4@l">
         <InactiveMeetings/>
     </div>
 </div>

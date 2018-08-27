@@ -1,6 +1,6 @@
 <template>
 <div uk-grid>
-  <div class="uk-width-3-4@m">
+  <div class="uk-width-3-4@l">
     <h2>{{ meeting.title }}</h2>
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
       
@@ -28,7 +28,7 @@
     </div>
   </div>
 
-  <div class="uk-width-1-4@m" :class="{'visibility-hidden': view != 'record'}">
+  <div class="uk-width-1-4@l" :class="{'visibility-hidden': view != 'record'}">
     <h4>目錄</h4>
     <div class="uk-card uk-card-small uk-card-default uk-card-body" uk-sticky="offset:40;" id="toc"></div>
   </div>

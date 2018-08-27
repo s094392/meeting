@@ -1,75 +1,242 @@
 <template>
 <div>
-  <div>
-    <h3>準時成員</h3>
-    <span v-for="attendee in onTime" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
-    <h3>遲到成員</h3>
-    <span v-for="attendee in late" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
-    <h3>早退成員</h3>
-    <span v-for="attendee in leaveEarly" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
-    <AttendeeAdder :attendeeOptions="onTime.map(a => a.user_id)" :status="'LeaveEarly'" @selected="changeStatus"/>
-    <h3>請假成員</h3>
-    <span v-for="attendee in onLeave" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
-    <h3>未到成員</h3>
-    <span v-for="attendee in absent" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
-    <h3>翹咪成員</h3>
-    <span v-for="attendee in cut" :key="attendee.user_id" class="name-tag" >{{ attendee.user_id }}</span>
+  <div class="uk-width-1-1 section-title">
+    <span class="uk-text-large uk-text-lead">已到成員</span>
+  </div>
+  <span v-for="(member, idx) in present" :key="member.user_id" 
+    @click="toAbsents(idx)" class="name-tag clickable" >
+    {{ member.user_id }}
+  </span>
+
+  <div class="uk-width-1-1 section-title">
+    <span class="uk-text-large uk-text-lead">未到成員</span>
+  </div>
+  <span v-for="(member, idx) in absent" :key="member.user_id" 
+    @click="toPresents(idx)" class="name-tag clickable" >
+    {{ member.user_id }}
+  </span>
+
+  <div class="uk-width-1-1 section-title">
+    <span class="uk-text-large uk-text-lead">遲到成員</span>
+    <button class="uk-button uk-button-default uk-button-small add-button" type="button" uk-toggle="target: #add-late">
+      <span uk-icon="plus"></span>
+      新增
+    </button>
+  </div>
+        
+  <div class="uk-overflow-auto uk-width-1-1">
+    <table class="uk-table uk-table-responsive uk-table-divider uk-table-small uk-table-middle">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>預計到達</th>
+          <th>實際到達</th>
+          <th>原因</th>
+          <th>移除</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="member in late" v-bind:key="member.id">
+          <td>{{ member.user_id }}</td>
+          <td>{{ member.estimate_arrive_time }}</td>
+          <td>{{ member.arrive_time }}</td>
+          <td>{{ member.late_reason }}</td>
+          <td><span class="uk-icon-button" uk-icon="close" @click="removeLate(member.user_id)"></span></td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
+   <div class="uk-width-1-1 section-title">
+    <span class="uk-text-large uk-text-lead">早退成員</span>
+    <button class="uk-button uk-button-default uk-button-small add-button" type="button" uk-toggle="target: #add-leave-early">
+      <span uk-icon="plus"></span>
+      新增
+    </button>
+  </div>
+  <div class="uk-overflow-auto">
+    <table class="uk-table uk-table-responsive uk-table-divider uk-table-small">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>預計離開</th>
+          <th>實際離開</th>
+          <th>原因</th>
+          <th>移除</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="member in leaveEarly" v-bind:key="member.id">
+          <td>{{ member.user_id }}</td>
+          <td>{{ member.estimate_leave_time }}</td>
+          <td>{{ member.leave_time }}</td>
+          <td>{{ member.leave_early_reason }}</td>
+          <td><span class="uk-icon-button" uk-icon="close" @click="removeLeaveEarly(member.user_id)"></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="uk-width-1-1 section-title">
+    <span class="uk-text-large uk-text-lead">請假成員</span>
+  </div>
+  <div class="uk-overflow-auto">
+    <table class="uk-table uk-table-responsive uk-table-divider uk-table-small">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>原因</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="member in dayoff" v-bind:key="member.id">
+          <td>{{ member.user_id }}</td>
+          <td>{{ member.absent_reason }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="add-late" uk-modal>
+    <AttendeeAdder :attendees="attendees" :type="'late'" @selected="addLate"/>
+  </div>
+
+  <div id="add-leave-early" uk-modal>
+    <AttendeeAdder :attendees="attendees" :type="'leaveEarly'" @selected="addLeaveEarly"/>
+  </div>
 </div>
 </template>
 
+<style lang="scss" scoped>
+.section-title {
+  margin-top: 40px;
+  margin-bottom: 10px;
+}
+.add-button {
+  margin-bottom: 8px;
+}
+.uk-icon-button {
+  cursor: pointer;
+}
+</style>
 
 
 <script>
 import AttendeeAdder from "./AttendeeAdder";
 
 export default {
-  created() {
-    this.fetchAttendees();
-  },
-  data() {
-    return {
-      onTime: [],
-      late: [],
-      leaveEarly: [],
-      onLeave: [],
-      absent: [],
-      cut: [],
-      id: this.$route.params.id
-    };
-  },
   components: {
     AttendeeAdder
   },
+  data() {
+    return {
+      attendees: [],
+      present: [],
+      absent: [],
+      dayoff: [],
+      leaveEarly: [],
+      late: [],
+      meetingId: this.$route.params.id
+    };
+  },
   methods: {
     fetchAttendees: function() {
-      var self = this;
       axios
-        .get(`/api/attendee/meeting_id/${self.id}/user_id`)
+        .get(`/api/attendee/meeting_id/${this.meetingId}/user_id`)
         .then(response => {
-          this.onTime = response.data.filter(
-            attendee => attendee.status == "OnTime"
-          );
-          this.leaveEarly = response.data.filter(
-            attendee => attendee.status == "LeaveEarly"
+          this.attendees = response.data;
+          this.present = response.data.filter(
+            attendee => attendee.present == "1"
           );
           this.absent = response.data.filter(
-            attendee => attendee.status == "Initialized"
+            attendee => attendee.present == "0"
           );
-          this.cut = response.data.filter(attendee => attendee.status == "Cut");
+          this.dayoff = response.data.filter(
+            attendee => attendee.absent_reason
+          );
+          this.leaveEarly = response.data.filter(
+            attendee => attendee.estimate_leave_time || attendee.leave_time
+          );
+          this.late = response.data.filter(
+            attendee => attendee.estimate_arrive_time || attendee.arrive_time
+          );
         });
     },
-    changeStatus: function(status, attendee, time) {
+    toAbsents: function(idx) {
+      let user_id = this.present[idx].user_id;
       axios
-        .put(`/api/attendee/meeting_id/${this.id}/user_id/${attendee}`, {
-          status: status
+        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${user_id}`, {
+          present: false
+        })
+        .then(() => {
+          this.absent.push(this.present[idx]);
+          this.present.splice(idx, 1);
+        });
+    },
+    toPresents: function(idx) {
+      let user_id = this.absent[idx].user_id;
+      axios
+        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${user_id}`, {
+          present: true
+        })
+        .then(() => {
+          this.present.push(this.absent[idx]);
+          this.absent.splice(idx, 1);
+        });
+    },
+    addLate: function(attendee, time, reason) {
+      axios
+        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${attendee}`, {
+          present: true,
+          arrive_time: time,
+          late_reason: reason
         })
         .then(response => {
-          _.remove(this.onTime, a => a.user_id === attendee);
+          if (!_.includes(this.present, attendee)) {
+            this.present.push(response.data);
+          }
+          this.late.push(response.data);
+        });
+    },
+    addLeaveEarly: function(attendee, time, reason) {
+      axios
+        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${attendee}`, {
+          present: true,
+          leave_time: time,
+          leave_early_reason: reason
+        })
+        .then(response => {
+          if (!_.includes(this.present, attendee)) {
+            this.present.push(response.data);
+          }
           this.leaveEarly.push(response.data);
         });
+    },
+    removeLate: function(userId) {
+      axios
+        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${userId}`, {
+          arrive_time: null,
+          late_reason: null,
+          estimate_arrive_time: null
+        })
+        .then(() => {
+          this.late = _.remove(this.late, a => a.user_id != userId);
+        });
+    },
+    removeLeaveEarly: function(userId) {
+      axios
+        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${userId}`, {
+          leave_time: null,
+          leave_early_reason: null,
+          estimate_leave_time: null
+        })
+        .then(() => {
+          this.leaveEarly = _.remove(this.leaveEarly, a => a.user_id != userId);
+        });
     }
+  },
+  created() {
+    this.fetchAttendees();
   }
 };
 </script>

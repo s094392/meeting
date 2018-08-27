@@ -1,9 +1,9 @@
 <template>
 <div uk-grid>
 
-	<div class="uk-width-3-4@m">
+	<div class="uk-width-3-4@l">
 		<h2 class="uk-display-inline">所有會議</h2>
-		<button class="uk-button uk-button-primary uk-align-right uk-hidden@m" uk-toggle="target: #meeting-filter">篩選器</button>
+		<button class="uk-button uk-button-primary uk-align-right uk-hidden@l" uk-toggle="target: #meeting-filter">篩選器</button>
     <div class="uk-card uk-card-default uk-overflow-auto uk-width-1-1 uk-margin-top">
       <table class="uk-table uk-table-hover uk-table-divider meetings-table">
         <thead>
@@ -41,7 +41,7 @@
     </ul>
   </div>
 
-  <div class="uk-width-1-4@m uk-visible@m">
+  <div class="uk-width-1-4@l uk-visible@l">
     <h4>篩選器</h4>
     <div class="uk-card uk-card-body uk-card-small uk-card-default" uk-sticky="offset: 40;">
       <MeetingFilter/>
