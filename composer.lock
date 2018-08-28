@@ -4,8 +4,40 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "086bce33f8eeaaed408155417c06a4c1",
+    "content-hash": "6b75f80bd4ff0727d69ca205c63a5765",
     "packages": [
+        {
+            "name": "cscc/sso",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://gitlab.cs.nctu.edu.tw/www/cscc-sso/sso-sdk",
+                "reference": "41b37d47fc73fe6d36a7952324d6cfc7cbbbcaf1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "CSCC\\SSO\\CSSSOServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "CSCC\\SSO\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "yanglin",
+                    "email": "yanglin@cs.nctu.edu.tw"
+                }
+            ],
+            "time": "2018-05-19T02:55:35+00:00"
+        },
         {
             "name": "dnoegel/php-xdg-base-dir",
             "version": "0.1",

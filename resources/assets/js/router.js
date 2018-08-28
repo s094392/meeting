@@ -6,7 +6,6 @@ Vue.use(VueRouter)
 import Home from './components/Home/Root'
 import MeetingList from './components/MeetingList/Root'
 import MeetingDetail from './components/MeetingDetail/Root'
-import CheckIn from './components/CheckIn'
 import MeetingEditor from './components/Shared/MeetingEditor'
 
 export default new VueRouter({
@@ -26,11 +25,6 @@ export default new VueRouter({
       path: '/detail/:id/:view',
       name: 'detail',
       component: MeetingDetail
-    },
-    {
-      path: '/checkin/:id',
-      name: 'checkin',
-      component: CheckIn
     },
     {
       path: '/create',

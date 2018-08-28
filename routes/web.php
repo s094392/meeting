@@ -10,13 +10,19 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-
-
-Route::get('/auth/redirect', 'AuthController@redirect');
-
-Route::get('/auth/callback', 'AuthController@callback');
-
-Route::get('/{page}', 'VueController')->where('page', '^(api.+|(?!api).*)$');
 use Illuminate\Http\Request;
+
+Route::get('/cssso/handle', function (Request $request) {
+    $url = $request->session()->get('redirect_url');
+    $request->session()->forget('redirect_url');
+    return redirect($url);
+});
+
+Route::get('/api/me', function (Request $request) {
+    return json_encode($request->session()->get('user'));
+});
+
+
+Route::get('/{page}', function () {
+    return view('vue');
+})->where('page', '.*')->middleware('auth');
