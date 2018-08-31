@@ -14,8 +14,20 @@ use Illuminate\Http\Request;
 
 Route::get('/cssso/handle', function (Request $request) {
     $url = $request->session()->get('redirect_url');
-    $request->session()->forget('redirect_url');
-    return redirect($url);
+    if ($url) {
+        $request->session()->forget('redirect_url');
+        return redirect($url);
+    }
+    return redirect("/");
+});
+
+Route::get('/login', function () {
+    return view('login');
+});
+
+Route::post('/logout', function (Request $request) {
+    $request->session()->flush();
+    return redirect("/login");
 });
 
 Route::get('/api/me', function (Request $request) {

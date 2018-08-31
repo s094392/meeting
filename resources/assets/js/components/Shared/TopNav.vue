@@ -15,7 +15,7 @@
 								<li><a @click="routerPush('/')" href="#">首頁</a></li>
 								<li><a @click="routerPush('list')" href="#">會議列表</a></li>
 								<li><a href="#">個人報表</a></li>
-								<li><a href="#">登出</a></li>
+								<li><a @click="logout">登出</a></li>
 							</ul>
 						</div>
 						</li>
@@ -44,6 +44,11 @@ export default {
   methods: {
     routerPush: function(name) {
       this.$router.push({ name: name });
+    },
+    logout: function() {
+      axios.post("/logout").then(response => {
+        window.location = "/login";
+      });
     }
   }
 };

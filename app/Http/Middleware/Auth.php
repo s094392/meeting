@@ -17,9 +17,8 @@ class Auth
     {
         error_log(session()->get('user')['uid']);
         if (!session()->get('user')['id']) {
-            error_log("log in");
             session([ 'redirect_url' => $request->path() ]);
-            return redirect('/cssso/redirect');
+            return redirect('/login');
         };
         return $next($request);
     }

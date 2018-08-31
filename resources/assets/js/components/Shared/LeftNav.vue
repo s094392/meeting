@@ -15,7 +15,7 @@
 				<router-link :to="{ name: 'list'}">會議列表</router-link>
 			</li>
 			<li><a href="#">個人報表</a></li>
-			<li><a href="#">登出</a></li>
+			<li><a href="#" @click="logout">登出</a></li>
 		</ul>
 	</div>
 </div>
@@ -42,6 +42,11 @@ export default {
     fetchUser: function() {
       axios.get("/api/me").then(response => {
         this.user = response.data;
+      });
+    },
+    logout: function() {
+      axios.post("/logout").then(response => {
+        window.location = "/login";
       });
     }
   }
