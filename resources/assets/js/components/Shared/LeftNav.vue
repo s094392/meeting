@@ -29,21 +29,12 @@
 
 
 <script>
+import store from "vuex";
+import { mapState } from "vuex";
+
 export default {
-  data() {
-    return {
-      user: {}
-    };
-  },
-  created() {
-    this.fetchUser();
-  },
+  computed: mapState(["user"]),
   methods: {
-    fetchUser: function() {
-      axios.get("/api/me").then(response => {
-        this.user = response.data;
-      });
-    },
     logout: function() {
       axios.post("/logout").then(response => {
         window.location = "/login";

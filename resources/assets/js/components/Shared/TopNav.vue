@@ -25,7 +25,7 @@
 		</div>
 		<div class="uk-navbar-right uk-margin-right">
 			<ul class="uk-navbar-nav">
-				<li>Tsengcy</li>
+				<li>{{ user.uid }}</li>
 			</ul>
 		</div>
 	</nav>
@@ -40,7 +40,10 @@
 
 
 <script>
+import { mapState } from "vuex";
+
 export default {
+  computed: mapState(["user"]),
   methods: {
     routerPush: function(name) {
       this.$router.push({ name: name });

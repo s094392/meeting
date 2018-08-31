@@ -24,12 +24,23 @@
 <script>
 import LeftNav from "./components/Shared/LeftNav";
 import TopNav from "./components/Shared/TopNav";
+import { mapState } from "vuex";
 
 export default {
   name: "App",
   components: {
     LeftNav,
     TopNav
+  },
+  created() {
+    this.fetchUser();
+  },
+  methods: {
+    fetchUser: function() {
+      axios.get("/api/me").then(response => {
+        this.$store.commit("setUser", response.data);
+      });
+    }
   }
 };
 </script>
