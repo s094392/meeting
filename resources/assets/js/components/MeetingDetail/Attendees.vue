@@ -28,20 +28,20 @@
     <table class="uk-table uk-table-responsive uk-table-divider uk-table-small uk-table-middle">
       <thead>
         <tr>
+          <th class="remove-th"></th>
           <th>ID</th>
           <th>預計到達</th>
           <th>實際到達</th>
           <th>原因</th>
-          <th>移除</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="member in late" v-bind:key="member.id">
+          <td><span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8" @click="removeLate(member.user_id)"></span></td>
           <td>{{ member.user_id }}</td>
           <td>{{ member.estimate_arrive_time }}</td>
           <td>{{ member.arrive_time }}</td>
           <td>{{ member.late_reason }}</td>
-          <td><span class="uk-icon-button" uk-icon="close" @click="removeLate(member.user_id)"></span></td>
         </tr>
       </tbody>
     </table>
@@ -58,20 +58,20 @@
     <table class="uk-table uk-table-responsive uk-table-divider uk-table-small">
       <thead>
         <tr>
+          <th class="remove-th"></th>
           <th>ID</th>
           <th>預計離開</th>
           <th>實際離開</th>
           <th>原因</th>
-          <th>移除</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="member in leaveEarly" v-bind:key="member.id">
+          <td><span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8" @click="removeLeaveEarly(member.user_id)"></span></td>
           <td>{{ member.user_id }}</td>
           <td>{{ member.estimate_leave_time }}</td>
           <td>{{ member.leave_time }}</td>
           <td>{{ member.leave_early_reason }}</td>
-          <td><span class="uk-icon-button" uk-icon="close" @click="removeLeaveEarly(member.user_id)"></span></td>
         </tr>
       </tbody>
     </table>
@@ -110,13 +110,22 @@
 <style lang="scss" scoped>
 .section-title {
   margin-top: 40px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 .add-button {
   margin-bottom: 8px;
 }
 .uk-icon-button {
+  width: 27px;
+  height: 27px;
   cursor: pointer;
+  float: right;
+}
+.remove-th {
+  width: 0px;
+}
+.uk-table-small th {
+  padding-top: 0px;
 }
 </style>
 

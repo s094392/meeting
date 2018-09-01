@@ -19,12 +19,12 @@ class CreateAttendeesTable extends Migration
             $table->boolean('present')->default(false);
             $table->string('absent_reason')->nullable();
 
-            $table->dateTime('estimate_arrive_time')->nullable();
-            $table->dateTime('arrive_time')->nullable();
+            $table->time('estimate_arrive_time')->nullable();
+            $table->time('arrive_time')->nullable();
             $table->string('late_reason')->nullable();
 
-            $table->dateTime('estimate_leave_time')->nullable();
-            $table->dateTime('leave_time')->nullable();
+            $table->time('estimate_leave_time')->nullable();
+            $table->time('leave_time')->nullable();
             $table->string('leave_early_reason')->nullable();
 
             $table->timestamps();

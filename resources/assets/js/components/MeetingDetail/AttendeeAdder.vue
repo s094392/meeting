@@ -61,14 +61,15 @@ export default {
       },
       attendeeValue: null,
       reason: "",
-      time: new Date()
+      time: new Date().toTimeString().split(" ")[0]
     };
   },
   methods: {
     selected: function() {
       this.$emit("selected", this.attendeeValue, this.time, this.reason);
-      this.time = new Date();
+      this.time = new Date().toTimeString().split(" ")[0];
       this.attendeeValue = null;
+      this.reason = "";
     }
   }
 };

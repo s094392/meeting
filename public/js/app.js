@@ -69899,7 +69899,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n.section-title[data-v-8308c3e2] {\n  margin-top: 40px;\n  margin-bottom: 10px;\n}\n.add-button[data-v-8308c3e2] {\n  margin-bottom: 8px;\n}\n.uk-icon-button[data-v-8308c3e2] {\n  cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n.section-title[data-v-8308c3e2] {\n  margin-top: 40px;\n  margin-bottom: 5px;\n}\n.add-button[data-v-8308c3e2] {\n  margin-bottom: 8px;\n}\n.uk-icon-button[data-v-8308c3e2] {\n  width: 27px;\n  height: 27px;\n  cursor: pointer;\n  float: right;\n}\n.remove-th[data-v-8308c3e2] {\n  width: 0px;\n}\n.uk-table-small th[data-v-8308c3e2] {\n  padding-top: 0px;\n}\n", ""]);
 
 // exports
 
@@ -69912,6 +69912,15 @@ exports.push([module.i, "\n.section-title[data-v-8308c3e2] {\n  margin-top: 40px
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AttendeeAdder__ = __webpack_require__(146);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AttendeeAdder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__AttendeeAdder__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -70323,15 +70332,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       },
       attendeeValue: null,
       reason: "",
-      time: new Date()
+      time: new Date().toTimeString().split(" ")[0]
     };
   },
 
   methods: {
     selected: function selected() {
       this.$emit("selected", this.attendeeValue, this.time, this.reason);
-      this.time = new Date();
+      this.time = new Date().toTimeString().split(" ")[0];
       this.attendeeValue = null;
+      this.reason = "";
     }
   }
 });
@@ -70552,25 +70562,25 @@ var render = function() {
               "tbody",
               _vm._l(_vm.late, function(member) {
                 return _c("tr", { key: member.id }, [
-                  _c("td", [_vm._v(_vm._s(member.user_id))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.estimate_arrive_time))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.arrive_time))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.late_reason))]),
-                  _vm._v(" "),
                   _c("td", [
                     _c("span", {
                       staticClass: "uk-icon-button",
-                      attrs: { "uk-icon": "close" },
+                      attrs: { "uk-icon": "icon: close; ratio: 0.8" },
                       on: {
                         click: function($event) {
                           _vm.removeLate(member.user_id)
                         }
                       }
                     })
-                  ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.user_id))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.estimate_arrive_time))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.arrive_time))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.late_reason))])
                 ])
               })
             )
@@ -70594,25 +70604,25 @@ var render = function() {
               "tbody",
               _vm._l(_vm.leaveEarly, function(member) {
                 return _c("tr", { key: member.id }, [
-                  _c("td", [_vm._v(_vm._s(member.user_id))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.estimate_leave_time))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.leave_time))]),
-                  _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.leave_early_reason))]),
-                  _vm._v(" "),
                   _c("td", [
                     _c("span", {
                       staticClass: "uk-icon-button",
-                      attrs: { "uk-icon": "close" },
+                      attrs: { "uk-icon": "icon: close; ratio: 0.8" },
                       on: {
                         click: function($event) {
                           _vm.removeLeaveEarly(member.user_id)
                         }
                       }
                     })
-                  ])
+                  ]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.user_id))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.estimate_leave_time))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.leave_time))]),
+                  _vm._v(" "),
+                  _c("td", [_vm._v(_vm._s(member.leave_early_reason))])
                 ])
               })
             )
@@ -70722,15 +70732,15 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
+        _c("th", { staticClass: "remove-th" }),
+        _vm._v(" "),
         _c("th", [_vm._v("ID")]),
         _vm._v(" "),
         _c("th", [_vm._v("預計到達")]),
         _vm._v(" "),
         _c("th", [_vm._v("實際到達")]),
         _vm._v(" "),
-        _c("th", [_vm._v("原因")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("移除")])
+        _c("th", [_vm._v("原因")])
       ])
     ])
   },
@@ -70762,15 +70772,15 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
+        _c("th", { staticClass: "remove-th" }),
+        _vm._v(" "),
         _c("th", [_vm._v("ID")]),
         _vm._v(" "),
         _c("th", [_vm._v("預計離開")]),
         _vm._v(" "),
         _c("th", [_vm._v("實際離開")]),
         _vm._v(" "),
-        _c("th", [_vm._v("原因")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("移除")])
+        _c("th", [_vm._v("原因")])
       ])
     ])
   },
