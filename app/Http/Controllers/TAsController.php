@@ -15,7 +15,7 @@ class TAsController extends Controller
      */
     public function index()
     {
-        $server_url = env("SERVER_URL", null);
+        $server_url = env("CSSSO_SERVER", null);
         $http = new GuzzleHttp\Client();
         $response = $http->get($server_url.'/api/tas');
         return json_decode((string) $response->getBody(), true);

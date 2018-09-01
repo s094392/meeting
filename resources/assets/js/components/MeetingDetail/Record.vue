@@ -23,7 +23,7 @@ import markdownEditor from "vue-simplemde/src/markdown-editor";
 
 export default {
   props: ["meeting"],
-  data: function() {
+  data() {
     return {
       edit: false,
       recordTimer: "",

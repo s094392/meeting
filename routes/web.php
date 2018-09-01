@@ -22,6 +22,9 @@ Route::get('/cssso/handle', function (Request $request) {
 });
 
 Route::get('/login', function () {
+    if (session()->get('user')['id']) {
+        return redirect("/");
+    }
     return view('login');
 });
 

@@ -45,7 +45,5 @@ export default new VueRouter({
     } else {
       return { x: 0, y: 0 }
     }
-
   }
-
 })

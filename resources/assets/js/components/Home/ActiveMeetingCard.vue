@@ -11,7 +11,7 @@
       <span class="uk-margin-small-right" uk-icon="clock" />{{ meeting.scheduled_time }}
     </p>
     <p>{{ meeting.description }}<br></p>
-    <MeetingControl :meetingId="meeting.id" :status="meeting.status" v-on:delete="$emit('delete', meeting.id);"/>
+    <MeetingControl :meeting="meeting" v-on:delete="$emit('delete', meeting.id);"/>
   </div>
 </div>
 </template>
