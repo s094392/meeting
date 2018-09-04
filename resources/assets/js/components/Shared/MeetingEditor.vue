@@ -35,6 +35,7 @@
 		<div class="uk-form-controls">
 		  <Multiselect class="multi-select" v-model="attendees" @input="attendeeSelected" placeholder="選擇參與人員..."
 					  :options="attendeeOptions" :hideSelected="true" :multiple="true" :closeOnSelect="false"
+            :trackBy="'uidNumber'" :label="'uid'"
 					  :class="{'form-danger': attendees.length == 0 && triedPost}"></MultiSelect>
 		</div>
 	  </div>
@@ -97,8 +98,18 @@ export default {
     fetchTAs: function() {
       axios.get("/api/tas").then(response => {
         this.tas = response.data;
-        this.groupOptions = Object.keys(response.data);
-        this.attendeeOptions = this.groupOptions.concat(response.data["cs-ta"]);
+        this.groupOptions = Object.keys(this.tas);
+        this.groupOptions.forEach(group =>
+          this.attendeeOptions.push({
+            uid: group,
+            uidNumber: group,
+            type: "group"
+          })
+        );
+        for (let group in this.tas) {
+          this.attendeeOptions = this.attendeeOptions.concat(this.tas[group]);
+        }
+        this.attendeeOptions = _.uniqBy(this.attendeeOptions, "uidNumber");
       });
     },
     fetchMeeting: function() {
@@ -117,11 +128,10 @@ export default {
 
     attendeeSelected: function(selectedOption, id) {
       let selected = _.last(selectedOption);
-      if (this.groupOptions.includes(selected)) {
-        _.remove(this.attendeeOptions, option => option == selected);
+      if (selected.type === "group") {
         this.attendees.pop();
-        this.attendees = this.attendees.concat(this.tas[selected]);
-        this.attendees = _.uniq(this.attendees);
+        this.attendees = this.attendees.concat(this.tas[selected.uid]);
+        this.attendees = _.uniqBy(this.attendees, "uidNumber");
       }
     },
 
@@ -148,17 +158,16 @@ export default {
       }
     },
     postAttendees: function(meetingId) {
-      var promises = [];
-      var removedAttendees = _.without(
+      let promises = [];
+      let removedAttendees = _.without(
         this.originalAttendees,
         ...this.attendees
       );
-      var newAttendees = _.without(this.attendees, ...this.originalAttendees);
-
+      let newAttendees = _.without(this.attendees, ...this.originalAttendees);
       newAttendees.forEach(attendee => {
         promises.push(
           axios.post(`/api/attendee/meeting_id/${meetingId}/user_id`, {
-            user_id: attendee
+            user_id: attendee.uidNumber
           })
         );
       });

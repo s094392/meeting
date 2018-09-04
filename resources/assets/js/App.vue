@@ -1,5 +1,5 @@
 <template>
-<div>
+<div v-if="loaded">
 	<TopNav />
 	<div class="uk-padding">
 		<div uk-grid>
@@ -32,13 +32,18 @@ export default {
     LeftNav,
     TopNav
   },
+  data() {
+    return {
+      loaded: false
+    };
+  },
   created() {
-    this.fetchUser();
+    this.initUser();
   },
   methods: {
-    fetchUser: function() {
-      axios.get("/api/me").then(response => {
-        this.$store.commit("setUser", response.data);
+    initUser: function() {
+      this.$store.dispatch("initUser").then(() => {
+        this.loaded = true;
       });
     }
   }

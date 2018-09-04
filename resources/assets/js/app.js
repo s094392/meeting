@@ -1,7 +1,8 @@
 import './bootstrap';
 import Vue from 'vue'
-import Vuex from 'vuex';
+
 import router from './router'
+import store from './store'
 import App from './App'
 
 Vue.prototype.$meetingStatus = Object.freeze({
@@ -21,17 +22,6 @@ Vue.prototype.$meetingStatusText = Object.freeze([
   "會議封存"
 ]);
 
-Vue.use(Vuex);
-const store = new Vuex.Store({
-  state: {
-    user: {}
-  },
-  mutations: {
-    setUser(state, user) {
-      state.user = user;
-    }
-  }
-});
 
 const app = new Vue({
   el: '#app',

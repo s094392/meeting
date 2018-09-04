@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th>會議狀態:</th>
-      <td>{{ meeting.status }}</td>
+      <td>{{ this.$meetingStatusText[meeting.status] }}</td>
     </tr>
     <tr>
       <th>會議時數:</th>
