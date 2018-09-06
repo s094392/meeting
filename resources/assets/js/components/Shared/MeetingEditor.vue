@@ -35,7 +35,7 @@
 		<div class="uk-form-controls">
 		  <Multiselect class="multi-select" v-model="attendees" @input="attendeeSelected" placeholder="選擇參與人員..."
 					  :options="attendeeOptions" :hideSelected="true" :multiple="true" :closeOnSelect="false"
-            :trackBy="'uidNumber'" :label="'uid'"
+            :trackBy="'user_id'" :label="'username'"
 					  :class="{'form-danger': attendees.length == 0 && triedPost}"></MultiSelect>
 		</div>
 	  </div>
@@ -75,7 +75,7 @@ export default {
     return {
       editMode: !!this.$route.params.id,
       meeting: {},
-      tas: {},
+      groupedTas: {},
       triedPost: false,
       groupOptions: [],
       originalAttendees: [],
@@ -96,20 +96,20 @@ export default {
   },
   methods: {
     fetchTAs: function() {
-      axios.get("/api/tas").then(response => {
-        this.tas = response.data;
-        this.groupOptions = Object.keys(this.tas);
+      axios.get("/api/tas/grouped").then(response => {
+        this.groupedTas = response.data;
+        console.log(this.groupedTas);
+        this.groupOptions = Object.keys(this.groupedTas);
         this.groupOptions.forEach(group =>
           this.attendeeOptions.push({
-            uid: group,
-            uidNumber: group,
+            username: group,
+            user_id: group,
             type: "group"
           })
         );
-        for (let group in this.tas) {
-          this.attendeeOptions = this.attendeeOptions.concat(this.tas[group]);
-        }
-        this.attendeeOptions = _.uniqBy(this.attendeeOptions, "uidNumber");
+      });
+      axios.get("/api/tas/list").then(response => {
+        this.attendeeOptions.concat(response.data);
       });
     },
     fetchMeeting: function() {
@@ -130,8 +130,10 @@ export default {
       let selected = _.last(selectedOption);
       if (selected.type === "group") {
         this.attendees.pop();
-        this.attendees = this.attendees.concat(this.tas[selected.uid]);
-        this.attendees = _.uniqBy(this.attendees, "uidNumber");
+        this.attendees = this.attendees.concat(
+          this.groupedTas[selected.username]
+        );
+        this.attendees = _.uniqBy(this.attendees, "user_id");
       }
     },
 
@@ -167,7 +169,7 @@ export default {
       newAttendees.forEach(attendee => {
         promises.push(
           axios.post(`/api/attendee/meeting_id/${meetingId}/user_id`, {
-            user_id: attendee.uidNumber
+            user_id: attendee.user_id
           })
         );
       });

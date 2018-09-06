@@ -2,12 +2,12 @@
 <div class="uk-modal-dialog uk-modal-body">
   <h2 class="uk-modal-title" v-if="type === 'late'">新增遲到成員</h2>
   <h2 class="uk-modal-title" v-else>新增早退成員</h2>
-  <div class="uk-form-stacked">
+  <form class="uk-form-stacked">
 
     <div class="uk-margin">
         <label class="uk-form-label" for="form-stacked-text">ID</label>
         <div class="uk-form-controls">
-            <Multiselect v-model="attendeeValue" :options="attendees.map(a => a.user_id)"></MultiSelect>
+            <Multiselect v-model="attendeeValue" :options="attendees" :trackBy="'user_id'" :label="'username'"></MultiSelect>
         </div>
     </div>
 
@@ -30,8 +30,7 @@
     <div class="uk-margin">
       <button class="uk-button uk-button-primary uk-modal-close" @click="selected">送出</button>
     </div>
-
-</div>
+  </form>
 </div>
 </template>
 
@@ -66,7 +65,14 @@ export default {
   },
   methods: {
     selected: function() {
-      this.$emit("selected", this.attendeeValue, this.time, this.reason);
+      if (!!this.time && !!this.attendeeValue) {
+        this.$emit(
+          "selected",
+          this.attendeeValue.user_id,
+          this.time,
+          this.reason
+        );
+      }
       this.time = new Date().toTimeString().split(" ")[0];
       this.attendeeValue = null;
       this.reason = "";

@@ -69612,17 +69612,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__(330)
+}
 var normalizeComponent = __webpack_require__(1)
 /* script */
 var __vue_script__ = __webpack_require__(140)
 /* template */
-var __vue_template__ = __webpack_require__(141)
+var __vue_template__ = __webpack_require__(332)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
-var __vue_styles__ = null
+var __vue_styles__ = injectStyle
 /* scopeId */
-var __vue_scopeId__ = null
+var __vue_scopeId__ = "data-v-0a07c90d"
 /* moduleIdentifier (server only) */
 var __vue_module_identifier__ = null
 var Component = normalizeComponent(
@@ -69707,6 +69711,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -69717,94 +69730,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 141 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c("table", { staticClass: "uk-table uk-table-small " }, [
-        _c("tr", [
-          _c("th", [_vm._v("會議名稱:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.title))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("會議分類:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.group))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("預定開始時間:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.scheduled_time))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("開始時間:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.start_time))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("結束時間:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.end_time))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("發起人:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.owner))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("會議狀態:")]),
-          _vm._v(" "),
-          _c("td", [
-            _vm._v(_vm._s(this.$meetingStatusText[_vm.meeting.status]))
-          ])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("會議時數:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.title))])
-        ]),
-        _vm._v(" "),
-        _c("tr", [
-          _c("th", [_vm._v("會議說明:")]),
-          _vm._v(" "),
-          _c("td", [_vm._v(_vm._s(_vm.meeting.description))])
-        ])
-      ]),
-      _vm._v(" "),
-      _c("hr", { staticClass: "uk-divider-icon" }),
-      _vm._v(" "),
-      _c("MeetingControl", {
-        attrs: { meetingId: _vm.meeting.id, status: _vm.meeting.status }
-      })
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-module.exports = { render: render, staticRenderFns: staticRenderFns }
-if (false) {
-  module.hot.accept()
-  if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-0a07c90d", module.exports)
-  }
-}
-
-/***/ }),
+/* 141 */,
 /* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -70152,6 +70078,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           return a.user_id != userId;
         });
       });
+    },
+    removeSecond: function removeSecond(s) {
+      if (!s) return s;
+      return s.split(":").splice(0, 2).join(":");
     }
   },
   created: function created() {
@@ -70303,7 +70233,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 
@@ -70329,7 +70258,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
   methods: {
     selected: function selected() {
-      this.$emit("selected", this.attendeeValue, this.time, this.reason);
+      if (!!this.time && !!this.attendeeValue) {
+        this.$emit("selected", this.attendeeValue.user_id, this.time, this.reason);
+      }
       this.time = new Date().toTimeString().split(" ")[0];
       this.attendeeValue = null;
       this.reason = "";
@@ -70350,7 +70281,7 @@ var render = function() {
       ? _c("h2", { staticClass: "uk-modal-title" }, [_vm._v("新增遲到成員")])
       : _c("h2", { staticClass: "uk-modal-title" }, [_vm._v("新增早退成員")]),
     _vm._v(" "),
-    _c("div", { staticClass: "uk-form-stacked" }, [
+    _c("form", { staticClass: "uk-form-stacked" }, [
       _c("div", { staticClass: "uk-margin" }, [
         _c(
           "label",
@@ -70364,9 +70295,9 @@ var render = function() {
           [
             _c("Multiselect", {
               attrs: {
-                options: _vm.attendees.map(function(a) {
-                  return a.user_id
-                })
+                options: _vm.attendees,
+                trackBy: "user_id",
+                label: "username"
               },
               model: {
                 value: _vm.attendeeValue,
@@ -70515,7 +70446,7 @@ var render = function() {
               }
             }
           },
-          [_vm._v("\n    " + _vm._s(member.user_id) + "\n  ")]
+          [_vm._v("\n    " + _vm._s(member.username) + "\n  ")]
         )
       }),
       _vm._v(" "),
@@ -70533,7 +70464,7 @@ var render = function() {
               }
             }
           },
-          [_vm._v("\n    " + _vm._s(member.user_id) + "\n  ")]
+          [_vm._v("\n    " + _vm._s(member.username) + "\n  ")]
         )
       }),
       _vm._v(" "),
@@ -70552,7 +70483,7 @@ var render = function() {
             _c(
               "tbody",
               _vm._l(_vm.late, function(member) {
-                return _c("tr", { key: member.id }, [
+                return _c("tr", { key: "late-" + member.user_id }, [
                   _c("td", [
                     _c("span", {
                       staticClass: "uk-icon-button",
@@ -70565,11 +70496,17 @@ var render = function() {
                     })
                   ]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.user_id))]),
+                  _c("td", [_vm._v(_vm._s(member.username))]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.estimate_arrive_time))]),
+                  _c("td", [
+                    _vm._v(
+                      _vm._s(_vm.removeSecond(member.estimate_arrive_time))
+                    )
+                  ]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.arrive_time))]),
+                  _c("td", [
+                    _vm._v(_vm._s(_vm.removeSecond(member.arrive_time)))
+                  ]),
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(member.late_reason))])
                 ])
@@ -70594,7 +70531,7 @@ var render = function() {
             _c(
               "tbody",
               _vm._l(_vm.leaveEarly, function(member) {
-                return _c("tr", { key: member.id }, [
+                return _c("tr", { key: "leaveEarly-" + member.user_id }, [
                   _c("td", [
                     _c("span", {
                       staticClass: "uk-icon-button",
@@ -70607,11 +70544,15 @@ var render = function() {
                     })
                   ]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.user_id))]),
+                  _c("td", [_vm._v(_vm._s(member.username))]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.estimate_leave_time))]),
+                  _c("td", [
+                    _vm._v(_vm._s(_vm.removeSecond(member.estimate_leave_time)))
+                  ]),
                   _vm._v(" "),
-                  _c("td", [_vm._v(_vm._s(member.leave_time))]),
+                  _c("td", [
+                    _vm._v(_vm._s(_vm.removeSecond(member.leave_time)))
+                  ]),
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(member.leave_early_reason))])
                 ])
@@ -70636,8 +70577,8 @@ var render = function() {
             _c(
               "tbody",
               _vm._l(_vm.dayoff, function(member) {
-                return _c("tr", { key: member.id }, [
-                  _c("td", [_vm._v(_vm._s(member.user_id))]),
+                return _c("tr", { key: "off-" + member.user_id }, [
+                  _c("td", [_vm._v(_vm._s(member.username))]),
                   _vm._v(" "),
                   _c("td", [_vm._v(_vm._s(member.absent_reason))])
                 ])
@@ -95705,7 +95646,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     return {
       editMode: !!this.$route.params.id,
       meeting: {},
-      tas: {},
+      groupedTas: {},
       triedPost: false,
       groupOptions: [],
       originalAttendees: [],
@@ -95730,20 +95671,20 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     fetchTAs: function fetchTAs() {
       var _this = this;
 
-      axios.get("/api/tas").then(function (response) {
-        _this.tas = response.data;
-        _this.groupOptions = Object.keys(_this.tas);
+      axios.get("/api/tas/grouped").then(function (response) {
+        _this.groupedTas = response.data;
+        console.log(_this.groupedTas);
+        _this.groupOptions = Object.keys(_this.groupedTas);
         _this.groupOptions.forEach(function (group) {
           return _this.attendeeOptions.push({
-            uid: group,
-            uidNumber: group,
+            username: group,
+            user_id: group,
             type: "group"
           });
         });
-        for (var group in _this.tas) {
-          _this.attendeeOptions = _this.attendeeOptions.concat(_this.tas[group]);
-        }
-        _this.attendeeOptions = _.uniqBy(_this.attendeeOptions, "uidNumber");
+      });
+      axios.get("/api/tas/list").then(function (response) {
+        _this.attendeeOptions.concat(response.data);
       });
     },
     fetchMeeting: function fetchMeeting() {
@@ -95766,8 +95707,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       var selected = _.last(selectedOption);
       if (selected.type === "group") {
         this.attendees.pop();
-        this.attendees = this.attendees.concat(this.tas[selected.uid]);
-        this.attendees = _.uniqBy(this.attendees, "uidNumber");
+        this.attendees = this.attendees.concat(this.groupedTas[selected.username]);
+        this.attendees = _.uniqBy(this.attendees, "user_id");
       }
     },
 
@@ -95797,7 +95738,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       var newAttendees = (_ref2 = _).without.apply(_ref2, [this.attendees].concat(_toConsumableArray(this.originalAttendees)));
       newAttendees.forEach(function (attendee) {
         promises.push(axios.post("/api/attendee/meeting_id/" + meetingId + "/user_id", {
-          user_id: attendee.uidNumber
+          user_id: attendee.user_id
         }));
       });
 
@@ -95981,8 +95922,8 @@ var render = function() {
                         hideSelected: true,
                         multiple: true,
                         closeOnSelect: false,
-                        trackBy: "uidNumber",
-                        label: "uid"
+                        trackBy: "user_id",
+                        label: "username"
                       },
                       on: { input: _vm.attendeeSelected },
                       model: {
@@ -96839,6 +96780,141 @@ if (false) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 323 */,
+/* 324 */,
+/* 325 */,
+/* 326 */,
+/* 327 */,
+/* 328 */,
+/* 329 */,
+/* 330 */
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(331);
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__(4)("d7c3d950", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0a07c90d\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Properties.vue", function() {
+     var newContent = require("!!../../../../../node_modules/css-loader/index.js!../../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-0a07c90d\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../../node_modules/sass-loader/lib/loader.js!../../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./Properties.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+/* 331 */
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__(2)(false);
+// imports
+
+
+// module
+exports.push([module.i, "\nth[data-v-0a07c90d] {\n  vertical-align: initial;\n}\n.description[data-v-0a07c90d] {\n  white-space: pre-wrap;\n}\n", ""]);
+
+// exports
+
+
+/***/ }),
+/* 332 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _c("table", { staticClass: "uk-table uk-table-small uk-table-striped" }, [
+        _c("tr", [
+          _c("th", [_vm._v("會議名稱:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.title))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("會議分類:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.group))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("預定開始時間:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.scheduled_time))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("開始時間:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.start_time))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("結束時間:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.end_time))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("發起人:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.owner))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("會議狀態:")]),
+          _vm._v(" "),
+          _c("td", [
+            _vm._v(_vm._s(this.$meetingStatusText[_vm.meeting.status]))
+          ])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("會議時數:")]),
+          _vm._v(" "),
+          _c("td", [_vm._v(_vm._s(_vm.meeting.title))])
+        ]),
+        _vm._v(" "),
+        _c("tr", [
+          _c("th", [_vm._v("會議說明:")]),
+          _vm._v(" "),
+          _c("td", { staticClass: "description" }, [
+            _vm._v(_vm._s(_vm.meeting.description))
+          ])
+        ])
+      ]),
+      _vm._v(" "),
+      _c("hr", { staticClass: "uk-divider-icon" }),
+      _vm._v(" "),
+      _c("MeetingControl", { attrs: { meeting: _vm.meeting } })
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-0a07c90d", module.exports)
+  }
+}
 
 /***/ })
 /******/ ]);

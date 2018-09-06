@@ -62,6 +62,8 @@ class AttendeeController extends Controller
     {
         Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->update($request->all());
         $attendee =  Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first();
+        $taMap = app('App\Http\Controllers\TAsController')->map();
+        $attendee["username"] = $taMap[$attendee["user_id"]];
         return $attendee;
     }
 

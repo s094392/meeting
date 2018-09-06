@@ -1,6 +1,6 @@
 <template>
 <div>
-  <table class="uk-table uk-table-small ">
+  <table class="uk-table uk-table-small uk-table-striped">
     <tr>
       <th>會議名稱:</th>
       <td>{{ meeting.title }}</td>
@@ -35,13 +35,22 @@
     </tr>
     <tr>
       <th>會議說明:</th>
-      <td>{{ meeting.description }}</td>
+      <td class="description">{{ meeting.description }}</td>
     </tr>
   </table>
   <hr class="uk-divider-icon">
-  <MeetingControl :meetingId="meeting.id" :status="meeting.status"/>
+  <MeetingControl :meeting="meeting"/>
 </div>
 </template>
+
+<style lang="scss" scoped>
+th {
+  vertical-align: initial;
+}
+.description {
+  white-space: pre-wrap;
+}
+</style>
 
 <script>
 import MeetingControl from "../Shared/MeetingControl";

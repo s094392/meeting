@@ -5,7 +5,7 @@
   </div>
   <span v-for="(member, idx) in present" :key="member.user_id" 
     @click="toAbsents(idx)" class="name-tag clickable" >
-    {{ member.user_id }}
+    {{ member.username }}
   </span>
 
   <div class="uk-width-1-1 section-title">
@@ -13,7 +13,7 @@
   </div>
   <span v-for="(member, idx) in absent" :key="member.user_id" 
     @click="toPresents(idx)" class="name-tag clickable" >
-    {{ member.user_id }}
+    {{ member.username }}
   </span>
 
   <div class="uk-width-1-1 section-title">
@@ -36,11 +36,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="member in late" v-bind:key="member.id">
+        <tr v-for="member in late" v-bind:key="'late-'+member.user_id">
           <td><span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8" @click="removeLate(member.user_id)"></span></td>
-          <td>{{ member.user_id }}</td>
-          <td>{{ member.estimate_arrive_time }}</td>
-          <td>{{ member.arrive_time }}</td>
+          <td>{{ member.username }}</td>
+          <td>{{ removeSecond(member.estimate_arrive_time) }}</td>
+          <td>{{ removeSecond(member.arrive_time) }}</td>
           <td>{{ member.late_reason }}</td>
         </tr>
       </tbody>
@@ -66,11 +66,11 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="member in leaveEarly" v-bind:key="member.id">
+        <tr v-for="member in leaveEarly" v-bind:key="'leaveEarly-'+member.user_id">
           <td><span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8" @click="removeLeaveEarly(member.user_id)"></span></td>
-          <td>{{ member.user_id }}</td>
-          <td>{{ member.estimate_leave_time }}</td>
-          <td>{{ member.leave_time }}</td>
+          <td>{{ member.username }}</td>
+          <td>{{ removeSecond(member.estimate_leave_time) }}</td>
+          <td>{{ removeSecond(member.leave_time) }}</td>
           <td>{{ member.leave_early_reason }}</td>
         </tr>
       </tbody>
@@ -89,8 +89,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="member in dayoff" v-bind:key="member.id">
-          <td>{{ member.user_id }}</td>
+        <tr v-for="member in dayoff" v-bind:key="'off-'+member.user_id">
+          <td>{{ member.username }}</td>
           <td>{{ member.absent_reason }}</td>
         </tr>
       </tbody>
@@ -242,6 +242,13 @@ export default {
         .then(() => {
           this.leaveEarly = _.remove(this.leaveEarly, a => a.user_id != userId);
         });
+    },
+    removeSecond: function(s) {
+      if (!s) return s;
+      return s
+        .split(":")
+        .splice(0, 2)
+        .join(":");
     }
   },
   created() {
