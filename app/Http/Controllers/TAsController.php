@@ -13,871 +13,892 @@ class TAsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function grouped()
     {
         // $server_url = env("CSSSO_SERVER", null);
         // $http = new GuzzleHttp\Client();
         // $response = $http->get($server_url.'/api/tas');
         // return json_decode((string) $response->getBody(), true);
 
-        return '{
+        return json_decode('{
             "phdta": [
                 {
-                    "uid": "ycchang",
-                    "uidNumber": 1
+                    "username": "ycchang",
+                    "user_id": 1
                 },
                 {
-                    "uid": "wangth",
-                    "uidNumber": 2
+                    "username": "wangth",
+                    "user_id": 2
                 },
                 {
-                    "uid": "tzuyu",
-                    "uidNumber": 3
+                    "username": "tzuyu",
+                    "user_id": 3
                 },
                 {
-                    "uid": "linpc",
-                    "uidNumber": 4
+                    "username": "linpc",
+                    "user_id": 4
                 }
             ],
             "netta": [
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "tzuyu",
-                    "uidNumber": 3
+                    "username": "tzuyu",
+                    "user_id": 3
                 },
                 {
-                    "uid": "yaowen",
-                    "uidNumber": 6
+                    "username": "yaowen",
+                    "user_id": 6
                 },
                 {
-                    "uid": "calee",
-                    "uidNumber": 7
+                    "username": "calee",
+                    "user_id": 7
                 },
                 {
-                    "uid": "youwei1129",
-                    "uidNumber": 8
+                    "username": "youwei1129",
+                    "user_id": 8
                 },
                 {
-                    "uid": "syujy",
-                    "uidNumber": 9
+                    "username": "syujy",
+                    "user_id": 9
                 },
                 {
-                    "uid": "wwchung",
-                    "uidNumber": 10
+                    "username": "wwchung",
+                    "user_id": 10
                 },
                 {
-                    "uid": "yahsieh",
-                    "uidNumber": 11
+                    "username": "yahsieh",
+                    "user_id": 11
                 }
             ],
             "autota": [
                 {
-                    "uid": "tsuyi",
-                    "uidNumber": 12
+                    "username": "tsuyi",
+                    "user_id": 12
                 },
                 {
-                    "uid": "kcchung",
-                    "uidNumber": 13
+                    "username": "kcchung",
+                    "user_id": 13
                 }
             ],
             "leaderta": [
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "zjlin",
-                    "uidNumber": 14
+                    "username": "zjlin",
+                    "user_id": 14
                 },
                 {
-                    "uid": "hwlin1414",
-                    "uidNumber": 15
+                    "username": "hwlin1414",
+                    "user_id": 15
                 },
                 {
-                    "uid": "weicc",
-                    "uidNumber": 16
+                    "username": "weicc",
+                    "user_id": 16
                 },
                 {
-                    "uid": "calee",
-                    "uidNumber": 7
+                    "username": "calee",
+                    "user_id": 7
                 },
                 {
-                    "uid": "wangtr",
-                    "uidNumber": 17
+                    "username": "wangtr",
+                    "user_id": 17
                 },
                 {
-                    "uid": "wwchung",
-                    "uidNumber": 10
+                    "username": "wwchung",
+                    "user_id": 10
                 },
                 {
-                    "uid": "blzhuang",
-                    "uidNumber": 18
+                    "username": "blzhuang",
+                    "user_id": 18
                 }
             ],
             "cs-ta": [
                 {
-                    "uid": "ycchang",
-                    "uidNumber": 1
+                    "username": "ycchang",
+                    "user_id": 1
                 },
                 {
-                    "uid": "tzuyu",
-                    "uidNumber": 3
+                    "username": "tzuyu",
+                    "user_id": 3
                 },
                 {
-                    "uid": "hyili",
-                    "uidNumber": 19
+                    "username": "hyili",
+                    "user_id": 19
                 },
                 {
-                    "uid": "chenshh",
-                    "uidNumber": 20
+                    "username": "chenshh",
+                    "user_id": 20
                 },
                 {
-                    "uid": "yanglin",
-                    "uidNumber": 21
+                    "username": "yanglin",
+                    "user_id": 21
                 },
                 {
-                    "uid": "cfhsu1993",
-                    "uidNumber": 22
+                    "username": "cfhsu1993",
+                    "user_id": 22
                 },
                 {
-                    "uid": "hwlin1414",
-                    "uidNumber": 15
+                    "username": "hwlin1414",
+                    "user_id": 15
                 },
                 {
-                    "uid": "zjlin",
-                    "uidNumber": 14
+                    "username": "zjlin",
+                    "user_id": 14
                 },
                 {
-                    "uid": "blzhuang",
-                    "uidNumber": 18
+                    "username": "blzhuang",
+                    "user_id": 18
                 },
                 {
-                    "uid": "yoychen",
-                    "uidNumber": 23
+                    "username": "yoychen",
+                    "user_id": 23
                 },
                 {
-                    "uid": "wlliou",
-                    "uidNumber": 24
+                    "username": "wlliou",
+                    "user_id": 24
                 },
                 {
-                    "uid": "weicc",
-                    "uidNumber": 16
+                    "username": "weicc",
+                    "user_id": 16
                 },
                 {
-                    "uid": "yca",
-                    "uidNumber": 25
+                    "username": "yca",
+                    "user_id": 25
                 },
                 {
-                    "uid": "wangtr",
-                    "uidNumber": 17
+                    "username": "wangtr",
+                    "user_id": 17
                 },
                 {
-                    "uid": "calee",
-                    "uidNumber": 7
+                    "username": "calee",
+                    "user_id": 7
                 },
                 {
-                    "uid": "yaowen",
-                    "uidNumber": 6
+                    "username": "yaowen",
+                    "user_id": 6
                 },
                 {
-                    "uid": "fuyu0425",
-                    "uidNumber": 26
+                    "username": "fuyu0425",
+                    "user_id": 26
                 },
                 {
-                    "uid": "hcchuang",
-                    "uidNumber": 27
+                    "username": "hcchuang",
+                    "user_id": 27
                 },
                 {
-                    "uid": "hcdai",
-                    "uidNumber": 28
+                    "username": "hcdai",
+                    "user_id": 28
                 },
                 {
-                    "uid": "yysung",
-                    "uidNumber": 29
+                    "username": "yysung",
+                    "user_id": 29
                 },
                 {
-                    "uid": "hchsu0426",
-                    "uidNumber": 30
+                    "username": "hchsu0426",
+                    "user_id": 30
                 },
                 {
-                    "uid": "linsc04",
-                    "uidNumber": 31
+                    "username": "linsc04",
+                    "user_id": 31
                 },
                 {
-                    "uid": "sudj0130",
-                    "uidNumber": 32
+                    "username": "sudj0130",
+                    "user_id": 32
                 },
                 {
-                    "uid": "youwei1129",
-                    "uidNumber": 8
+                    "username": "youwei1129",
+                    "user_id": 8
                 },
                 {
-                    "uid": "wwchung",
-                    "uidNumber": 10
+                    "username": "wwchung",
+                    "user_id": 10
                 },
                 {
-                    "uid": "wangth",
-                    "uidNumber": 2
+                    "username": "wangth",
+                    "user_id": 2
                 },
                 {
-                    "uid": "zswu",
-                    "uidNumber": 33
+                    "username": "zswu",
+                    "user_id": 33
                 },
                 {
-                    "uid": "yahsieh",
-                    "uidNumber": 11
+                    "username": "yahsieh",
+                    "user_id": 11
                 },
                 {
-                    "uid": "syujy",
-                    "uidNumber": 9
+                    "username": "syujy",
+                    "user_id": 9
                 },
                 {
-                    "uid": "yenck",
-                    "uidNumber": 34
+                    "username": "yenck",
+                    "user_id": 34
                 },
                 {
-                    "uid": "hchou",
-                    "uidNumber": 35
+                    "username": "hchou",
+                    "user_id": 35
                 },
                 {
-                    "uid": "cscc-automation",
-                    "uidNumber": 36
+                    "username": "cscc-automation",
+                    "user_id": 36
                 },
                 {
-                    "uid": "linpc",
-                    "uidNumber": 4
+                    "username": "linpc",
+                    "user_id": 4
                 },
                 {
-                    "uid": "ysw",
-                    "uidNumber": 37
+                    "username": "ysw",
+                    "user_id": 37
                 },
                 {
-                    "uid": "kuohh",
-                    "uidNumber": 38
+                    "username": "kuohh",
+                    "user_id": 38
                 },
                 {
-                    "uid": "ycliang",
-                    "uidNumber": 39
+                    "username": "ycliang",
+                    "user_id": 39
                 },
                 {
-                    "uid": "wengyc",
-                    "uidNumber": 40
+                    "username": "wengyc",
+                    "user_id": 40
                 },
                 {
-                    "uid": "mllee",
-                    "uidNumber": 41
+                    "username": "mllee",
+                    "user_id": 41
                 },
                 {
-                    "uid": "ykzheng",
-                    "uidNumber": 42
+                    "username": "ykzheng",
+                    "user_id": 42
                 },
                 {
-                    "uid": "jbliao",
-                    "uidNumber": 43
+                    "username": "jbliao",
+                    "user_id": 43
                 },
                 {
-                    "uid": "tzute",
-                    "uidNumber": 44
+                    "username": "tzute",
+                    "user_id": 44
                 },
                 {
-                    "uid": "ctu",
-                    "uidNumber": 45
+                    "username": "ctu",
+                    "user_id": 45
                 },
                 {
-                    "uid": "xhweng",
-                    "uidNumber": 46
+                    "username": "xhweng",
+                    "user_id": 46
                 },
                 {
-                    "uid": "chenyee",
-                    "uidNumber": 47
+                    "username": "chenyee",
+                    "user_id": 47
                 },
                 {
-                    "uid": "austin",
-                    "uidNumber": 48
+                    "username": "austin",
+                    "user_id": 48
                 },
                 {
-                    "uid": "tsengcy",
-                    "uidNumber": 49
+                    "username": "tsengcy",
+                    "user_id": 49
                 },
                 {
-                    "uid": "yuanchen",
-                    "uidNumber": 50
+                    "username": "yuanchen",
+                    "user_id": 50
                 }
             ],
             "vmta": [
                 {
-                    "uid": "ycchang",
-                    "uidNumber": 1
+                    "username": "ycchang",
+                    "user_id": 1
                 },
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "wwchung",
-                    "uidNumber": 10
+                    "username": "wwchung",
+                    "user_id": 10
                 },
                 {
-                    "uid": "calee",
-                    "uidNumber": 7
+                    "username": "calee",
+                    "user_id": 7
                 },
                 {
-                    "uid": "hcchuang",
-                    "uidNumber": 27
+                    "username": "hcchuang",
+                    "user_id": 27
                 },
                 {
-                    "uid": "syujy",
-                    "uidNumber": 9
+                    "username": "syujy",
+                    "user_id": 9
                 },
                 {
-                    "uid": "weicc",
-                    "uidNumber": 16
+                    "username": "weicc",
+                    "user_id": 16
                 },
                 {
-                    "uid": "blzhuang",
-                    "uidNumber": 18
+                    "username": "blzhuang",
+                    "user_id": 18
                 },
                 {
-                    "uid": "hwlin1414",
-                    "uidNumber": 15
+                    "username": "hwlin1414",
+                    "user_id": 15
                 },
                 {
-                    "uid": "zjlin",
-                    "uidNumber": 14
+                    "username": "zjlin",
+                    "user_id": 14
                 }
             ],
             "vcsta": [
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "zjlin",
-                    "uidNumber": 14
+                    "username": "zjlin",
+                    "user_id": 14
                 },
                 {
-                    "uid": "weicc",
-                    "uidNumber": 16
+                    "username": "weicc",
+                    "user_id": 16
                 },
                 {
-                    "uid": "blzhuang",
-                    "uidNumber": 18
+                    "username": "blzhuang",
+                    "user_id": 18
                 },
                 {
-                    "uid": "hwlin1414",
-                    "uidNumber": 15
+                    "username": "hwlin1414",
+                    "user_id": 15
                 }
             ],
             "colocationta": [
                 {
-                    "uid": "tsn",
-                    "uidNumber": 51
+                    "username": "tsn",
+                    "user_id": 51
                 },
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "taitc",
-                    "uidNumber": 52
+                    "username": "taitc",
+                    "user_id": 52
                 },
                 {
-                    "uid": "chenshh",
-                    "uidNumber": 20
+                    "username": "chenshh",
+                    "user_id": 20
                 }
             ],
             "printta": [
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "taitc",
-                    "uidNumber": 52
+                    "username": "taitc",
+                    "user_id": 52
                 },
                 {
-                    "uid": "yanglin",
-                    "uidNumber": 21
+                    "username": "yanglin",
+                    "user_id": 21
                 },
                 {
-                    "uid": "yoychen",
-                    "uidNumber": 23
+                    "username": "yoychen",
+                    "user_id": 23
                 },
                 {
-                    "uid": "blzhuang",
-                    "uidNumber": 18
+                    "username": "blzhuang",
+                    "user_id": 18
                 }
             ],
             "scheduleta": [
                 {
-                    "uid": "hwlin1414",
-                    "uidNumber": 15
+                    "username": "hwlin1414",
+                    "user_id": 15
                 },
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "tzuyu",
-                    "uidNumber": 3
+                    "username": "tzuyu",
+                    "user_id": 3
                 }
             ],
             "bbsta": [
                 {
-                    "uid": "pychen5538",
-                    "uidNumber": 53
+                    "username": "pychen5538",
+                    "user_id": 53
                 },
                 {
-                    "uid": "gyzheng",
-                    "uidNumber": 54
+                    "username": "gyzheng",
+                    "user_id": 54
                 },
                 {
-                    "uid": "yawchen",
-                    "uidNumber": 55
+                    "username": "yawchen",
+                    "user_id": 55
                 },
                 {
-                    "uid": "taitc",
-                    "uidNumber": 52
+                    "username": "taitc",
+                    "user_id": 52
                 },
                 {
-                    "uid": "chihhsin",
-                    "uidNumber": 56
+                    "username": "chihhsin",
+                    "user_id": 56
                 },
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "yacwu",
-                    "uidNumber": 57
+                    "username": "yacwu",
+                    "user_id": 57
                 },
                 {
-                    "uid": "zylin",
-                    "uidNumber": 58
+                    "username": "zylin",
+                    "user_id": 58
                 }
             ],
             "allta": [
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "zjlin",
-                    "uidNumber": 14
+                    "username": "zjlin",
+                    "user_id": 14
                 },
                 {
-                    "uid": "hwlin1414",
-                    "uidNumber": 15
+                    "username": "hwlin1414",
+                    "user_id": 15
                 }
             ],
             "msdnta": [
                 {
-                    "uid": "taitc",
-                    "uidNumber": 52
+                    "username": "taitc",
+                    "user_id": 52
                 },
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 }
             ],
             "ldapta": [
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "cfhsu1993",
-                    "uidNumber": 22
+                    "username": "cfhsu1993",
+                    "user_id": 22
                 },
                 {
-                    "uid": "weicc",
-                    "uidNumber": 16
+                    "username": "weicc",
+                    "user_id": 16
                 },
                 {
-                    "uid": "zjlin",
-                    "uidNumber": 14
+                    "username": "zjlin",
+                    "user_id": 14
                 }
             ],
             "pcta": [
                 {
-                    "uid": "hyili",
-                    "uidNumber": 19
+                    "username": "hyili",
+                    "user_id": 19
                 },
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "yacwu",
-                    "uidNumber": 57
+                    "username": "yacwu",
+                    "user_id": 57
                 },
                 {
-                    "uid": "chenshh",
-                    "uidNumber": 20
+                    "username": "chenshh",
+                    "user_id": 20
                 },
                 {
-                    "uid": "yanglin",
-                    "uidNumber": 21
+                    "username": "yanglin",
+                    "user_id": 21
                 },
                 {
-                    "uid": "wangtr",
-                    "uidNumber": 17
+                    "username": "wangtr",
+                    "user_id": 17
                 },
                 {
-                    "uid": "linsc04",
-                    "uidNumber": 31
+                    "username": "linsc04",
+                    "user_id": 31
                 },
                 {
-                    "uid": "yaowen",
-                    "uidNumber": 6
+                    "username": "yaowen",
+                    "user_id": 6
                 },
                 {
-                    "uid": "hchsu0426",
-                    "uidNumber": 30
+                    "username": "hchsu0426",
+                    "user_id": 30
                 },
                 {
-                    "uid": "yca",
-                    "uidNumber": 25
+                    "username": "yca",
+                    "user_id": 25
                 },
                 {
-                    "uid": "fuyu0425",
-                    "uidNumber": 26
+                    "username": "fuyu0425",
+                    "user_id": 26
                 },
                 {
-                    "uid": "calee",
-                    "uidNumber": 7
+                    "username": "calee",
+                    "user_id": 7
                 },
                 {
-                    "uid": "hcchuang",
-                    "uidNumber": 27
+                    "username": "hcchuang",
+                    "user_id": 27
                 },
                 {
-                    "uid": "hcdai",
-                    "uidNumber": 28
+                    "username": "hcdai",
+                    "user_id": 28
                 },
                 {
-                    "uid": "yysung",
-                    "uidNumber": 29
+                    "username": "yysung",
+                    "user_id": 29
                 },
                 {
-                    "uid": "youwei1129",
-                    "uidNumber": 8
+                    "username": "youwei1129",
+                    "user_id": 8
                 },
                 {
-                    "uid": "zswu",
-                    "uidNumber": 33
+                    "username": "zswu",
+                    "user_id": 33
                 },
                 {
-                    "uid": "yahsieh",
-                    "uidNumber": 11
+                    "username": "yahsieh",
+                    "user_id": 11
                 },
                 {
-                    "uid": "syujy",
-                    "uidNumber": 9
+                    "username": "syujy",
+                    "user_id": 9
                 },
                 {
-                    "uid": "yenck",
-                    "uidNumber": 34
+                    "username": "yenck",
+                    "user_id": 34
                 },
                 {
-                    "uid": "hchou",
-                    "uidNumber": 35
+                    "username": "hchou",
+                    "user_id": 35
                 }
             ],
             "wwwta": [
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "hyili",
-                    "uidNumber": 19
+                    "username": "hyili",
+                    "user_id": 19
                 },
                 {
-                    "uid": "yanglin",
-                    "uidNumber": 21
+                    "username": "yanglin",
+                    "user_id": 21
                 },
                 {
-                    "uid": "cfhsu1993",
-                    "uidNumber": 22
+                    "username": "cfhsu1993",
+                    "user_id": 22
                 },
                 {
-                    "uid": "fuyu0425",
-                    "uidNumber": 26
+                    "username": "fuyu0425",
+                    "user_id": 26
                 },
                 {
-                    "uid": "yoychen",
-                    "uidNumber": 23
+                    "username": "yoychen",
+                    "user_id": 23
                 },
                 {
-                    "uid": "wlliou",
-                    "uidNumber": 24
+                    "username": "wlliou",
+                    "user_id": 24
                 },
                 {
-                    "uid": "linsc04",
-                    "uidNumber": 31
+                    "username": "linsc04",
+                    "user_id": 31
                 },
                 {
-                    "uid": "hcdai",
-                    "uidNumber": 28
+                    "username": "hcdai",
+                    "user_id": 28
                 },
                 {
-                    "uid": "yysung",
-                    "uidNumber": 29
+                    "username": "yysung",
+                    "user_id": 29
                 },
                 {
-                    "uid": "zswu",
-                    "uidNumber": 33
+                    "username": "zswu",
+                    "user_id": 33
                 },
                 {
-                    "uid": "blzhuang",
-                    "uidNumber": 18
+                    "username": "blzhuang",
+                    "user_id": 18
                 },
                 {
-                    "uid": "hchou",
-                    "uidNumber": 35
+                    "username": "hchou",
+                    "user_id": 35
                 },
                 {
-                    "uid": "yushuen",
-                    "uidNumber": 59
+                    "username": "yushuen",
+                    "user_id": 59
                 }
             ],
             "doorta": [
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "tzuyu",
-                    "uidNumber": 3
+                    "username": "tzuyu",
+                    "user_id": 3
                 },
                 {
-                    "uid": "youwei1129",
-                    "uidNumber": 8
+                    "username": "youwei1129",
+                    "user_id": 8
                 },
                 {
-                    "uid": "wwchung",
-                    "uidNumber": 10
+                    "username": "wwchung",
+                    "user_id": 10
                 },
                 {
-                    "uid": "wlliou",
-                    "uidNumber": 24
+                    "username": "wlliou",
+                    "user_id": 24
                 }
             ],
             "newsta": [
                 {
-                    "uid": "lctseng",
-                    "uidNumber": 60
+                    "username": "lctseng",
+                    "user_id": 60
                 },
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "kshuang",
-                    "uidNumber": 61
+                    "username": "kshuang",
+                    "user_id": 61
                 }
             ],
             "mailta": [
                 {
-                    "uid": "hyili",
-                    "uidNumber": 19
+                    "username": "hyili",
+                    "user_id": 19
                 },
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "yca",
-                    "uidNumber": 25
+                    "username": "yca",
+                    "user_id": 25
                 },
                 {
-                    "uid": "wangtr",
-                    "uidNumber": 17
+                    "username": "wangtr",
+                    "user_id": 17
                 },
                 {
-                    "uid": "hchsu0426",
-                    "uidNumber": 30
+                    "username": "hchsu0426",
+                    "user_id": 30
                 },
                 {
-                    "uid": "weicc",
-                    "uidNumber": 16
+                    "username": "weicc",
+                    "user_id": 16
                 },
                 {
-                    "uid": "hwlin1414",
-                    "uidNumber": 15
+                    "username": "hwlin1414",
+                    "user_id": 15
                 },
                 {
-                    "uid": "wwchung",
-                    "uidNumber": 10
+                    "username": "wwchung",
+                    "user_id": 10
                 },
                 {
-                    "uid": "tzute",
-                    "uidNumber": 44
+                    "username": "tzute",
+                    "user_id": 44
                 },
                 {
-                    "uid": "hchou",
-                    "uidNumber": 35
+                    "username": "hchou",
+                    "user_id": 35
                 }
             ],
             "linuxta": [
                 {
-                    "uid": "chenshh",
-                    "uidNumber": 20
+                    "username": "chenshh",
+                    "user_id": 20
                 },
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "yanglin",
-                    "uidNumber": 21
+                    "username": "yanglin",
+                    "user_id": 21
                 },
                 {
-                    "uid": "cfhsu1993",
-                    "uidNumber": 22
+                    "username": "cfhsu1993",
+                    "user_id": 22
                 },
                 {
-                    "uid": "yoychen",
-                    "uidNumber": 23
+                    "username": "yoychen",
+                    "user_id": 23
                 },
                 {
-                    "uid": "weicc",
-                    "uidNumber": 16
+                    "username": "weicc",
+                    "user_id": 16
                 },
                 {
-                    "uid": "calee",
-                    "uidNumber": 7
+                    "username": "calee",
+                    "user_id": 7
                 },
                 {
-                    "uid": "hcchuang",
-                    "uidNumber": 27
+                    "username": "hcchuang",
+                    "user_id": 27
                 },
                 {
-                    "uid": "hcdai",
-                    "uidNumber": 28
+                    "username": "hcdai",
+                    "user_id": 28
                 },
                 {
-                    "uid": "yysung",
-                    "uidNumber": 29
+                    "username": "yysung",
+                    "user_id": 29
                 },
                 {
-                    "uid": "zswu",
-                    "uidNumber": 33
+                    "username": "zswu",
+                    "user_id": 33
                 },
                 {
-                    "uid": "yahsieh",
-                    "uidNumber": 11
+                    "username": "yahsieh",
+                    "user_id": 11
                 },
                 {
-                    "uid": "blzhuang",
-                    "uidNumber": 18
+                    "username": "blzhuang",
+                    "user_id": 18
                 },
                 {
-                    "uid": "hchou",
-                    "uidNumber": 35
+                    "username": "hchou",
+                    "user_id": 35
                 },
                 {
-                    "uid": "ycliang",
-                    "uidNumber": 39
+                    "username": "ycliang",
+                    "user_id": 39
                 },
                 {
-                    "uid": "mllee",
-                    "uidNumber": 41
+                    "username": "mllee",
+                    "user_id": 41
                 },
                 {
-                    "uid": "austin",
-                    "uidNumber": 48
+                    "username": "austin",
+                    "user_id": 48
                 },
                 {
-                    "uid": "ctu",
-                    "uidNumber": 45
+                    "username": "ctu",
+                    "user_id": 45
                 }
             ],
             "bsdta": [
                 {
-                    "uid": "phdta-only",
-                    "uidNumber": 5
+                    "username": "phdta-only",
+                    "user_id": 5
                 },
                 {
-                    "uid": "yacwu",
-                    "uidNumber": 57
+                    "username": "yacwu",
+                    "user_id": 57
                 },
                 {
-                    "uid": "hyili",
-                    "uidNumber": 19
+                    "username": "hyili",
+                    "user_id": 19
                 },
                 {
-                    "uid": "zjlin",
-                    "uidNumber": 14
+                    "username": "zjlin",
+                    "user_id": 14
                 },
                 {
-                    "uid": "hwlin1414",
-                    "uidNumber": 15
+                    "username": "hwlin1414",
+                    "user_id": 15
                 },
                 {
-                    "uid": "wlliou",
-                    "uidNumber": 24
+                    "username": "wlliou",
+                    "user_id": 24
                 },
                 {
-                    "uid": "wwchung",
-                    "uidNumber": 10
+                    "username": "wwchung",
+                    "user_id": 10
                 },
                 {
-                    "uid": "wangtr",
-                    "uidNumber": 17
+                    "username": "wangtr",
+                    "user_id": 17
                 },
                 {
-                    "uid": "linsc04",
-                    "uidNumber": 31
+                    "username": "linsc04",
+                    "user_id": 31
                 },
                 {
-                    "uid": "yaowen",
-                    "uidNumber": 6
+                    "username": "yaowen",
+                    "user_id": 6
                 },
                 {
-                    "uid": "hchsu0426",
-                    "uidNumber": 30
+                    "username": "hchsu0426",
+                    "user_id": 30
                 },
                 {
-                    "uid": "yca",
-                    "uidNumber": 25
+                    "username": "yca",
+                    "user_id": 25
                 },
                 {
-                    "uid": "fuyu0425",
-                    "uidNumber": 26
+                    "username": "fuyu0425",
+                    "user_id": 26
                 },
                 {
-                    "uid": "syujy",
-                    "uidNumber": 9
+                    "username": "syujy",
+                    "user_id": 9
                 },
                 {
-                    "uid": "yenck",
-                    "uidNumber": 34
+                    "username": "yenck",
+                    "user_id": 34
                 },
                 {
-                    "uid": "tzute",
-                    "uidNumber": 44
+                    "username": "tzute",
+                    "user_id": 44
                 },
                 {
-                    "uid": "jbliao",
-                    "uidNumber": 43
+                    "username": "jbliao",
+                    "user_id": 43
                 },
                 {
-                    "uid": "youwei1129",
-                    "uidNumber": 8
+                    "username": "youwei1129",
+                    "user_id": 8
                 }
             ],
             "testta": [
                 {
-                    "uid": "zjlin",
-                    "uidNumber": 14
+                    "username": "zjlin",
+                    "user_id": 14
                 }
             ]
         }
-        ';
+        ', true);
+    }
+
+    public function list()
+    {
+        $groupedTas = $this->grouped();
+        $tas = [];
+        foreach ($groupedTas as $val) {
+            $tas = array_merge($tas, $val);
+        }
+        $tas = array_values(array_unique($tas, SORT_REGULAR));
+        return $tas;
+    }
+
+    public function map()
+    {
+        $tas = $this->list();
+        $taMap = [];
+        foreach ($tas as $val) {
+            $taMap[$val["user_id"]] = $val["username"];
+        }
+        return $taMap;
     }
 }

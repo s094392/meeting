@@ -25,4 +25,9 @@ Route::apiResource('attendee/meeting_id.user_id', 'AttendeeController')->except(
     'create', 'edit'
 ]);
 
-Route::get('/tas', 'TAsController@index');
+
+Route::prefix('tas')->group(function () {
+    Route::get('/list', 'TAsController@list');
+    Route::get('/grouped', 'TAsController@grouped');
+    Route::get('/map', 'TAsController@map');
+});

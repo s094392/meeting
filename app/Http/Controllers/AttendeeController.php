@@ -15,7 +15,12 @@ class AttendeeController extends Controller
      */
     public function index($meeting_id)
     {
-        return Attendee::where('meeting_id', $meeting_id)->get();
+        $attendees = Attendee::where('meeting_id', $meeting_id)->get();
+        $taMap = app('App\Http\Controllers\TAsController')->map();
+        foreach ($attendees as $val) {
+            $val['username'] = $taMap[$val['user_id']];
+        }
+         return $attendees;
     }
 
     /**
