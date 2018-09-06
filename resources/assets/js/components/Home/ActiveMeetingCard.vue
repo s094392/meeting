@@ -4,6 +4,7 @@
     <div>
       <router-link :to="{name:'detail', params: {id: meeting.id, view: 'properties'}}" class="uk-card-title">{{ meeting.title }}</router-link>
       <span v-if="meeting.status == 'Started'" class="uk-label uk-align-right">會議進行中</span>
+      <span v-if="me"  class="uk-label uk-align-right">你的會議</span>
     </div>
     <p>
       <span class="uk-margin-small-right" uk-icon="user" />{{ meeting.owner }}<br>
@@ -11,7 +12,7 @@
       <span class="uk-margin-small-right" uk-icon="clock" />{{ meeting.scheduled_time }}
     </p>
     <p>{{ meeting.description }}<br></p>
-    <MeetingControl :meeting="meeting" v-on:delete="$emit('delete', meeting.id);"/>
+    <MeetingControl :meeting="meeting" :me="me" v-on:delete="$emit('delete', meeting.id);"/>
   </div>
 </div>
 </template>
@@ -19,11 +20,34 @@
 
 <script>
 import MeetingControl from "../Shared/MeetingControl";
+import { mapState } from "vuex";
 
 export default {
+  computed: mapState(["user"]),
   props: ["meeting"],
   components: {
     MeetingControl
+  },
+  data() {
+    return {
+      me: null
+    };
+  },
+  created() {
+    this.fetchUser();
+  },
+  methods: {
+    fetchUser: function() {
+      axios
+        .get(
+          `/api/attendee/meeting_id/${this.meeting.id}/user_id/${
+            this.user.user_id
+          }`
+        )
+        .then(response => {
+          this.me = response.data;
+        });
+    }
   }
 };
 </script>

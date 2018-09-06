@@ -22,12 +22,28 @@
 		</div>
 	  </div>
 
-	  <div class="uk-margin">
-		<label class="uk-form-label" for="form-horizontal-text">開會時間</label>
-		<div class="uk-form-controls">
-		  <FlatPickr v-model="meeting.scheduled_time" :config="flatPickrConfig" class="flatpickr-input"
-		  :class="{'form-danger': !meeting.scheduled_time && triedPost}" placeholder="選擇開會時間..."></FlatPickr>
-		</div>
+	  <div class="uk-margin" v-if="!editMode || meeting.status == $meetingStatus.Initialize">
+      <label class="uk-form-label" for="form-horizontal-text">預計開會時間</label>
+      <div class="uk-form-controls">
+        <FlatPickr v-model="meeting.scheduled_time" :config="flatPickrConfig" class="flatpickr-input"
+        :class="{'form-danger': !meeting.scheduled_time && triedPost}" placeholder="選擇開會時間..."></FlatPickr>
+      </div>
+	  </div>
+
+	  <div class="uk-margin" v-if="editMode && meeting.status != $meetingStatus.Archive && meeting.status >= $meetingStatus.Start">
+      <label class="uk-form-label" for="form-horizontal-text">開始時間</label>
+      <div class="uk-form-controls">
+        <FlatPickr v-model="meeting.start_time" :config="flatPickrConfig" class="flatpickr-input"
+        :class="{'form-danger': !meeting.start_time && triedPost}" placeholder="選擇開會時間..."></FlatPickr>
+      </div>
+	  </div>
+
+    <div class="uk-margin" v-if="editMode && meeting.status != $meetingStatus.Archive  && meeting.status >= $meetingStatus.End">
+      <label class="uk-form-label" for="form-horizontal-text">結束時間</label>
+      <div class="uk-form-controls">
+        <FlatPickr v-model="meeting.end_time" :config="flatPickrConfig" class="flatpickr-input"
+        :class="{'form-danger': !meeting.end_time && triedPost}" placeholder="選擇開會時間..."></FlatPickr>
+      </div>
 	  </div>
 
 	  <div class="uk-margin">
@@ -98,7 +114,6 @@ export default {
     fetchTAs: function() {
       axios.get("/api/tas/grouped").then(response => {
         this.groupedTas = response.data;
-        console.log(this.groupedTas);
         this.groupOptions = Object.keys(this.groupedTas);
         this.groupOptions.forEach(group =>
           this.attendeeOptions.push({
@@ -107,9 +122,12 @@ export default {
             type: "group"
           })
         );
-      });
-      axios.get("/api/tas/list").then(response => {
-        this.attendeeOptions.concat(response.data);
+        for (let group in this.groupedTas) {
+          this.attendeeOptions = this.attendeeOptions.concat(
+            this.groupedTas[group]
+          );
+        }
+        this.attendeeOptions = _.uniqBy(this.attendeeOptions, "user_id");
       });
     },
     fetchMeeting: function() {
@@ -120,7 +138,7 @@ export default {
         axios
           .get(`/api/attendee/meeting_id/${this.$route.params.id}/user_id`)
           .then(response => {
-            this.attendees = response.data.map(attendee => attendee.user_id);
+            this.attendees = response.data;
             this.originalAttendees = this.attendees;
           });
       }

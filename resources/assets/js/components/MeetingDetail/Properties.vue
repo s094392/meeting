@@ -39,7 +39,7 @@
     </tr>
   </table>
   <hr class="uk-divider-icon">
-  <MeetingControl :meeting="meeting"/>
+  <MeetingControl :meeting="meeting" :me="me"/>
 </div>
 </template>
 
@@ -54,10 +54,35 @@ th {
 
 <script>
 import MeetingControl from "../Shared/MeetingControl";
+import { mapState } from "vuex";
+
 export default {
+  computed: mapState(["user"]),
   props: ["meeting"],
   components: {
     MeetingControl
+  },
+  data() {
+    return {
+      me: null
+    };
+  },
+  created() {
+    this.fetchUser();
+  },
+  methods: {
+    fetchUser: function() {
+      axios
+        .get(
+          `/api/attendee/meeting_id/${this.meeting.id}/user_id/${
+            this.user.user_id
+          }`
+        )
+        .then(response => {
+          this.me = response.data;
+          console.log(response.data);
+        });
+    }
   }
 };
 </script>

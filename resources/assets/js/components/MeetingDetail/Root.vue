@@ -22,9 +22,11 @@
         </li>
       </ul>
 
-      <Properties v-show="view == 'properties'" :meeting="meeting" />
-      <Attendees v-show="view == 'attendees'" :meeting="meeting" />
-      <Record v-show="view == 'record'" :meeting="meeting"/>
+      <span v-if="meeting">
+        <Properties v-show="view == 'properties'" :meeting="meeting" />
+        <Attendees v-show="view == 'attendees'" :meeting="meeting" />
+        <Record v-show="view == 'record'" :meeting="meeting"/>
+      </span>
     </div>
   </div>
 
@@ -57,7 +59,7 @@ export default {
     return {
       id: this.$route.params.id,
       view: this.$route.params.view,
-      meeting: {}
+      meeting: null
     };
   },
   components: {

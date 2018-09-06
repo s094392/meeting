@@ -6,7 +6,7 @@
 			<span class="uk-text-large uk-text-bold">Meeting</span>
 		</div>
 		<ul class="uk-nav uk-nav-default uk-nav-primary">
-			<li><span class="uk-text-large uk-text-lead uk-text-capitalize">{{ user.uid }}</span> {{ user.chinese_name }}</li>
+			<li><span class="uk-text-large uk-text-lead uk-text-capitalize">{{ user.username }}</span> {{ user.chinese_name }}</li>
 			<li class="uk-nav-divider"></li>
 			<li>
 				<router-link :to="{ name: '/'}">首頁</router-link>
