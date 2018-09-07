@@ -3,22 +3,22 @@
   <div class="uk-width-1-1 section-title">
     <span class="uk-text-large uk-text-lead">已到成員</span>
   </div>
-  <span v-for="(member, idx) in present" :key="member.user_id" 
-    @click="toAbsents(idx)" class="name-tag clickable" >
+  <span v-for="member in present" :key="member.user_id" 
+    @click="changePresent(member.user_id, false)" class="name-tag" :class="{clickable: canModify}">
     {{ member.username }}
   </span>
 
   <div class="uk-width-1-1 section-title">
     <span class="uk-text-large uk-text-lead">未到成員</span>
   </div>
-  <span v-for="(member, idx) in absent" :key="member.user_id" 
-    @click="toPresents(idx)" class="name-tag clickable" >
+  <span v-for="member in absent" :key="member.user_id" 
+    @click="changePresent(member.user_id, true)" class="name-tag" :class="{clickable: canModify}">
     {{ member.username }}
   </span>
 
   <div class="uk-width-1-1 section-title">
     <span class="uk-text-large uk-text-lead">遲到成員</span>
-    <button class="uk-button uk-button-default uk-button-small add-button" type="button" uk-toggle="target: #add-late">
+    <button v-if="canModify" class="uk-button uk-button-default uk-button-small add-button" type="button" uk-toggle="target: #add-late">
       <span uk-icon="plus"></span>
       新增
     </button>
@@ -28,7 +28,7 @@
     <table class="uk-table uk-table-responsive uk-table-divider uk-table-small uk-table-middle">
       <thead>
         <tr>
-          <th class="remove-th"></th>
+          <th class="remove-th"  v-if="canModify"></th>
           <th>ID</th>
           <th>預計到達</th>
           <th>實際到達</th>
@@ -37,7 +37,7 @@
       </thead>
       <tbody>
         <tr v-for="member in late" v-bind:key="'late-'+member.user_id">
-          <td><span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8" @click="removeLate(member.user_id)"></span></td>
+          <td v-if="canModify"><span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8" @click="removeLate(member.user_id)"></span></td>
           <td>{{ member.username }}</td>
           <td>{{ removeSecond(member.estimate_arrive_time) }}</td>
           <td>{{ removeSecond(member.arrive_time) }}</td>
@@ -49,7 +49,7 @@
 
    <div class="uk-width-1-1 section-title">
     <span class="uk-text-large uk-text-lead">早退成員</span>
-    <button class="uk-button uk-button-default uk-button-small add-button" type="button" uk-toggle="target: #add-leave-early">
+    <button v-if="canModify" class="uk-button uk-button-default uk-button-small add-button" type="button" uk-toggle="target: #add-leave-early">
       <span uk-icon="plus"></span>
       新增
     </button>
@@ -58,7 +58,7 @@
     <table class="uk-table uk-table-responsive uk-table-divider uk-table-small">
       <thead>
         <tr>
-          <th class="remove-th"></th>
+          <th class="remove-th" v-if="canModify"></th>
           <th>ID</th>
           <th>預計離開</th>
           <th>實際離開</th>
@@ -67,7 +67,7 @@
       </thead>
       <tbody>
         <tr v-for="member in leaveEarly" v-bind:key="'leaveEarly-'+member.user_id">
-          <td><span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8" @click="removeLeaveEarly(member.user_id)"></span></td>
+          <td v-if="canModify"><span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8" @click="removeLeaveEarly(member.user_id)"></span></td>
           <td>{{ member.username }}</td>
           <td>{{ removeSecond(member.estimate_leave_time) }}</td>
           <td>{{ removeSecond(member.leave_time) }}</td>
@@ -132,116 +132,89 @@
 
 <script>
 import AttendeeAdder from "./AttendeeAdder";
+import { mapState } from "vuex";
 
 export default {
+  props: ["meeting", "attendees"],
   components: {
     AttendeeAdder
   },
+  computed: {
+    canModify: function() {
+      return (
+        this.meeting.status != this.$meetingStatus.Archive &&
+        this.meeting.status != this.$meetingStatus.Initialize &&
+        this.meeting.owner == this.user.user_id
+      );
+    },
+    present: function() {
+      return this.attendees.filter(attendee => attendee.present == "1");
+    },
+    absent: function() {
+      return this.attendees.filter(attendee => attendee.present == "0");
+    },
+    dayoff: function() {
+      return this.attendees.filter(attendee => attendee.absent_reason);
+    },
+    leaveEarly: function() {
+      return this.attendees.filter(
+        attendee => attendee.estimate_leave_time || attendee.leave_time
+      );
+    },
+    late: function() {
+      return this.attendees.filter(
+        attendee => attendee.estimate_arrive_time || attendee.arrive_time
+      );
+    },
+    ...mapState(["user"])
+  },
   data() {
-    return {
-      attendees: [],
-      present: [],
-      absent: [],
-      dayoff: [],
-      leaveEarly: [],
-      late: [],
-      meetingId: this.$route.params.id
-    };
+    return {};
   },
   methods: {
-    fetchAttendees: function() {
+    updateAttendee: function(userId, data) {
+      if (!this.canModify) return;
       axios
-        .get(`/api/attendee/meeting_id/${this.meetingId}/user_id`)
+        .put(
+          `/api/attendee/meeting_id/${this.meeting.id}/user_id/${userId}`,
+          data
+        )
         .then(response => {
-          this.attendees = response.data;
-          this.present = response.data.filter(
-            attendee => attendee.present == "1"
-          );
-          this.absent = response.data.filter(
-            attendee => attendee.present == "0"
-          );
-          this.dayoff = response.data.filter(
-            attendee => attendee.absent_reason
-          );
-          this.leaveEarly = response.data.filter(
-            attendee => attendee.estimate_leave_time || attendee.leave_time
-          );
-          this.late = response.data.filter(
-            attendee => attendee.estimate_arrive_time || attendee.arrive_time
-          );
+          this.$emit("updateAttendee", response.data);
         });
     },
-    toAbsents: function(idx) {
-      let user_id = this.present[idx].user_id;
-      axios
-        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${user_id}`, {
-          present: false
-        })
-        .then(() => {
-          this.absent.push(this.present[idx]);
-          this.present.splice(idx, 1);
-        });
+    changePresent: function(userId, present) {
+      this.updateAttendee(userId, {
+        present: present
+      });
     },
-    toPresents: function(idx) {
-      let user_id = this.absent[idx].user_id;
-      axios
-        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${user_id}`, {
-          present: true
-        })
-        .then(() => {
-          this.present.push(this.absent[idx]);
-          this.absent.splice(idx, 1);
-        });
+    addLate: function(userId, time, reason) {
+      this.updateAttendee(userId, {
+        present: true,
+        arrive_time: time,
+        late_reason: reason
+      });
     },
-    addLate: function(attendee, time, reason) {
-      axios
-        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${attendee}`, {
-          present: true,
-          arrive_time: time,
-          late_reason: reason
-        })
-        .then(response => {
-          if (!_.includes(this.present, attendee)) {
-            this.present.push(response.data);
-          }
-          this.late.push(response.data);
-        });
-    },
-    addLeaveEarly: function(attendee, time, reason) {
-      axios
-        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${attendee}`, {
-          present: true,
-          leave_time: time,
-          leave_early_reason: reason
-        })
-        .then(response => {
-          if (!_.includes(this.present, attendee)) {
-            this.present.push(response.data);
-          }
-          this.leaveEarly.push(response.data);
-        });
+    addLeaveEarly: function(userId, time, reason) {
+      this.updateAttendee(userId, {
+        present: true,
+        leave_time: time,
+        leave_early_reason: reason
+      });
     },
     removeLate: function(userId) {
-      axios
-        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${userId}`, {
-          arrive_time: null,
-          late_reason: null,
-          estimate_arrive_time: null
-        })
-        .then(() => {
-          this.late = _.remove(this.late, a => a.user_id != userId);
-        });
+      this.updateAttendee(userId, {
+        arrive_time: null,
+        late_reason: null,
+        estimate_arrive_time: null
+      });
     },
     removeLeaveEarly: function(userId) {
-      axios
-        .put(`/api/attendee/meeting_id/${this.meetingId}/user_id/${userId}`, {
-          leave_time: null,
-          leave_early_reason: null,
-          estimate_leave_time: null
-        })
-        .then(() => {
-          this.leaveEarly = _.remove(this.leaveEarly, a => a.user_id != userId);
-        });
+      this.updateAttendee(userId, {
+        leave_time: null,
+        leave_early_reason: null,
+        estimate_leave_time: null
+      });
     },
     removeSecond: function(s) {
       if (!s) return s;
@@ -250,9 +223,6 @@ export default {
         .splice(0, 2)
         .join(":");
     }
-  },
-  created() {
-    this.fetchAttendees();
   }
 };
 </script>

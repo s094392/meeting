@@ -1,7 +1,7 @@
 <template>
 <div>
-    <button class="uk-button uk-button-primary uk-align-right edit-button" v-if="!edit" @click="edit = true">編輯</button>
-    <button class="uk-button uk-button-primary uk-align-right edit-button" v-else @click="saveClicked">完成</button>
+    <button class="uk-button uk-button-primary uk-align-right edit-button" v-if="canModify && !edit" @click="edit = true">編輯</button>
+    <button class="uk-button uk-button-primary uk-align-right edit-button" v-if="canModify && edit" @click="saveClicked">完成</button>
   <VueMarkdown v-if="!edit" :toc-anchor-link="false" :toc="true" toc-id="toc" :source="meeting.record" />
   <markdown-editor v-if="edit" v-model="meeting.record" :configs="configs" ref="markdownEditor"></markdown-editor>
 </div>
@@ -20,9 +20,20 @@
 <script>
 import VueMarkdown from "vue-markdown";
 import markdownEditor from "vue-simplemde/src/markdown-editor";
+import { mapState } from "vuex";
 
 export default {
   props: ["meeting"],
+  computed: {
+    canModify: function() {
+      return (
+        this.meeting.status != this.$meetingStatus.Archive &&
+        this.meeting.status != this.$meetingStatus.Initialize &&
+        this.meeting.owner == this.user.user_id
+      );
+    },
+    ...mapState(["user"])
+  },
   data() {
     return {
       edit: false,
