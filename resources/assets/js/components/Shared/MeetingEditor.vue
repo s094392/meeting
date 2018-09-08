@@ -22,7 +22,7 @@
 		</div>
 	  </div>
 
-	  <div class="uk-margin" v-if="!editMode || meeting.status == $meetingStatus.Initialize">
+	  <div class="uk-margin" v-if="!editMode || meeting.status == $meetingStatus.Init">
       <label class="uk-form-label" for="form-horizontal-text">預計開會時間</label>
       <div class="uk-form-controls">
         <FlatPickr v-model="meeting.scheduled_time" :config="flatPickrConfig" class="flatpickr-input"

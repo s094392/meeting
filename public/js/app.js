@@ -10778,191 +10778,6 @@ return CodeMirror$1;
 
 /***/ }),
 /* 6 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-/**
- * This file contains a list of utility functions which are useful in other
- * files.
- */
-
-/**
- * Provide an `indexOf` function which works in IE8, but defers to native if
- * possible.
- */
-var nativeIndexOf = Array.prototype.indexOf;
-var indexOf = function(list, elem) {
-    if (list == null) {
-        return -1;
-    }
-    if (nativeIndexOf && list.indexOf === nativeIndexOf) {
-        return list.indexOf(elem);
-    }
-    var i = 0;
-    var l = list.length;
-    for (; i < l; i++) {
-        if (list[i] === elem) {
-            return i;
-        }
-    }
-    return -1;
-};
-
-/**
- * Return whether an element is contained in a list
- */
-var contains = function(list, elem) {
-    return indexOf(list, elem) !== -1;
-};
-
-/**
- * Provide a default value if a setting is undefined
- */
-var deflt = function(setting, defaultIfUndefined) {
-    return setting === undefined ? defaultIfUndefined : setting;
-};
-
-// hyphenate and escape adapted from Facebook's React under Apache 2 license
-
-var uppercase = /([A-Z])/g;
-var hyphenate = function(str) {
-    return str.replace(uppercase, "-$1").toLowerCase();
-};
-
-var ESCAPE_LOOKUP = {
-    "&": "&amp;",
-    ">": "&gt;",
-    "<": "&lt;",
-    "\"": "&quot;",
-    "'": "&#x27;",
-};
-
-var ESCAPE_REGEX = /[&><"']/g;
-
-function escaper(match) {
-    return ESCAPE_LOOKUP[match];
-}
-
-/**
- * Escapes text to prevent scripting attacks.
- *
- * @param {*} text Text value to escape.
- * @return {string} An escaped string.
- */
-function escape(text) {
-    return ("" + text).replace(ESCAPE_REGEX, escaper);
-}
-
-/**
- * A function to set the text content of a DOM element in all supported
- * browsers. Note that we don't define this if there is no document.
- */
-var setTextContent;
-if (typeof document !== "undefined") {
-    var testNode = document.createElement("span");
-    if ("textContent" in testNode) {
-        setTextContent = function(node, text) {
-            node.textContent = text;
-        };
-    } else {
-        setTextContent = function(node, text) {
-            node.innerText = text;
-        };
-    }
-}
-
-/**
- * A function to clear a node.
- */
-function clearNode(node) {
-    setTextContent(node, "");
-}
-
-module.exports = {
-    contains: contains,
-    deflt: deflt,
-    escape: escape,
-    hyphenate: hyphenate,
-    indexOf: indexOf,
-    setTextContent: setTextContent,
-    clearNode: clearNode,
-};
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-/**
- * This is the ParseError class, which is the main error thrown by KaTeX
- * functions when something has gone wrong. This is used to distinguish internal
- * errors from errors in the expression that the user provided.
- */
-function ParseError(message, lexer, position) {
-    var error = "KaTeX parse error: " + message;
-
-    if (lexer !== undefined && position !== undefined) {
-        // If we have the input and a position, make the error a bit fancier
-
-        // Prepend some information
-        error += " at position " + position + ": ";
-
-        // Get the input
-        var input = lexer._input;
-        // Insert a combining underscore at the correct position
-        input = input.slice(0, position) + "\u0332" +
-            input.slice(position);
-
-        // Extract some context from the input and add it to the error
-        var begin = Math.max(0, position - 15);
-        var end = position + 15;
-        error += input.slice(begin, end);
-    }
-
-    // Some hackery to make ParseError a prototype of Error
-    // See http://stackoverflow.com/a/8460753
-    var self = new Error(error);
-    self.name = "ParseError";
-    self.__proto__ = ParseError.prototype;
-
-    self.position = position;
-    return self;
-}
-
-// More hackery
-ParseError.prototype.__proto__ = Error.prototype;
-
-module.exports = ParseError;
-
-
-/***/ }),
-/* 9 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -11907,6 +11722,191 @@ var index_esm = {
 
 
 /***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+/**
+ * This file contains a list of utility functions which are useful in other
+ * files.
+ */
+
+/**
+ * Provide an `indexOf` function which works in IE8, but defers to native if
+ * possible.
+ */
+var nativeIndexOf = Array.prototype.indexOf;
+var indexOf = function(list, elem) {
+    if (list == null) {
+        return -1;
+    }
+    if (nativeIndexOf && list.indexOf === nativeIndexOf) {
+        return list.indexOf(elem);
+    }
+    var i = 0;
+    var l = list.length;
+    for (; i < l; i++) {
+        if (list[i] === elem) {
+            return i;
+        }
+    }
+    return -1;
+};
+
+/**
+ * Return whether an element is contained in a list
+ */
+var contains = function(list, elem) {
+    return indexOf(list, elem) !== -1;
+};
+
+/**
+ * Provide a default value if a setting is undefined
+ */
+var deflt = function(setting, defaultIfUndefined) {
+    return setting === undefined ? defaultIfUndefined : setting;
+};
+
+// hyphenate and escape adapted from Facebook's React under Apache 2 license
+
+var uppercase = /([A-Z])/g;
+var hyphenate = function(str) {
+    return str.replace(uppercase, "-$1").toLowerCase();
+};
+
+var ESCAPE_LOOKUP = {
+    "&": "&amp;",
+    ">": "&gt;",
+    "<": "&lt;",
+    "\"": "&quot;",
+    "'": "&#x27;",
+};
+
+var ESCAPE_REGEX = /[&><"']/g;
+
+function escaper(match) {
+    return ESCAPE_LOOKUP[match];
+}
+
+/**
+ * Escapes text to prevent scripting attacks.
+ *
+ * @param {*} text Text value to escape.
+ * @return {string} An escaped string.
+ */
+function escape(text) {
+    return ("" + text).replace(ESCAPE_REGEX, escaper);
+}
+
+/**
+ * A function to set the text content of a DOM element in all supported
+ * browsers. Note that we don't define this if there is no document.
+ */
+var setTextContent;
+if (typeof document !== "undefined") {
+    var testNode = document.createElement("span");
+    if ("textContent" in testNode) {
+        setTextContent = function(node, text) {
+            node.textContent = text;
+        };
+    } else {
+        setTextContent = function(node, text) {
+            node.innerText = text;
+        };
+    }
+}
+
+/**
+ * A function to clear a node.
+ */
+function clearNode(node) {
+    setTextContent(node, "");
+}
+
+module.exports = {
+    contains: contains,
+    deflt: deflt,
+    escape: escape,
+    hyphenate: hyphenate,
+    indexOf: indexOf,
+    setTextContent: setTextContent,
+    clearNode: clearNode,
+};
+
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports) {
+
+/**
+ * This is the ParseError class, which is the main error thrown by KaTeX
+ * functions when something has gone wrong. This is used to distinguish internal
+ * errors from errors in the expression that the user provided.
+ */
+function ParseError(message, lexer, position) {
+    var error = "KaTeX parse error: " + message;
+
+    if (lexer !== undefined && position !== undefined) {
+        // If we have the input and a position, make the error a bit fancier
+
+        // Prepend some information
+        error += " at position " + position + ": ";
+
+        // Get the input
+        var input = lexer._input;
+        // Insert a combining underscore at the correct position
+        input = input.slice(0, position) + "\u0332" +
+            input.slice(position);
+
+        // Extract some context from the input and add it to the error
+        var begin = Math.max(0, position - 15);
+        var end = position + 15;
+        error += input.slice(begin, end);
+    }
+
+    // Some hackery to make ParseError a prototype of Error
+    // See http://stackoverflow.com/a/8460753
+    var self = new Error(error);
+    self.name = "ParseError";
+    self.__proto__ = ParseError.prototype;
+
+    self.position = position;
+    return self;
+}
+
+// More hackery
+ParseError.prototype.__proto__ = Error.prototype;
+
+module.exports = ParseError;
+
+
+/***/ }),
 /* 10 */
 /***/ (function(module, exports) {
 
@@ -12440,7 +12440,7 @@ module.exports = {
 var domTree = __webpack_require__(70);
 var fontMetrics = __webpack_require__(14);
 var symbols = __webpack_require__(23);
-var utils = __webpack_require__(7);
+var utils = __webpack_require__(8);
 
 var greekCapitals = [
     "\\Gamma",
@@ -24577,7 +24577,7 @@ Vue.compile = compileToFunctions;
 
 module.exports = Vue;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(39).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(39).setImmediate))
 
 /***/ }),
 /* 26 */
@@ -25373,7 +25373,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
 /* 40 */
@@ -28306,7 +28306,7 @@ function isnan (val) {
   return val !== val // eslint-disable-line no-self-compare
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
 /* 69 */
@@ -28356,7 +28356,7 @@ module.exports = Settings;
  * Similar functions for working with MathML nodes exist in mathMLTree.js.
  */
 
-var utils = __webpack_require__(7);
+var utils = __webpack_require__(8);
 
 /**
  * Create an HTML className based on a list of classes. In addition to joining
@@ -30057,7 +30057,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 
 __WEBPACK_IMPORTED_MODULE_1_vue___default.a.prototype.$meetingStatus = Object.freeze({
-  Initialize: 1,
+  Init: 1,
   Start: 2,
   End: 3,
   RecordComplete: 4,
@@ -42320,7 +42320,7 @@ if (token) {
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(40)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(40)))
 
 /***/ }),
 /* 81 */
@@ -59433,7 +59433,7 @@ if (token) {
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(41)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(41)(module)))
 
 /***/ }),
 /* 82 */
@@ -61974,7 +61974,7 @@ Popper.Defaults = Defaults;
 /* harmony default export */ __webpack_exports__["default"] = (Popper);
 //# sourceMappingURL=popper.js.map
 
-/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(7)))
 
 /***/ }),
 /* 83 */
@@ -65717,7 +65717,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     fetchMeetings: function fetchMeetings() {
       var _this = this;
 
-      axios.get("/api/meeting").then(function (response) {
+      axios.get("/api/meeting?status[]=" + this.$meetingStatus.Init + ("&status[]=" + this.$meetingStatus.Start)).then(function (response) {
         _this.meetings = response.data;
       });
     },
@@ -65787,7 +65787,7 @@ module.exports = Component.exports
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__Shared_MeetingControl__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(6);
 //
 //
 //
@@ -65919,7 +65919,7 @@ module.exports = function listToStyles (parentId, list) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(6);
 //
 //
 //
@@ -66095,7 +66095,7 @@ var render = function() {
   return _vm.me
     ? _c("div", [
         _c("div", { staticClass: "buttons uk-display-inline-block" }, [
-          _vm.meeting.status == this.$meetingStatus.Initialize
+          _vm.meeting.status == this.$meetingStatus.Init
             ? _c("div", [
                 _vm.meeting.owner === _vm.user.user_id
                   ? _c(
@@ -66820,6 +66820,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     InactiveMeetingCard: __WEBPACK_IMPORTED_MODULE_0__InactiveMeetingCard___default.a
+  },
+  created: function created() {
+    this.fetchMeetings();
+  },
+  data: function data() {
+    return {
+      meetings: []
+    };
+  },
+
+  methods: {
+    fetchMeetings: function fetchMeetings() {
+      var _this = this;
+
+      axios.get("/api/meeting?status[]=" + this.$meetingStatus.End + ("&status[]=" + this.$meetingStatus.RecordComplete) + ("&status[]=" + this.$meetingStatus.Archive)).then(function (response) {
+        _this.meetings = response.data;
+      });
+    }
   }
 });
 
@@ -66886,8 +66904,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
 
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["meeting"]
+});
 
 /***/ }),
 /* 121 */
@@ -66915,11 +66939,11 @@ var render = function() {
                   to: { name: "detail", params: { id: 1, view: "data" } }
                 }
               },
-              [_vm._v("PC 新生報告")]
+              [_vm._v("\n\t\t\t" + _vm._s(_vm.meeting.title) + "\n\t\t")]
             ),
             _vm._v(" "),
             _c("br"),
-            _vm._v("\n\t\t2018-08-17 13:22")
+            _vm._v("\n\t\t" + _vm._s(_vm.meeting.end_time) + "\n\t\t")
           ],
           1
         )
@@ -66950,8 +66974,11 @@ var render = function() {
     [
       _c("h4", [_vm._v("已結束的會議")]),
       _vm._v(" "),
-      _vm._l(5, function(n) {
-        return _c("InactiveMeetingCard", { key: n })
+      _vm._l(_vm.meetings, function(meeting) {
+        return _c("InactiveMeetingCard", {
+          key: meeting.id,
+          attrs: { meeting: meeting }
+        })
       }),
       _vm._v(" "),
       _c(
@@ -67088,7 +67115,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\ntr[data-v-261e2e0f] {\n  cursor: pointer;\n}\n", ""]);
+exports.push([module.i, "\n.meeting-tr[data-v-261e2e0f] {\n  cursor: pointer;\n}\n", ""]);
 
 // exports
 
@@ -67168,11 +67195,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   created: function created() {
     this.fetchMeetings();
+    this.fetchTas();
   },
 
   components: {
@@ -67180,7 +67209,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   },
   data: function data() {
     return {
-      meetings: []
+      meetings: [],
+      groupOptions: [],
+      ownerOptions: []
     };
   },
 
@@ -67192,10 +67223,36 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         _this.meetings = response.data;
       });
     },
+    fetchTas: function fetchTas() {
+      var _this2 = this;
+
+      axios.get("api/tas/list").then(function (response) {
+        return _this2.ownerOptions = response.data;
+      });
+      axios.get("api/tas/grouped").then(function (response) {
+        return _this2.groupOptions = Object.keys(response.data);
+      });
+    },
     toMeeting: function toMeeting(meetingId) {
       this.$router.push({
         name: "detail",
         params: { id: meetingId, view: "properties" }
+      });
+    },
+    search: function search(title, group, startDate, endDate, owner, status) {
+      var _this3 = this;
+
+      axios.get("api/meeting", {
+        params: {
+          title: title,
+          group: group,
+          startDate: startDate,
+          endDate: endDate,
+          owner: owner,
+          "status[]": status
+        }
+      }).then(function (response) {
+        return _this3.meetings = response.data;
       });
     }
   }
@@ -67345,18 +67402,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["groupOptions", "ownerOptions"],
+  computed: {
+    startDate: function startDate() {
+      return this.date ? this.date.split(" to ")[0] : null;
+    },
+    endDate: function endDate() {
+      return this.date ? this.date.split(" to ")[1] : null;
+    }
+  },
   data: function data() {
     return {
-      teamValue: null,
-      teamOptions: ["www", "NET", "Linux"],
-      organizerValue: null,
-      organizerOptions: ["tsengcy", "mllee", "weicc", "apple", "banana"],
+      title: null,
+      group: null,
+      owner: null,
       date: null,
+      status: null,
       config: {
         mode: "range"
       }
@@ -69540,108 +69607,177 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("form", [
-      _c("fieldset", { staticClass: "uk-fieldset" }, [
-        _vm._m(0),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "uk-margin" },
-          [
-            _c("Multiselect", {
-              attrs: {
-                options: _vm.categoryOptions,
-                placeholder: "任何會議類別"
+    _c(
+      "form",
+      {
+        on: {
+          submit: function($event) {
+            $event.preventDefault()
+          }
+        }
+      },
+      [
+        _c("fieldset", { staticClass: "uk-fieldset" }, [
+          _c("div", { staticClass: "uk-margin" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.title,
+                  expression: "title"
+                }
+              ],
+              staticClass: "uk-input",
+              attrs: { type: "text", placeholder: "會議名稱" },
+              domProps: { value: _vm.title },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.title = $event.target.value
+                }
+              }
+            })
+          ]),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "uk-margin" },
+            [
+              _c("Multiselect", {
+                attrs: {
+                  options: _vm.groupOptions,
+                  placeholder: "任何會議類別"
+                },
+                model: {
+                  value: _vm.group,
+                  callback: function($$v) {
+                    _vm.group = $$v
+                  },
+                  expression: "group"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "uk-margin" },
+            [
+              _c("FlatPickr", {
+                attrs: { config: _vm.config, placeholder: "會議日期" },
+                model: {
+                  value: _vm.date,
+                  callback: function($$v) {
+                    _vm.date = $$v
+                  },
+                  expression: "date"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "div",
+            { staticClass: "uk-margin" },
+            [
+              _c("Multiselect", {
+                attrs: {
+                  label: "username",
+                  trackBy: "user_id",
+                  options: _vm.ownerOptions,
+                  placeholder: "任何發起人"
+                },
+                model: {
+                  value: _vm.owner,
+                  callback: function($$v) {
+                    _vm.owner = $$v
+                  },
+                  expression: "owner"
+                }
+              })
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "uk-margin" }, [
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.status,
+                    expression: "status"
+                  }
+                ],
+                staticClass: "uk-select",
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.status = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
               },
-              model: {
-                value: _vm.categoryValue,
-                callback: function($$v) {
-                  _vm.categoryValue = $$v
-                },
-                expression: "categoryValue"
+              [
+                _c("option", { domProps: { value: null } }, [
+                  _vm._v("任何狀態")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.$meetingStatusText.length - 1, function(idx) {
+                  return _c("option", { key: idx, domProps: { value: idx } }, [
+                    _vm._v(
+                      "\n\t\t\t\t\t\t" +
+                        _vm._s(_vm.$meetingStatusText[idx]) +
+                        "\n\t\t\t\t\t"
+                    )
+                  ])
+                })
+              ],
+              2
+            )
+          ]),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass: "uk-button uk-button-primary uk-modal-close",
+              on: {
+                click: function($event) {
+                  _vm.$emit(
+                    "search",
+                    _vm.title,
+                    _vm.group,
+                    _vm.startDate,
+                    _vm.endDate,
+                    _vm.owner,
+                    _vm.status
+                  )
+                }
               }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "uk-margin" },
-          [
-            _c("FlatPickr", {
-              attrs: { config: _vm.config, placeholder: "會議日期" },
-              model: {
-                value: _vm.date,
-                callback: function($$v) {
-                  _vm.date = $$v
-                },
-                expression: "date"
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          { staticClass: "uk-margin" },
-          [
-            _c("Multiselect", {
-              attrs: {
-                options: _vm.organizerOptions,
-                placeholder: "任何發起人"
-              },
-              model: {
-                value: _vm.organizerValue,
-                callback: function($$v) {
-                  _vm.organizerValue = $$v
-                },
-                expression: "organizerValue"
-              }
-            })
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _vm._m(1),
-        _vm._v(" "),
-        _c("button", { staticClass: "uk-button uk-button-primary" }, [
-          _vm._v("搜尋")
+            },
+            [_vm._v("搜尋")]
+          )
         ])
-      ])
-    ])
+      ]
+    )
   ])
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "uk-margin" }, [
-      _c("input", {
-        staticClass: "uk-input",
-        attrs: { type: "text", placeholder: "會議名稱" }
-      })
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "uk-margin" }, [
-      _c("select", { staticClass: "uk-select" }, [
-        _c("option", [_vm._v("任何狀態")]),
-        _vm._v(" "),
-        _c("option", [_vm._v("狀態1")]),
-        _vm._v(" "),
-        _c("option", [_vm._v("狀態2")]),
-        _vm._v(" "),
-        _c("option", [_vm._v("狀態")])
-      ])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -69701,10 +69837,10 @@ var render = function() {
                     }
                   },
                   [
-                    _c("tr", [
+                    _c("tr", { staticClass: "meeting-tr" }, [
                       _c("td", [_vm._v(_vm._s(meeting.id))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(meeting.team))]),
+                      _c("td", [_vm._v(_vm._s(meeting.group))]),
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(meeting.title))]),
                       _vm._v(" "),
@@ -69714,7 +69850,9 @@ var render = function() {
                       _vm._v(" "),
                       _c("td", [_vm._v(_vm._s(meeting.owner))]),
                       _vm._v(" "),
-                      _c("td", [_vm._v(_vm._s(meeting.status))])
+                      _c("td", [
+                        _vm._v(_vm._s(_vm.$meetingStatusText[meeting.status]))
+                      ])
                     ])
                   ]
                 )
@@ -69737,7 +69875,15 @@ var render = function() {
           staticClass: "uk-card uk-card-body uk-card-small uk-card-default",
           attrs: { "uk-sticky": "offset: 40;" }
         },
-        [_c("MeetingFilter")],
+        [
+          _c("MeetingFilter", {
+            attrs: {
+              groupOptions: _vm.groupOptions,
+              ownerOptions: _vm.ownerOptions
+            },
+            on: { search: _vm.search }
+          })
+        ],
         1
       )
     ]),
@@ -69754,7 +69900,13 @@ var render = function() {
           _vm._v(" "),
           _c("h4", [_vm._v("篩選器")]),
           _vm._v(" "),
-          _c("MeetingFilter")
+          _c("MeetingFilter", {
+            attrs: {
+              groupOptions: _vm.groupOptions,
+              ownerOptions: _vm.ownerOptions
+            },
+            on: { search: _vm.search }
+          })
         ],
         1
       )
@@ -69936,7 +70088,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Record___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__Record__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Shared_MeetingControl__ = __webpack_require__(47);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Shared_MeetingControl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__Shared_MeetingControl__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_vuex__ = __webpack_require__(6);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -70155,7 +70307,7 @@ exports.push([module.i, "\nth[data-v-0a07c90d] {\n  vertical-align: initial;\n}\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(6);
 //
 //
 //
@@ -70396,7 +70548,7 @@ exports.push([module.i, "\n.section-title[data-v-8308c3e2] {\n  margin-top: 40px
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AttendeeAdder__ = __webpack_require__(148);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__AttendeeAdder___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__AttendeeAdder__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(6);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -70542,7 +70694,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   },
   computed: _extends({
     canModify: function canModify() {
-      return this.meeting.status != this.$meetingStatus.Archive && this.meeting.status != this.$meetingStatus.Initialize && this.meeting.owner == this.user.user_id;
+      return this.meeting.status != this.$meetingStatus.Archive && this.meeting.status != this.$meetingStatus.Init && this.meeting.owner == this.user.user_id;
     },
     present: function present() {
       return this.attendees.filter(function (attendee) {
@@ -71392,7 +71544,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue_markdown___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue_markdown__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor__ = __webpack_require__(283);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vue_simplemde_src_markdown_editor__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(6);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 //
@@ -71423,7 +71575,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   props: ["meeting"],
   computed: _extends({
     canModify: function canModify() {
-      return this.meeting.status != this.$meetingStatus.Archive && this.meeting.status != this.$meetingStatus.Initialize && this.meeting.owner == this.user.user_id;
+      return this.meeting.status != this.$meetingStatus.Archive && this.meeting.status != this.$meetingStatus.Init && this.meeting.owner == this.user.user_id;
     }
   }, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["b" /* mapState */])(["user"])),
   data: function data() {
@@ -78877,7 +79029,7 @@ exports.tpl_link_no_ip_fuzzy =
 
 }(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(41)(module), __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(41)(module), __webpack_require__(7)))
 
 /***/ }),
 /* 239 */
@@ -82112,12 +82264,12 @@ module.exports = function math_plugin(md, options) {
  * errors in the expression, or errors in javascript handling.
  */
 
-var ParseError = __webpack_require__(8);
+var ParseError = __webpack_require__(9);
 var Settings = __webpack_require__(69);
 
 var buildTree = __webpack_require__(269);
 var parseTree = __webpack_require__(276);
-var utils = __webpack_require__(7);
+var utils = __webpack_require__(8);
 
 /**
  * Parse and build an expression, and place that expression in the DOM node
@@ -82237,14 +82389,14 @@ module.exports = buildTree;
  * called, to produce a final HTML tree.
  */
 
-var ParseError = __webpack_require__(8);
+var ParseError = __webpack_require__(9);
 var Style = __webpack_require__(21);
 
 var buildCommon = __webpack_require__(22);
 var delimiter = __webpack_require__(272);
 var domTree = __webpack_require__(70);
 var fontMetrics = __webpack_require__(14);
-var utils = __webpack_require__(7);
+var utils = __webpack_require__(8);
 
 var makeSpan = buildCommon.makeSpan;
 
@@ -85417,13 +85569,13 @@ module.exports = {
  * used in `\left` and `\right`.
  */
 
-var ParseError = __webpack_require__(8);
+var ParseError = __webpack_require__(9);
 var Style = __webpack_require__(21);
 
 var buildCommon = __webpack_require__(22);
 var fontMetrics = __webpack_require__(14);
 var symbols = __webpack_require__(23);
-var utils = __webpack_require__(7);
+var utils = __webpack_require__(8);
 
 var makeSpan = buildCommon.makeSpan;
 
@@ -85952,9 +86104,9 @@ module.exports = {
 var buildCommon = __webpack_require__(22);
 var fontMetrics = __webpack_require__(14);
 var mathMLTree = __webpack_require__(274);
-var ParseError = __webpack_require__(8);
+var ParseError = __webpack_require__(9);
 var symbols = __webpack_require__(23);
-var utils = __webpack_require__(7);
+var utils = __webpack_require__(8);
 
 var makeSpan = buildCommon.makeSpan;
 var fontMap = buildCommon.fontMap;
@@ -86492,7 +86644,7 @@ module.exports = buildMathML;
  * domTree.js, creating namespaced DOM nodes and HTML text markup respectively.
  */
 
-var utils = __webpack_require__(7);
+var utils = __webpack_require__(8);
 
 /**
  * This node represents a general purpose MathML node of any type. The
@@ -86813,10 +86965,10 @@ var functions = __webpack_require__(278);
 var environments = __webpack_require__(279);
 var Lexer = __webpack_require__(280);
 var symbols = __webpack_require__(23);
-var utils = __webpack_require__(7);
+var utils = __webpack_require__(8);
 
 var parseData = __webpack_require__(71);
-var ParseError = __webpack_require__(8);
+var ParseError = __webpack_require__(9);
 
 /**
  * This file contains the parser used to parse out a TeX expression from the
@@ -87551,8 +87703,8 @@ module.exports = Parser;
 /* 278 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var utils = __webpack_require__(7);
-var ParseError = __webpack_require__(8);
+var utils = __webpack_require__(8);
+var ParseError = __webpack_require__(9);
 
 /* This file contains a list of functions that we parse, identified by
  * the calls to defineFunction.
@@ -88140,7 +88292,7 @@ defineFunction(["\\begin", "\\end"], {
 /* eslint no-constant-condition:0 */
 var fontMetrics = __webpack_require__(14);
 var parseData = __webpack_require__(71);
-var ParseError = __webpack_require__(8);
+var ParseError = __webpack_require__(9);
 
 var ParseNode = parseData.ParseNode;
 
@@ -88379,7 +88531,7 @@ defineEnvironment("aligned", {
 
 var matchAt = __webpack_require__(281);
 
-var ParseError = __webpack_require__(8);
+var ParseError = __webpack_require__(9);
 
 // The main lexer class
 function Lexer(input) {
@@ -94326,7 +94478,7 @@ if (true) {
 }
 })(this || (typeof window !== 'undefined' ? window : global));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
 /* 299 */
@@ -95721,7 +95873,7 @@ if (true) {
 }
 })(this || (typeof window !== 'undefined' ? window : global));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
 
 /***/ }),
 /* 300 */
@@ -96451,8 +96603,7 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              !_vm.editMode ||
-              _vm.meeting.status == _vm.$meetingStatus.Initialize
+              !_vm.editMode || _vm.meeting.status == _vm.$meetingStatus.Init
                 ? _c("div", { staticClass: "uk-margin" }, [
                     _c(
                       "label",
@@ -96692,7 +96843,7 @@ if (false) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue__ = __webpack_require__(25);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vue___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vue__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(6);
 
 
 
@@ -96821,7 +96972,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__components_Shared_LeftNav___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__components_Shared_LeftNav__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav__ = __webpack_require__(318);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__components_Shared_TopNav__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_vuex__ = __webpack_require__(6);
 //
 //
 //
@@ -96973,7 +97124,7 @@ exports.push([module.i, "\n.logo[data-v-56e698c9] {\n  width: 50px;\n}\n", ""]);
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(6);
 //
 //
 //
@@ -97209,7 +97360,7 @@ exports.push([module.i, "\n.top-nav-text[data-v-5a7df3f1] {\n  height: 60px;\n}\
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(6);
 //
 //
 //

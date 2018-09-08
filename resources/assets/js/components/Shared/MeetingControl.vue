@@ -1,7 +1,7 @@
 <template>
 <div v-if="me">
 	<div class="buttons uk-display-inline-block">
-		<div v-if="meeting.status==this.$meetingStatus.Initialize" >
+		<div v-if="meeting.status==this.$meetingStatus.Init" >
       <span v-if="meeting.owner === user.user_id">
         <button @click="startMeeting"  
           class="uk-button uk-button-default uk-button-primary">開始</button>

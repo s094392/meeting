@@ -16,18 +16,3 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::apiResource('meeting', 'MeetingController')->except([
-    'create', 'edit'
-]);
-
-Route::apiResource('attendee/meeting_id.user_id', 'AttendeeController')->except([
-    'create', 'edit'
-]);
-
-
-Route::prefix('tas')->group(function () {
-    Route::get('/list', 'TAsController@list');
-    Route::get('/grouped', 'TAsController@grouped');
-    Route::get('/map', 'TAsController@map');
-});

@@ -25,9 +25,14 @@ export default {
   },
   methods: {
     fetchMeetings: function() {
-      axios.get("/api/meeting").then(response => {
-        this.meetings = response.data;
-      });
+      axios
+        .get(
+          `/api/meeting?status[]=${this.$meetingStatus.Init}` +
+            `&status[]=${this.$meetingStatus.Start}`
+        )
+        .then(response => {
+          this.meetings = response.data;
+        });
     },
     deleteMeeting: function(id) {
       var self = this;

@@ -18,13 +18,14 @@
           </tr>
         </thead>
         <tbody @click="toMeeting(meeting.id)" v-for="meeting in meetings" :key="meeting.id" :meeting="meeting">
-          <tr><td>{{ meeting.id }}</td>
-            <td >{{ meeting.team }}</td>
+          <tr class="meeting-tr">
+            <td>{{ meeting.id }}</td>
+            <td >{{ meeting.group }}</td>
             <td >{{ meeting.title }}</td>
             <td >{{ meeting.start_time }}</td>
             <td>{{ meeting.end_time }}</td>
             <td>{{ meeting.owner }}</td>
-            <td>{{ meeting.status }}</td>
+            <td>{{ $meetingStatusText[meeting.status] }}</td>
           </tr>
         </tbody>
       </table>
@@ -44,7 +45,7 @@
   <div class="uk-width-1-4@l uk-visible@l">
     <h4>篩選器</h4>
     <div class="uk-card uk-card-body uk-card-small uk-card-default" uk-sticky="offset: 40;">
-      <MeetingFilter/>
+      <MeetingFilter :groupOptions="groupOptions" :ownerOptions="ownerOptions" @search="search"/>
     </div>
   </div>
 
@@ -52,14 +53,14 @@
     <div class="uk-modal-dialog uk-modal-body">
       <button class="uk-modal-close-default" type="button" uk-close></button>
       <h4>篩選器</h4>
-      <MeetingFilter/>
+      <MeetingFilter :groupOptions="groupOptions" :ownerOptions="ownerOptions" @search="search"/>
     </div>
   </div>
 </div>
 </template>
 
 <style lang="scss" scoped>
-tr {
+.meeting-tr {
   cursor: pointer;
 }
 </style>
@@ -70,13 +71,16 @@ import MeetingFilter from "./MeetingFilter";
 export default {
   created() {
     this.fetchMeetings();
+    this.fetchTas();
   },
   components: {
     MeetingFilter
   },
   data() {
     return {
-      meetings: []
+      meetings: [],
+      groupOptions: [],
+      ownerOptions: []
     };
   },
   methods: {
@@ -85,11 +89,33 @@ export default {
         this.meetings = response.data;
       });
     },
+    fetchTas: function() {
+      axios
+        .get("api/tas/list")
+        .then(response => (this.ownerOptions = response.data));
+      axios
+        .get("api/tas/grouped")
+        .then(response => (this.groupOptions = Object.keys(response.data)));
+    },
     toMeeting: function(meetingId) {
       this.$router.push({
         name: "detail",
         params: { id: meetingId, view: "properties" }
       });
+    },
+    search: function(title, group, startDate, endDate, owner, status) {
+      axios
+        .get("api/meeting", {
+          params: {
+            title: title,
+            group: group,
+            startDate: startDate,
+            endDate: endDate,
+            owner: owner,
+            "status[]": status
+          }
+        })
+        .then(response => (this.meetings = response.data));
     }
   }
 };

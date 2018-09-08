@@ -28,7 +28,7 @@ export default {
     canModify: function() {
       return (
         this.meeting.status != this.$meetingStatus.Archive &&
-        this.meeting.status != this.$meetingStatus.Initialize &&
+        this.meeting.status != this.$meetingStatus.Init &&
         this.meeting.owner == this.user.user_id
       );
     },

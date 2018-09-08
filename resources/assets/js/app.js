@@ -6,7 +6,7 @@ import store from './store'
 import App from './App'
 
 Vue.prototype.$meetingStatus = Object.freeze({
-  Initialize: 1,
+  Init: 1,
   Start: 2,
   End: 3,
   RecordComplete: 4,
