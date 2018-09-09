@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Meeting;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
@@ -102,6 +103,20 @@ class MeetingController extends Controller
     public function destroy(Meeting $meeting)
     {
         $meeting->delete();
-        return 204;
+        return response('', 204);
+    }
+
+    public function start(Meeting $meeting, $meetingId)
+    {
+        $time = Carbon::now();
+        Meeting::where("id", $meetingId)->update(['status' => 2, 'start_time' => $time]);
+        return Meeting::where("id", $meetingId)->first();
+    }
+
+    public function end($meetingId)
+    {
+        $time = Carbon::now();
+        Meeting::where("id", $meetingId)->update(['status' => 3, 'end_time' => $time]);
+        return Meeting::where("id", $meetingId)->first();
     }
 }

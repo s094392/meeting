@@ -13,6 +13,9 @@
 use Illuminate\Http\Request;
 
 Route::prefix('api/')->group(function () {
+    Route::post('meeting/start/{meetingId}', 'MeetingController@start');
+    Route::post('meeting/end/{meetingId}', 'MeetingController@end');
+
     Route::apiResource('meeting', 'MeetingController')->except([
         'create', 'edit'
     ]);

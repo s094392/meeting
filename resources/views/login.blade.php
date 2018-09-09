@@ -11,14 +11,16 @@
   position: absolute;
   top: 50%;
   left: 50%;
+	width: 100%;
   transform: translate(-50%, -50%);
 }
 .o_o {
+	font-family: monospace;
   font-size: 110px;
 }
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 500px) {
   .o_o {
-  	font-size: 25vw;
+  	font-size: 20vw;
   }
 }
 </style>

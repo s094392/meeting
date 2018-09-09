@@ -26,11 +26,15 @@ export default {
   methods: {
     fetchMeetings: function() {
       axios
-        .get(
-          `/api/meeting?status[]=${this.$meetingStatus.End}` +
-            `&status[]=${this.$meetingStatus.RecordComplete}` +
-            `&status[]=${this.$meetingStatus.Archive}`
-        )
+        .get("/api/meeting", {
+          params: {
+            status: [
+              this.$meetingStatus.End,
+              this.$meetingStatus.RecordComplete,
+              this.$meetingStatus.Archive
+            ]
+          }
+        })
         .then(response => {
           this.meetings = response.data;
         });

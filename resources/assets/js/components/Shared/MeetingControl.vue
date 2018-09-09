@@ -27,7 +27,7 @@
       <button class="uk-button uk-button-default" v-else type="button" @click="changeLeaveEarly(true)">取消早退報備</button>
 		</div>
 		<div v-if="meeting.status==this.$meetingStatus.Start && meeting.owner === user.user_id" >
-			<button class="uk-button uk-button-default uk-button-primary" type="button">結束</button>
+			<button class="uk-button uk-button-default uk-button-primary" type="button" @click="endMeeting">結束</button>
 		</div>
 	</div>
 
@@ -107,16 +107,14 @@ export default {
   },
   methods: {
     startMeeting: function() {
-      axios
-        .put(`/api/meeting/${this.meeting.id}`, {
-          status: this.$meetingStatus.Start
-        })
-        .then(() => {
-          this.$router.push({
-            name: "detail",
-            params: { id: this.meeting.id, view: "attendees" }
-          });
-        });
+      axios.post(`/api/meeting/start/${this.meeting.id}`).then(response => {
+        this.$emit("startMeeting", response.data);
+      });
+    },
+    endMeeting: function() {
+      axios.post(`/api/meeting/end/${this.meeting.id}`).then(response => {
+        this.$emit("endMeeting", response.data);
+      });
     },
     changeLate: function(clear) {
       if (!this.time && !clear) return;

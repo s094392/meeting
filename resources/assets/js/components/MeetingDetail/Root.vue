@@ -25,7 +25,8 @@
       <span>
         <div v-show="view == 'properties'">
           <Properties :meeting="meeting"/>
-          <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe" v-if="attendees"/>
+          <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe" v-if="attendees"
+          @startMeeting="startMeeting" @endMeeting="endMeeting"/>
         </div>
         <Attendees v-if="attendees" v-show="view == 'attendees'" :meeting="meeting" :attendees="attendees" @updateAttendee="updateAttendee"/>
         <Record v-if="attendees" v-show="view == 'record'" :meeting="meeting"/>
@@ -109,6 +110,13 @@ export default {
         attendee => attendee.user_id === modifiedAttendee.user_id
       );
       this.$set(this.attendees, index, modifiedAttendee);
+    },
+    startMeeting: function(meeting) {
+      this.meeting = meeting;
+      console.log(meeting);
+    },
+    endMeeting: function(meeting) {
+      this.meeting = meeting;
     }
   }
 };

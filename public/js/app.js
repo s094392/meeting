@@ -65717,7 +65717,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     fetchMeetings: function fetchMeetings() {
       var _this = this;
 
-      axios.get("/api/meeting?status[]=" + this.$meetingStatus.Init + ("&status[]=" + this.$meetingStatus.Start)).then(function (response) {
+      axios.get("/api/meeting", {
+        params: {
+          status: [this.$meetingStatus.Init, this.$meetingStatus.Start]
+        }
+      }).then(function (response) {
         _this.meetings = response.data;
       });
     },
@@ -65807,6 +65811,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
@@ -65836,6 +65841,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
     updateMe: function updateMe(me) {
       this.me = me;
+    },
+    startMeeting: function startMeeting(meeting) {
+      this.$router.push({
+        name: "detail",
+        params: { id: meeting.id, view: "attendees" }
+      });
+    },
+    endMeeting: function endMeeting(meeting) {
+      this.$router.push({
+        name: "detail",
+        params: { id: meeting.id, view: "record" }
+      });
     }
   }
 });
@@ -66032,43 +66049,45 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     startMeeting: function startMeeting() {
       var _this = this;
 
-      axios.put("/api/meeting/" + this.meeting.id, {
-        status: this.$meetingStatus.Start
-      }).then(function () {
-        _this.$router.push({
-          name: "detail",
-          params: { id: _this.meeting.id, view: "attendees" }
-        });
+      axios.post("/api/meeting/start/" + this.meeting.id).then(function (response) {
+        _this.$emit("startMeeting", response.data);
+      });
+    },
+    endMeeting: function endMeeting() {
+      var _this2 = this;
+
+      axios.post("/api/meeting/end/" + this.meeting.id).then(function (response) {
+        _this2.$emit("endMeeting", response.data);
       });
     },
     changeLate: function changeLate(clear) {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.time && !clear) return;
       axios.put("/api/attendee/meeting_id/" + this.meeting.id + "/user_id/" + this.user.user_id, {
         estimate_arrive_time: this.time,
         late_reason: this.reason
       }).then(function (response) {
-        _this2.$emit("updateMe", response.data);
+        _this3.$emit("updateMe", response.data);
       });
       this.time = null;
       this.reason = "";
     },
     changeLeaveEarly: function changeLeaveEarly(clear) {
-      var _this3 = this;
+      var _this4 = this;
 
       if (!this.time && !clear) return;
       axios.put("/api/attendee/meeting_id/" + this.meeting.id + "/user_id/" + this.user.user_id, {
         estimate_leave_time: this.time,
         leave_early_reason: this.reason
       }).then(function (response) {
-        _this3.$emit("updateMe", response.data);
+        _this4.$emit("updateMe", response.data);
       });
       this.time = null;
       this.reason = "";
     },
     changeAbsentReason: function changeAbsentReason(reason) {
-      var _this4 = this;
+      var _this5 = this;
 
       if (!reason) {
         reason = this.reason;
@@ -66076,9 +66095,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       axios.put("/api/attendee/meeting_id/" + this.meeting.id + "/user_id/" + this.user.user_id, {
         absent_reason: reason
       }).then(function (response) {
-        _this4.$emit("updateMe", response.data);
-        _this4.time = null;
-        _this4.reason = "";
+        _this5.$emit("updateMe", response.data);
+        _this5.time = null;
+        _this5.reason = "";
       });
     }
   }
@@ -66302,7 +66321,8 @@ var render = function() {
                   {
                     staticClass:
                       "uk-button uk-button-default uk-button-primary",
-                    attrs: { type: "button" }
+                    attrs: { type: "button" },
+                    on: { click: _vm.endMeeting }
                   },
                   [_vm._v("結束")]
                 )
@@ -66682,7 +66702,9 @@ var render = function() {
             updateMe: _vm.updateMe,
             delete: function($event) {
               _vm.$emit("delete", _vm.meeting.id)
-            }
+            },
+            startMeeting: _vm.startMeeting,
+            endMeeting: _vm.endMeeting
           }
         })
       ],
@@ -66834,7 +66856,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     fetchMeetings: function fetchMeetings() {
       var _this = this;
 
-      axios.get("/api/meeting?status[]=" + this.$meetingStatus.End + ("&status[]=" + this.$meetingStatus.RecordComplete) + ("&status[]=" + this.$meetingStatus.Archive)).then(function (response) {
+      axios.get("/api/meeting", {
+        params: {
+          status: [this.$meetingStatus.End, this.$meetingStatus.RecordComplete, this.$meetingStatus.Archive]
+        }
+      }).then(function (response) {
         _this.meetings = response.data;
       });
     }
@@ -70142,6 +70168,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 //
 //
 //
+//
 
 
 
@@ -70206,6 +70233,13 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
         return attendee.user_id === modifiedAttendee.user_id;
       });
       this.$set(this.attendees, index, modifiedAttendee);
+    },
+    startMeeting: function startMeeting(meeting) {
+      this.meeting = meeting;
+      console.log(meeting);
+    },
+    endMeeting: function endMeeting(meeting) {
+      this.meeting = meeting;
     }
   }
 });
@@ -96123,7 +96157,11 @@ var render = function() {
                       _vm.attendees
                         ? _c("MeetingControl", {
                             attrs: { meeting: _vm.meeting, me: _vm.me },
-                            on: { updateMe: _vm.updateMe }
+                            on: {
+                              updateMe: _vm.updateMe,
+                              startMeeting: _vm.startMeeting,
+                              endMeeting: _vm.endMeeting
+                            }
                           })
                         : _vm._e()
                     ],

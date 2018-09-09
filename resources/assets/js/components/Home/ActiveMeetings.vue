@@ -26,10 +26,11 @@ export default {
   methods: {
     fetchMeetings: function() {
       axios
-        .get(
-          `/api/meeting?status[]=${this.$meetingStatus.Init}` +
-            `&status[]=${this.$meetingStatus.Start}`
-        )
+        .get("/api/meeting", {
+          params: {
+            status: [this.$meetingStatus.Init, this.$meetingStatus.Start]
+          }
+        })
         .then(response => {
           this.meetings = response.data;
         });

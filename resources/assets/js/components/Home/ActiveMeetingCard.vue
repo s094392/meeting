@@ -11,7 +11,8 @@
       <span class="uk-margin-small-right" uk-icon="clock" />{{ meeting.scheduled_time }}
     </p>
     <p>{{ meeting.description }}<br></p>
-    <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe" v-on:delete="$emit('delete', meeting.id);"/>
+    <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe" v-on:delete="$emit('delete', meeting.id);" 
+      @startMeeting="startMeeting" @endMeeting="endMeeting"/>
   </div>
 </div>
 </template>
@@ -49,6 +50,18 @@ export default {
     },
     updateMe: function(me) {
       this.me = me;
+    },
+    startMeeting: function(meeting) {
+      this.$router.push({
+        name: "detail",
+        params: { id: meeting.id, view: "attendees" }
+      });
+    },
+    endMeeting: function(meeting) {
+      this.$router.push({
+        name: "detail",
+        params: { id: meeting.id, view: "record" }
+      });
     }
   }
 };
