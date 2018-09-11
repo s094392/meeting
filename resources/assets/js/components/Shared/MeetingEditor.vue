@@ -110,6 +110,14 @@ export default {
     this.fetchTAs();
     this.fetchMeeting();
   },
+  computed: {
+    attendeesId: function() {
+      return this.attendees.map(att => att.user_id);
+    },
+    originalAttendeesId: function() {
+      return this.originalAttendees.map(att => att.user_id);
+    }
+  },
   methods: {
     fetchTAs: function() {
       axios.get("/api/tas/grouped").then(response => {
@@ -180,14 +188,20 @@ export default {
     postAttendees: function(meetingId) {
       let promises = [];
       let removedAttendees = _.without(
-        this.originalAttendees,
-        ...this.attendees
+        this.originalAttendeesId,
+        ...this.attendeesId
       );
-      let newAttendees = _.without(this.attendees, ...this.originalAttendees);
+      let newAttendees = _.without(
+        this.attendeesId,
+        ...this.originalAttendeesId
+      );
+
+      console.log(newAttendees);
+      console.log(removedAttendees);
       newAttendees.forEach(attendee => {
         promises.push(
           axios.post(`/api/attendee/meeting_id/${meetingId}/user_id`, {
-            user_id: attendee.user_id
+            user_id: attendee
           })
         );
       });

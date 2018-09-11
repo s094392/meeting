@@ -26,7 +26,7 @@
         <div v-show="view == 'properties'">
           <Properties :meeting="meeting"/>
           <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe" v-if="attendees"
-          @startMeeting="startMeeting" @endMeeting="endMeeting"/>
+          @startMeeting="startMeeting" @endMeeting="endMeeting" @completeRecord="completeRecord"/>
         </div>
         <Attendees v-if="attendees" v-show="view == 'attendees'" :meeting="meeting" :attendees="attendees" @updateAttendee="updateAttendee"/>
         <Record v-if="attendees" v-show="view == 'record'" :meeting="meeting"/>
@@ -81,7 +81,7 @@ export default {
     return {
       id: this.$route.params.id,
       view: this.$route.params.view,
-      meeting: null,
+      meeting: undefined,
       attendees: null
     };
   },
@@ -113,9 +113,11 @@ export default {
     },
     startMeeting: function(meeting) {
       this.meeting = meeting;
-      console.log(meeting);
     },
     endMeeting: function(meeting) {
+      this.meeting = meeting;
+    },
+    completeRecord: function(meeting) {
       this.meeting = meeting;
     }
   }

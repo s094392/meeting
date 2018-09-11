@@ -1,7 +1,7 @@
 <template>
 <div>
 	<div class="uk-margin-small-bottom uk-card-default uk-card uk-card-body uk-card-small">
-		<p><router-link :to="{name:'detail', params: {id: 1, view: 'data'}}">
+		<p><router-link :to="{name:'detail', params: {id: meeting.id, view: 'properties'}}">
 			{{meeting.title}}
 		</router-link>
 		<br>

@@ -66099,6 +66099,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         _this5.time = null;
         _this5.reason = "";
       });
+    },
+    completeRecord: function completeRecord() {
+      var _this6 = this;
+
+      axios.put("/api/meeting/" + this.meeting.id, {
+        status: this.$meetingStatus.RecordComplete
+      }).then(function (response) {
+        _this6.$emit("completeRecord", response.data);
+      });
     }
   }
 });
@@ -66111,16 +66120,16 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.me
+  return _vm.me && _vm.meeting.status <= _vm.$meetingStatus.End
     ? _c("div", [
         _c("div", { staticClass: "buttons uk-display-inline-block" }, [
-          _vm.meeting.status == this.$meetingStatus.Init
-            ? _c("div", [
-                _vm.meeting.owner === _vm.user.user_id
-                  ? _c(
-                      "span",
-                      [
-                        _c(
+          _c("div", [
+            _vm.meeting.owner === _vm.user.user_id
+              ? _c(
+                  "span",
+                  [
+                    _vm.meeting.status == _vm.$meetingStatus.Init
+                      ? _c(
                           "button",
                           {
                             staticClass:
@@ -66128,23 +66137,11 @@ var render = function() {
                             on: { click: _vm.startMeeting }
                           },
                           [_vm._v("開始")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "router-link",
-                          {
-                            staticClass: "uk-button uk-button-default",
-                            attrs: {
-                              to: {
-                                name: "edit",
-                                params: { id: _vm.meeting.id }
-                              }
-                            }
-                          },
-                          [_vm._v("編輯")]
-                        ),
-                        _vm._v(" "),
-                        _c(
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.meeting.status == _vm.$meetingStatus.Init
+                      ? _c(
                           "button",
                           {
                             staticClass: "uk-button uk-button-default",
@@ -66156,178 +66153,206 @@ var render = function() {
                           },
                           [_vm._v("取消")]
                         )
-                      ],
-                      1
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                !_vm.me.absent_reason
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "uk-button uk-button-default",
-                        attrs: { type: "button" }
-                      },
-                      [_vm._v("請假")]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                !_vm.me.absent_reason
-                  ? _c("div", { attrs: { "uk-dropdown": "mode: click;" } }, [
-                      _c("ul", { staticClass: "uk-nav uk-dropdown-nav" }, [
-                        _c("li", { staticClass: "uk-nav-header" }, [
-                          _vm._v("請假原因")
-                        ]),
-                        _vm._v(" "),
-                        _c("li", [
-                          _c(
-                            "a",
-                            {
-                              attrs: { href: "#" },
-                              on: {
-                                click: function($event) {
-                                  _vm.changeAbsentReason("值班")
-                                }
-                              }
-                            },
-                            [_vm._v("值班")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("li", [
-                          _c(
-                            "a",
-                            {
-                              attrs: { href: "#" },
-                              on: {
-                                click: function($event) {
-                                  _vm.changeAbsentReason("實習")
-                                }
-                              }
-                            },
-                            [_vm._v("實習")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("li", [
-                          _c(
-                            "a",
-                            {
-                              attrs: { href: "#" },
-                              on: {
-                                click: function($event) {
-                                  _vm.changeAbsentReason("回家")
-                                }
-                              }
-                            },
-                            [_vm._v("回家")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("li", [
-                          _c(
-                            "a",
-                            {
-                              attrs: { href: "#" },
-                              on: {
-                                click: function($event) {
-                                  _vm.changeAbsentReason("大考")
-                                }
-                              }
-                            },
-                            [_vm._v("大考")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _c("li", { staticClass: "uk-nav-divider" }),
-                        _vm._v(" "),
-                        _vm._m(0)
-                      ])
-                    ])
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.me.absent_reason
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "uk-button uk-button-default",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.changeAbsentReason(null)
-                          }
-                        }
-                      },
-                      [_vm._v("取消請假")]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                !_vm.me.estimate_arrive_time
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "uk-button uk-button-default",
-                        attrs: { "uk-toggle": "target: #late", type: "button" }
-                      },
-                      [_vm._v("遲到報備")]
-                    )
-                  : _c(
-                      "button",
-                      {
-                        staticClass: "uk-button uk-button-default",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.changeLate(true)
-                          }
-                        }
-                      },
-                      [_vm._v("取消遲到報備")]
-                    ),
-                _vm._v(" "),
-                !_vm.me.estimate_leave_time
-                  ? _c(
-                      "button",
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.meeting.status == _vm.$meetingStatus.Start
+                      ? _c(
+                          "button",
+                          {
+                            staticClass:
+                              "uk-button uk-button-default uk-button-primary",
+                            attrs: { type: "button" },
+                            on: { click: _vm.endMeeting }
+                          },
+                          [_vm._v("結束")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.meeting.status == _vm.$meetingStatus.End
+                      ? _c(
+                          "button",
+                          {
+                            staticClass:
+                              "uk-button uk-button-default uk-button-primary",
+                            attrs: { type: "button" },
+                            on: { click: _vm.completeRecord }
+                          },
+                          [_vm._v("確認會議紀錄")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _c(
+                      "router-link",
                       {
                         staticClass: "uk-button uk-button-default",
                         attrs: {
-                          "uk-toggle": "target: #leave-early",
-                          type: "button"
+                          to: { name: "edit", params: { id: _vm.meeting.id } }
                         }
                       },
-                      [_vm._v("早退報備")]
+                      [_vm._v("編輯")]
                     )
-                  : _c(
-                      "button",
-                      {
-                        staticClass: "uk-button uk-button-default",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.changeLeaveEarly(true)
-                          }
-                        }
-                      },
-                      [_vm._v("取消早退報備")]
-                    )
-              ])
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.meeting.status == this.$meetingStatus.Start &&
-          _vm.meeting.owner === _vm.user.user_id
-            ? _c("div", [
-                _c(
-                  "button",
-                  {
-                    staticClass:
-                      "uk-button uk-button-default uk-button-primary",
-                    attrs: { type: "button" },
-                    on: { click: _vm.endMeeting }
-                  },
-                  [_vm._v("結束")]
+                  ],
+                  1
                 )
-              ])
-            : _vm._e()
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.meeting.status == _vm.$meetingStatus.Init
+              ? _c("span", [
+                  !_vm.me.absent_reason
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "uk-button uk-button-default",
+                          attrs: { type: "button" }
+                        },
+                        [_vm._v("請假")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.me.absent_reason
+                    ? _c("div", { attrs: { "uk-dropdown": "mode: click;" } }, [
+                        _c("ul", { staticClass: "uk-nav uk-dropdown-nav" }, [
+                          _c("li", { staticClass: "uk-nav-header" }, [
+                            _vm._v("請假原因")
+                          ]),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c(
+                              "a",
+                              {
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.changeAbsentReason("值班")
+                                  }
+                                }
+                              },
+                              [_vm._v("值班")]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c(
+                              "a",
+                              {
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.changeAbsentReason("實習")
+                                  }
+                                }
+                              },
+                              [_vm._v("實習")]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c(
+                              "a",
+                              {
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.changeAbsentReason("回家")
+                                  }
+                                }
+                              },
+                              [_vm._v("回家")]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("li", [
+                            _c(
+                              "a",
+                              {
+                                attrs: { href: "#" },
+                                on: {
+                                  click: function($event) {
+                                    _vm.changeAbsentReason("大考")
+                                  }
+                                }
+                              },
+                              [_vm._v("大考")]
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("li", { staticClass: "uk-nav-divider" }),
+                          _vm._v(" "),
+                          _vm._m(0)
+                        ])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.me.absent_reason
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "uk-button uk-button-default",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.changeAbsentReason(null)
+                            }
+                          }
+                        },
+                        [_vm._v("取消請假")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  !_vm.me.estimate_arrive_time
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "uk-button uk-button-default",
+                          attrs: {
+                            "uk-toggle": "target: #late",
+                            type: "button"
+                          }
+                        },
+                        [_vm._v("遲到報備")]
+                      )
+                    : _c(
+                        "button",
+                        {
+                          staticClass: "uk-button uk-button-default",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.changeLate(true)
+                            }
+                          }
+                        },
+                        [_vm._v("取消遲到報備")]
+                      ),
+                  _vm._v(" "),
+                  !_vm.me.estimate_leave_time
+                    ? _c(
+                        "button",
+                        {
+                          staticClass: "uk-button uk-button-default",
+                          attrs: {
+                            "uk-toggle": "target: #leave-early",
+                            type: "button"
+                          }
+                        },
+                        [_vm._v("早退報備")]
+                      )
+                    : _c(
+                        "button",
+                        {
+                          staticClass: "uk-button uk-button-default",
+                          attrs: { type: "button" },
+                          on: {
+                            click: function($event) {
+                              _vm.changeLeaveEarly(true)
+                            }
+                          }
+                        },
+                        [_vm._v("取消早退報備")]
+                      )
+                ])
+              : _vm._e()
+          ])
         ]),
         _vm._v(" "),
         _c("div", { attrs: { id: "absent", "uk-modal": "" } }, [
@@ -66430,7 +66455,7 @@ var render = function() {
                     attrs: {
                       id: "form-stacked-text",
                       type: "text",
-                      placeholder: "Some text..."
+                      placeholder: "給個原因..."
                     },
                     domProps: { value: _vm.reason },
                     on: {
@@ -66467,7 +66492,8 @@ var render = function() {
                     attrs: {
                       id: "form-stacked-text",
                       type: "time",
-                      placeholder: "Some text..."
+                      pattern: "[0-23]{2}:[0-59]{2}",
+                      placeholder: "HH:mm"
                     },
                     domProps: { value: _vm.time },
                     on: {
@@ -66539,7 +66565,7 @@ var render = function() {
                     attrs: {
                       id: "form-stacked-text",
                       type: "text",
-                      placeholder: "Some text..."
+                      placeholder: "給個原因..."
                     },
                     domProps: { value: _vm.reason },
                     on: {
@@ -66576,7 +66602,8 @@ var render = function() {
                     attrs: {
                       id: "form-stacked-text",
                       type: "time",
-                      placeholder: "Some text..."
+                      pattern: "[0-23]{2}:[0-59]{2}",
+                      placeholder: "HH:mm"
                     },
                     domProps: { value: _vm.time },
                     on: {
@@ -66962,7 +66989,10 @@ var render = function() {
               "router-link",
               {
                 attrs: {
-                  to: { name: "detail", params: { id: 1, view: "data" } }
+                  to: {
+                    name: "detail",
+                    params: { id: _vm.meeting.id, view: "properties" }
+                  }
                 }
               },
               [_vm._v("\n\t\t\t" + _vm._s(_vm.meeting.title) + "\n\t\t")]
@@ -70204,7 +70234,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     return {
       id: this.$route.params.id,
       view: this.$route.params.view,
-      meeting: null,
+      meeting: undefined,
       attendees: null
     };
   },
@@ -70236,9 +70266,11 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
     },
     startMeeting: function startMeeting(meeting) {
       this.meeting = meeting;
-      console.log(meeting);
     },
     endMeeting: function endMeeting(meeting) {
+      this.meeting = meeting;
+    },
+    completeRecord: function completeRecord(meeting) {
       this.meeting = meeting;
     }
   }
@@ -70585,6 +70617,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vuex__ = __webpack_require__(6);
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+//
+//
+//
 //
 //
 //
@@ -71152,7 +71187,13 @@ var render = function() {
   return _c(
     "div",
     [
-      _vm._m(0),
+      _vm.meeting.status >= _vm.$meetingStatus.Start
+        ? _c("div", { staticClass: "uk-width-1-1 section-title" }, [
+            _c("span", { staticClass: "uk-text-large uk-text-lead" }, [
+              _vm._v("已到成員")
+            ])
+          ])
+        : _vm._e(),
       _vm._v(" "),
       _vm._l(_vm.present, function(member) {
         return _c(
@@ -71171,7 +71212,13 @@ var render = function() {
         )
       }),
       _vm._v(" "),
-      _vm._m(1),
+      _c("div", { staticClass: "uk-width-1-1 section-title" }, [
+        _c("span", { staticClass: "uk-text-large uk-text-lead" }, [
+          _vm.meeting.status >= _vm.$meetingStatus.Start
+            ? _c("span", [_vm._v("未到成員")])
+            : _c("span", [_vm._v("參與成員")])
+        ])
+      ]),
       _vm._v(" "),
       _vm._l(_vm.absent, function(member) {
         return _c(
@@ -71357,7 +71404,7 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
-      _vm._m(2),
+      _vm._m(0),
       _vm._v(" "),
       _c("div", { staticClass: "uk-overflow-auto" }, [
         _c(
@@ -71367,7 +71414,7 @@ var render = function() {
               "uk-table uk-table-responsive uk-table-divider uk-table-small"
           },
           [
-            _vm._m(3),
+            _vm._m(1),
             _vm._v(" "),
             _c(
               "tbody",
@@ -71411,26 +71458,6 @@ var render = function() {
   )
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "uk-width-1-1 section-title" }, [
-      _c("span", { staticClass: "uk-text-large uk-text-lead" }, [
-        _vm._v("已到成員")
-      ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "uk-width-1-1 section-title" }, [
-      _c("span", { staticClass: "uk-text-large uk-text-lead" }, [
-        _vm._v("未到成員")
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -71609,7 +71636,7 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
   props: ["meeting"],
   computed: _extends({
     canModify: function canModify() {
-      return this.meeting.status != this.$meetingStatus.Archive && this.meeting.status != this.$meetingStatus.Init && this.meeting.owner == this.user.user_id;
+      return this.meeting.status != this.$meetingStatus.Archive && this.meeting.owner == this.user.user_id;
     }
   }, Object(__WEBPACK_IMPORTED_MODULE_2_vuex__["b" /* mapState */])(["user"])),
   data: function data() {
@@ -96160,7 +96187,8 @@ var render = function() {
                             on: {
                               updateMe: _vm.updateMe,
                               startMeeting: _vm.startMeeting,
-                              endMeeting: _vm.endMeeting
+                              endMeeting: _vm.endMeeting,
+                              completeRecord: _vm.completeRecord
                             }
                           })
                         : _vm._e()
@@ -96451,6 +96479,18 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     this.fetchMeeting();
   },
 
+  computed: {
+    attendeesId: function attendeesId() {
+      return this.attendees.map(function (att) {
+        return att.user_id;
+      });
+    },
+    originalAttendeesId: function originalAttendeesId() {
+      return this.originalAttendees.map(function (att) {
+        return att.user_id;
+      });
+    }
+  },
   methods: {
     fetchTAs: function fetchTAs() {
       var _this = this;
@@ -96516,11 +96556,14 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           _this4 = this;
 
       var promises = [];
-      var removedAttendees = (_ref = _).without.apply(_ref, [this.originalAttendees].concat(_toConsumableArray(this.attendees)));
-      var newAttendees = (_ref2 = _).without.apply(_ref2, [this.attendees].concat(_toConsumableArray(this.originalAttendees)));
+      var removedAttendees = (_ref = _).without.apply(_ref, [this.originalAttendeesId].concat(_toConsumableArray(this.attendeesId)));
+      var newAttendees = (_ref2 = _).without.apply(_ref2, [this.attendeesId].concat(_toConsumableArray(this.originalAttendeesId)));
+
+      console.log(newAttendees);
+      console.log(removedAttendees);
       newAttendees.forEach(function (attendee) {
         promises.push(axios.post("/api/attendee/meeting_id/" + meetingId + "/user_id", {
-          user_id: attendee.user_id
+          user_id: attendee
         }));
       });
 

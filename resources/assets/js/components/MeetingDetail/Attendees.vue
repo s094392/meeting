@@ -1,6 +1,6 @@
 <template>
 <div>
-  <div class="uk-width-1-1 section-title">
+  <div v-if="meeting.status >= $meetingStatus.Start" class="uk-width-1-1 section-title">
     <span class="uk-text-large uk-text-lead">已到成員</span>
   </div>
   <span v-for="member in present" :key="member.user_id" 
@@ -9,7 +9,10 @@
   </span>
 
   <div class="uk-width-1-1 section-title">
-    <span class="uk-text-large uk-text-lead">未到成員</span>
+    <span class="uk-text-large uk-text-lead">
+      <span v-if="meeting.status >= $meetingStatus.Start">未到成員</span>
+      <span v-else>參與成員</span>
+    </span>
   </div>
   <span v-for="member in absent" :key="member.user_id" 
     @click="changePresent(member.user_id, true)" class="name-tag" :class="{clickable: canModify}">
