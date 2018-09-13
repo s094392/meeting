@@ -2,8 +2,8 @@ image: tsengcy/laravel
 
 stages:
   - install
-  - build
   - test
+  - build
   - deploy
   - migrate
 
@@ -13,12 +13,12 @@ Install PHP dependencies:
     - builder
   script:
     - composer config --auth gitlab-token.gitlab.cs.nctu.edu.tw $GITLAB_TOKEN
-    - composer install
+    - composer install --no-progress
   artifacts:
     when: on_success
     expire_in: 1 week
     paths:
-      - vendor/
+      - vendor
 
 Install JS dependencies:
   stage: install
@@ -30,7 +30,21 @@ Install JS dependencies:
     when: on_success
     expire_in: 1 week
     paths:
-      - node_modules/
+      - node_modules
+
+PHP test:
+  stage: test
+  tags:
+    - builder
+  script: 
+    - vendor/bin/phpcs --standard=PSR2 app config routes
+
+JS test:
+  stage: test
+  tags:
+    - builder
+  script: 
+    - node_modules/eslint/bin/eslint.js resources/assets/**/*.{js,vue}
 
 Build:
   stage: build
@@ -42,17 +56,7 @@ Build:
     when: on_success
     expire_in: 1 day
     paths:
-      - public/
-
-PHP test:
-  stage: test
-  script: 
-    - vendor/bin/phpcs --standard=PSR2 app config routes
-
-JS test:
-  stage: test
-  script: 
-    - node_modules/eslint/bin/eslint.js resources/assets/**/*.{js,vue}
+      - public
 
 Deploy:
   only:
