@@ -12,6 +12,7 @@ Install PHP dependencies:
   tags:
     - builder
   script:
+    - composer config --auth gitlab-token.gitlab.cs.nctu.edu.tw $GITLAB_TOKEN
     - composer install
   artifacts:
     when: on_success
@@ -102,6 +103,10 @@ Migrate:
     - sed -i -e "s,^DB_DATABASE=.*,DB_DATABASE=$DB_DATABASE,g" .env
     - sed -i -e "s,^DB_USERNAME=.*,DB_USERNAME=$DB_USERNAME,g" .env
     - sed -i -e "s,^DB_PASSWORD=.*,DB_PASSWORD=$DB_PASSWORD,g" .env
+
+    - sed -i -e "s,^REDIS_HOST=.*,REDIS_HOST=$REDIS_HOST,g" .env
+    - sed -i -e "s,^REDIS_PASSWORD=.*,REDIS_PASSWORD=$REDIS_PASSWORD,g" .env
+    - sed -i -e "s,^REDIS_PORT=.*,REDIS_PORT=$REDIS_PORT,g" .env
 
     - sed -i -e "/LOGGING_STORAGE=.*/d" .env
     - scp .env tccws1:/srv/www-available/$CI_PROJECT_NAME/
