@@ -8,7 +8,7 @@ stages:
   - migrate
 
 Install PHP dependencies:
-  stage: build
+  stage: install
   tags:
     - builder
   script:
@@ -21,7 +21,7 @@ Install PHP dependencies:
       - vendor/
 
 Install JS dependencies:
-  stage: build
+  stage: install
   tags:
     - builder
   script:
@@ -31,16 +31,6 @@ Install JS dependencies:
     expire_in: 1 week
     paths:
       - node_modules/
-
-PHP test:
-  stage: test
-  script: 
-    - vendor/bin/phpcs --standard=PSR2 app config routes
-
-JS test:
-  stage: test
-  script: 
-    - node_modules/eslint/bin/eslint.js resources/assets/**/*.{js,vue}
 
 Build:
   stage: build
@@ -53,6 +43,16 @@ Build:
     expire_in: 1 day
     paths:
       - public/
+
+PHP test:
+  stage: test
+  script: 
+    - vendor/bin/phpcs --standard=PSR2 app config routes
+
+JS test:
+  stage: test
+  script: 
+    - node_modules/eslint/bin/eslint.js resources/assets/**/*.{js,vue}
 
 Deploy:
   only:
