@@ -2,14 +2,19 @@
   <div>
     <div>
       <h2 class="uk-display-inline">近期會議</h2>
-      <router-link :to="{name:'create'}" class="uk-button uk-button-primary uk-align-right">新增會議</router-link>
+      <router-link :to="{name:'create'}"
+                   class="uk-button uk-button-primary uk-align-right">
+        新增會議
+      </router-link>
     </div>
-    <ActiveMeetingCard v-for="meeting in meetings" :key="meeting.id" :meeting="meeting" v-on:delete="deleteMeeting" />
+    <ActiveMeetingCard v-for="meeting in meetings"
+                       :key="meeting.id" :meeting="meeting"
+                       @delete="deleteMeeting" />
   </div>
 </template>
 
 <script>
-import ActiveMeetingCard from "./ActiveMeetingCard";
+import ActiveMeetingCard from './ActiveMeetingCard';
 
 export default {
   created() {
@@ -17,30 +22,29 @@ export default {
   },
   data() {
     return {
-      meetings: []
+      meetings: [],
     };
   },
   components: {
-    ActiveMeetingCard
+    ActiveMeetingCard,
   },
   methods: {
-    fetchMeetings: function() {
+    fetchMeetings() {
       axios
-        .get("/api/meeting", {
+        .get('/api/meeting', {
           params: {
-            status: [this.$meetingStatus.Init, this.$meetingStatus.Start]
-          }
+            status: [this.$meetingStatus.Init, this.$meetingStatus.Start],
+          },
         })
-        .then(response => {
+        .then((response) => {
           this.meetings = response.data;
         });
     },
-    deleteMeeting: function(id) {
-      var self = this;
-      axios.delete(`/api/meeting/${id}`).then(response => {
+    deleteMeeting(id) {
+      axios.delete(`/api/meeting/${id}`).then(() => {
         this.fetchMeetings();
       });
-    }
-  }
+    },
+  },
 };
 </script>

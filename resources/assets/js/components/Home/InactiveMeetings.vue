@@ -9,36 +9,36 @@
 </template>
 
 <script>
-import InactiveMeetingCard from "./InactiveMeetingCard";
+import InactiveMeetingCard from './InactiveMeetingCard';
 
 export default {
   components: {
-    InactiveMeetingCard
+    InactiveMeetingCard,
   },
   created() {
     this.fetchMeetings();
   },
   data() {
     return {
-      meetings: []
+      meetings: [],
     };
   },
   methods: {
-    fetchMeetings: function() {
+    fetchMeetings() {
       axios
-        .get("/api/meeting", {
+        .get('/api/meeting', {
           params: {
             status: [
               this.$meetingStatus.End,
               this.$meetingStatus.RecordComplete,
-              this.$meetingStatus.Archive
-            ]
-          }
+              this.$meetingStatus.Archive,
+            ],
+          },
         })
-        .then(response => {
+        .then((response) => {
           this.meetings = response.data;
         });
-    }
-  }
+    },
+  },
 };
 </script>

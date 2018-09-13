@@ -7,7 +7,9 @@
     <div class="uk-margin">
         <label class="uk-form-label" for="form-stacked-text">ID</label>
         <div class="uk-form-controls">
-            <Multiselect v-model="attendeeValue" :options="attendees" :trackBy="'user_id'" :label="'username'"></MultiSelect>
+            <Multiselect v-model="attendeeValue" :options="attendees"
+                         :trackBy="'user_id'" :label="'username'">
+            </MultiSelect>
         </div>
     </div>
 
@@ -18,12 +20,13 @@
             <FlatPickr v-model="time" :config="flatPickrConfig"></FlatPickr>
         </div>
     </div>
-  
+
     <div class="uk-margin">
         <label class="uk-form-label" for="form-stacked-text" v-if="type === 'late'">遲到原因</label>
         <label class="uk-form-label" for="form-stacked-text" v-else>早退原因</label>
         <div class="uk-form-controls">
-            <input class="uk-input" id="form-stacked-text" type="text" v-model="reason" placeholder="Some text...">
+            <input class="uk-input" id="form-stacked-text"
+                   type="text" v-model="reason" placeholder="Some text...">
         </div>
     </div>
 
@@ -42,41 +45,41 @@
 
 
 <script>
-import Multiselect from "vue-multiselect";
-import FlatPickr from "vue-flatpickr-component";
+import Multiselect from 'vue-multiselect';
+import FlatPickr from 'vue-flatpickr-component';
 
 export default {
-  props: ["attendees", "type"],
+  props: ['attendees', 'type'],
   components: {
     Multiselect,
-    FlatPickr
+    FlatPickr,
   },
   data() {
     return {
       flatPickrConfig: {
         enableTime: true,
         noCalendar: true,
-        inline: true
+        inline: true,
       },
       attendeeValue: null,
-      reason: "",
-      time: new Date().toTimeString().split(" ")[0]
+      reason: '',
+      time: new Date().toTimeString().split(' ')[0],
     };
   },
   methods: {
-    selected: function() {
+    selected() {
       if (!!this.time && !!this.attendeeValue) {
         this.$emit(
-          "selected",
+          'selected',
           this.attendeeValue.user_id,
           this.time,
-          this.reason
+          this.reason,
         );
       }
-      this.time = new Date().toTimeString().split(" ")[0];
+      [this.time] = new Date().toTimeString().split(' ');
       this.attendeeValue = null;
-      this.reason = "";
-    }
-  }
+      this.reason = '';
+    },
+  },
 };
 </script>

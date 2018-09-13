@@ -3,7 +3,7 @@
   <div class="uk-width-3-4@l">
     <h2>{{ meeting.title }}</h2>
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
-    
+
       <ul uk-tab>
         <li :class="{'uk-active': view == 'properties'}" @click="view = 'properties'">
           <router-link :to="{name:'detail', params: {id: id, view: 'properties'}}" replace="">
@@ -26,9 +26,12 @@
         <div v-show="view == 'properties'">
           <Properties :meeting="meeting"/>
           <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe" v-if="attendees"
-          @startMeeting="startMeeting" @endMeeting="endMeeting" @completeRecord="completeRecord"/>
+                          @startMeeting="startMeeting" @endMeeting="endMeeting"
+                          @completeRecord="completeRecord"/>
         </div>
-        <Attendees v-if="attendees" v-show="view == 'attendees'" :meeting="meeting" :attendees="attendees" @updateAttendee="updateAttendee"/>
+        <Attendees v-if="attendees" v-show="view == 'attendees'"
+                  :meeting="meeting" :attendees="attendees"
+                  @updateAttendee="updateAttendee"/>
         <Record v-if="attendees" v-show="view == 'record'" :meeting="meeting"/>
       </span>
     </div>
@@ -36,7 +39,8 @@
 
   <div class="uk-width-1-4@l" :class="{'visibility-hidden': view != 'record'}">
     <h4>目錄</h4>
-    <div class="uk-card uk-card-small uk-card-default uk-card-body" uk-sticky="offset:40;" id="toc"></div>
+    <div class="uk-card uk-card-small uk-card-default uk-card-body"
+         uk-sticky="offset:40;" id="toc"></div>
   </div>
 </div>
 
@@ -51,11 +55,11 @@
 
 
 <script>
-import Properties from "./Properties";
-import Attendees from "./Attendees";
-import Record from "./Record";
-import MeetingControl from "../Shared/MeetingControl";
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
+import Properties from './Properties';
+import Attendees from './Attendees';
+import Record from './Record';
+import MeetingControl from '../Shared/MeetingControl';
 
 export default {
   created() {
@@ -63,63 +67,63 @@ export default {
   },
   computed: {
     me: {
-      get: function() {
+      get() {
         return this.attendees.find(
-          attendees => attendees.user_id === this.user.user_id
+          attendees => attendees.user_id === this.user.user_id,
         );
       },
-      set: function(me) {
-        let index = this.attendees.findIndex(
-          attendees => attendees.user_id === this.user.user_id
+      set(me) {
+        const index = this.attendees.findIndex(
+          attendees => attendees.user_id === this.user.user_id,
         );
         this.$set(this.attendees, index, me);
-      }
+      },
     },
-    ...mapState(["user"])
+    ...mapState(['user']),
   },
-  data: function() {
+  data() {
     return {
       id: this.$route.params.id,
       view: this.$route.params.view,
       meeting: undefined,
-      attendees: null
+      attendees: null,
     };
   },
   components: {
     Properties,
     Attendees,
     Record,
-    MeetingControl
+    MeetingControl,
   },
   methods: {
-    init: function() {
-      axios.get("/api/meeting/" + this.id).then(response => {
+    init() {
+      axios.get(`/api/meeting/${this.id}`).then((response) => {
         this.meeting = response.data;
       });
       axios
         .get(`/api/attendee/meeting_id/${this.id}/user_id`)
-        .then(response => {
+        .then((response) => {
           this.attendees = response.data;
         });
     },
-    updateMe: function(me) {
+    updateMe(me) {
       this.me = me;
     },
-    updateAttendee: function(modifiedAttendee) {
-      let index = this.attendees.findIndex(
-        attendee => attendee.user_id === modifiedAttendee.user_id
+    updateAttendee(modifiedAttendee) {
+      const index = this.attendees.findIndex(
+        attendee => attendee.user_id === modifiedAttendee.user_id,
       );
       this.$set(this.attendees, index, modifiedAttendee);
     },
-    startMeeting: function(meeting) {
+    startMeeting(meeting) {
       this.meeting = meeting;
     },
-    endMeeting: function(meeting) {
+    endMeeting(meeting) {
       this.meeting = meeting;
     },
-    completeRecord: function(meeting) {
+    completeRecord(meeting) {
       this.meeting = meeting;
-    }
-  }
+    },
+  },
 };
 </script>

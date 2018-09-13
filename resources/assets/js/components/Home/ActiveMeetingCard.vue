@@ -2,7 +2,8 @@
 <div>
   <div class="uk-card uk-card-default uk-card-body uk-margin-top">
     <div>
-      <router-link :to="{name:'detail', params: {id: meeting.id, view: 'properties'}}" class="uk-card-title">{{ meeting.title }}</router-link>
+      <router-link :to="{name:'detail', params: {id: meeting.id, view: 'properties'}}"
+                   class="uk-card-title">{{ meeting.title }}</router-link>
       <span v-if="me"  class="uk-label uk-align-right">你的會議</span>
     </div>
     <p>
@@ -11,7 +12,8 @@
       <span class="uk-margin-small-right" uk-icon="clock" />{{ meeting.scheduled_time }}
     </p>
     <p>{{ meeting.description }}<br></p>
-    <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe" v-on:delete="$emit('delete', meeting.id);" 
+    <MeetingControl :meeting="meeting" :me="me"
+      @updateMe="updateMe" @delete="$emit('delete', meeting.id);"
       @startMeeting="startMeeting" @endMeeting="endMeeting"/>
   </div>
 </div>
@@ -19,50 +21,49 @@
 
 
 <script>
-import MeetingControl from "../Shared/MeetingControl";
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
+import MeetingControl from '../Shared/MeetingControl';
 
 export default {
-  computed: mapState(["user"]),
-  props: ["meeting"],
+  computed: mapState(['user']),
+  props: ['meeting'],
   components: {
-    MeetingControl
+    MeetingControl,
   },
   data() {
     return {
-      me: null
+      me: null,
     };
   },
   created() {
     this.fetchUser();
   },
   methods: {
-    fetchUser: function() {
+    fetchUser() {
       axios
         .get(
-          `/api/attendee/meeting_id/${this.meeting.id}/user_id/${
-            this.user.user_id
-          }`
+          `/api/attendee/meeting_id/${this.meeting.id}/`
+          + `user_id/${this.user.user_id}`,
         )
-        .then(response => {
+        .then((response) => {
           this.me = response.data;
         });
     },
-    updateMe: function(me) {
+    updateMe(me) {
       this.me = me;
     },
-    startMeeting: function(meeting) {
+    startMeeting(meeting) {
       this.$router.push({
-        name: "detail",
-        params: { id: meeting.id, view: "attendees" }
+        name: 'detail',
+        params: { id: meeting.id, view: 'attendees' },
       });
     },
-    endMeeting: function(meeting) {
+    endMeeting(meeting) {
       this.$router.push({
-        name: "detail",
-        params: { id: meeting.id, view: "record" }
+        name: 'detail',
+        params: { id: meeting.id, view: 'record' },
       });
-    }
-  }
+    },
+  },
 };
 </script>

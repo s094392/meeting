@@ -1,12 +1,12 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
 
-Vue.use(VueRouter)
+import Home from './components/Home/Root';
+import MeetingList from './components/MeetingList/Root';
+import MeetingDetail from './components/MeetingDetail/Root';
+import MeetingEditor from './components/Shared/MeetingEditor';
 
-import Home from './components/Home/Root'
-import MeetingList from './components/MeetingList/Root'
-import MeetingDetail from './components/MeetingDetail/Root'
-import MeetingEditor from './components/Shared/MeetingEditor'
+Vue.use(VueRouter);
 
 export default new VueRouter({
   mode: 'history',
@@ -14,36 +14,35 @@ export default new VueRouter({
     {
       path: '/',
       name: '/',
-      component: Home
+      component: Home,
     },
     {
       path: '/list',
       name: 'list',
-      component: MeetingList
+      component: MeetingList,
     },
     {
       path: '/detail/:id/:view',
       name: 'detail',
-      component: MeetingDetail
+      component: MeetingDetail,
     },
     {
       path: '/create',
       name: 'create',
-      component: MeetingEditor
+      component: MeetingEditor,
     },
     {
       path: '/edit/:id',
       name: 'edit',
-      component: MeetingEditor
-    }
+      component: MeetingEditor,
+    },
   ],
   scrollBehavior(to, from, savedPosition) {
     if (to.hash) {
-      return { selector: to.hash }
-    } else if (savedPosition) {
+      return { selector: to.hash };
+    } if (savedPosition) {
       return savedPosition;
-    } else {
-      return { x: 0, y: 0 }
     }
-  }
-})
+    return { x: 0, y: 0 };
+  },
+});

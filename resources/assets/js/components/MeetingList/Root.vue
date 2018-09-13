@@ -1,9 +1,10 @@
 <template>
 <div uk-grid>
 
-	<div class="uk-width-3-4@l">
-		<h2 class="uk-display-inline">所有會議</h2>
-		<button class="uk-button uk-button-primary uk-align-right uk-hidden@l" uk-toggle="target: #meeting-filter">篩選器</button>
+  <div class="uk-width-3-4@l">
+    <h2 class="uk-display-inline">所有會議</h2>
+    <button class="uk-button uk-button-primary uk-align-right uk-hidden@l"
+            uk-toggle="target: #meeting-filter">篩選器</button>
     <div class="uk-card uk-card-default uk-overflow-auto uk-width-1-1 uk-margin-top">
       <table class="uk-table uk-table-hover uk-table-divider meetings-table">
         <thead>
@@ -17,7 +18,8 @@
             <th>會議狀態</th>
           </tr>
         </thead>
-        <tbody @click="toMeeting(meeting.id)" v-for="meeting in meetings" :key="meeting.id" :meeting="meeting">
+        <tbody @click="toMeeting(meeting.id)" v-for="meeting in meetings"
+               :key="meeting.id" :meeting="meeting">
           <tr class="meeting-tr">
             <td>{{ meeting.id }}</td>
             <td >{{ meeting.group }}</td>
@@ -67,56 +69,57 @@
 
 
 <script>
-import MeetingFilter from "./MeetingFilter";
+import MeetingFilter from './MeetingFilter';
+
 export default {
   created() {
     this.fetchMeetings();
     this.fetchTas();
   },
   components: {
-    MeetingFilter
+    MeetingFilter,
   },
   data() {
     return {
       meetings: [],
       groupOptions: [],
-      ownerOptions: []
+      ownerOptions: [],
     };
   },
   methods: {
-    fetchMeetings: function() {
-      axios.get("/api/meeting").then(response => {
+    fetchMeetings() {
+      axios.get('/api/meeting').then((response) => {
         this.meetings = response.data;
       });
     },
-    fetchTas: function() {
+    fetchTas() {
       axios
-        .get("api/tas/list")
-        .then(response => (this.ownerOptions = response.data));
+        .get('api/tas/list')
+        .then((response) => { this.ownerOptions = response.data; });
       axios
-        .get("api/tas/grouped")
-        .then(response => (this.groupOptions = Object.keys(response.data)));
+        .get('api/tas/grouped')
+        .then((response) => { this.groupOptions = Object.keys(response.data); });
     },
-    toMeeting: function(meetingId) {
+    toMeeting(meetingId) {
       this.$router.push({
-        name: "detail",
-        params: { id: meetingId, view: "properties" }
+        name: 'detail',
+        params: { id: meetingId, view: 'properties' },
       });
     },
-    search: function(title, group, startDate, endDate, owner, status) {
+    search(title, group, startDate, endDate, owner, status) {
       axios
-        .get("api/meeting", {
+        .get('api/meeting', {
           params: {
-            title: title,
-            group: group,
-            startDate: startDate,
-            endDate: endDate,
-            owner: owner,
-            "status[]": status
-          }
+            title,
+            group,
+            startDate,
+            endDate,
+            owner,
+            'status[]': status,
+          },
         })
-        .then(response => (this.meetings = response.data));
-    }
-  }
+        .then((response) => { this.meetings = response.data; });
+    },
+  },
 };
 </script>

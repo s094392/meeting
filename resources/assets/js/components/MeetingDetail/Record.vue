@@ -1,9 +1,13 @@
 <template>
 <div>
-    <button class="uk-button uk-button-primary uk-align-right edit-button" v-if="canModify && !edit" @click="edit = true">編輯</button>
-    <button class="uk-button uk-button-primary uk-align-right edit-button" v-if="canModify && edit" @click="saveClicked">完成</button>
-  <VueMarkdown v-if="!edit" :toc-anchor-link="false" :toc="true" toc-id="toc" :source="meeting.record" />
-  <markdown-editor v-if="edit" v-model="meeting.record" :configs="configs" ref="markdownEditor"></markdown-editor>
+    <button class="uk-button uk-button-primary uk-align-right edit-button"
+            v-if="canModify && !edit" @click="edit = true">編輯</button>
+    <button class="uk-button uk-button-primary uk-align-right edit-button"
+            v-if="canModify && edit" @click="saveClicked">完成</button>
+  <VueMarkdown v-if="!edit" :toc-anchor-link="false" :toc="true"
+               toc-id="toc" :source="meeting.record" />
+  <markdownEditor v-if="edit" v-model="meeting.record" :configs="configs"
+                   ref="markdownEditor"></markdownEditor>
 </div>
 </template>
 
@@ -18,55 +22,55 @@
 
 
 <script>
-import VueMarkdown from "vue-markdown";
-import markdownEditor from "vue-simplemde/src/markdown-editor";
-import { mapState } from "vuex";
+import VueMarkdown from 'vue-markdown';
+import markdownEditor from 'vue-simplemde/src/markdown-editor';
+import { mapState } from 'vuex';
 
 export default {
-  props: ["meeting"],
+  props: ['meeting'],
   computed: {
-    canModify: function() {
+    canModify() {
       return (
-        this.meeting.status != this.$meetingStatus.Archive &&
-        this.meeting.owner == this.user.user_id
+        this.meeting.status !== this.$meetingStatus.Archive
+        && this.meeting.owner === this.user.user_id
       );
     },
-    ...mapState(["user"])
+    ...mapState(['user']),
   },
   data() {
     return {
       edit: false,
-      recordTimer: "",
+      recordTimer: '',
       configs: {
-        spellChecker: false
-      }
+        spellChecker: false,
+      },
     };
   },
   components: {
     VueMarkdown,
-    markdownEditor
+    markdownEditor,
   },
-  created: function() {
+  created() {
     this.recordTimer = setInterval(this.saveRecord, 10000);
   },
-  beforeDestroy: function() {
+  beforeDestroy() {
     clearInterval(this.recordTimer);
   },
   methods: {
-    saveClicked: function() {
+    saveClicked() {
       this.saveRecord();
       this.edit = false;
     },
-    editClicked: function() {
+    editClicked() {
       this.edit = true;
     },
-    saveRecord: function() {
+    saveRecord() {
       if (this.edit) {
         axios.put(`/api/meeting/${this.meeting.id}`, {
-          record: this.meeting.record
+          record: this.meeting.record,
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>

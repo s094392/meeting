@@ -3,7 +3,7 @@
   <div v-if="meeting.status >= $meetingStatus.Start" class="uk-width-1-1 section-title">
     <span class="uk-text-large uk-text-lead">已到成員</span>
   </div>
-  <span v-for="member in present" :key="member.user_id" 
+  <span v-for="member in present" :key="member.user_id"
     @click="changePresent(member.user_id, false)" class="name-tag" :class="{clickable: canModify}">
     {{ member.username }}
   </span>
@@ -14,19 +14,20 @@
       <span v-else>參與成員</span>
     </span>
   </div>
-  <span v-for="member in absent" :key="member.user_id" 
+  <span v-for="member in absent" :key="member.user_id"
     @click="changePresent(member.user_id, true)" class="name-tag" :class="{clickable: canModify}">
     {{ member.username }}
   </span>
 
   <div class="uk-width-1-1 section-title">
     <span class="uk-text-large uk-text-lead">遲到成員</span>
-    <button v-if="canModify" class="uk-button uk-button-default uk-button-small add-button" type="button" uk-toggle="target: #add-late">
+    <button v-if="canModify" class="uk-button uk-button-default uk-button-small add-button"
+            type="button" uk-toggle="target: #add-late">
       <span uk-icon="plus"></span>
       新增
     </button>
   </div>
-        
+
   <div class="uk-overflow-auto uk-width-1-1">
     <table class="uk-table uk-table-responsive uk-table-divider uk-table-small uk-table-middle">
       <thead>
@@ -40,7 +41,10 @@
       </thead>
       <tbody>
         <tr v-for="member in late" v-bind:key="'late-'+member.user_id">
-          <td v-if="canModify"><span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8" @click="removeLate(member.user_id)"></span></td>
+          <td v-if="canModify">
+            <span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8"
+                  @click="removeLate(member.user_id)"></span>
+          </td>
           <td>{{ member.username }}</td>
           <td>{{ removeSecond(member.estimate_arrive_time) }}</td>
           <td>{{ removeSecond(member.arrive_time) }}</td>
@@ -52,7 +56,8 @@
 
    <div class="uk-width-1-1 section-title">
     <span class="uk-text-large uk-text-lead">早退成員</span>
-    <button v-if="canModify" class="uk-button uk-button-default uk-button-small add-button" type="button" uk-toggle="target: #add-leave-early">
+    <button v-if="canModify" class="uk-button uk-button-default uk-button-small add-button"
+            type="button" uk-toggle="target: #add-leave-early">
       <span uk-icon="plus"></span>
       新增
     </button>
@@ -70,7 +75,10 @@
       </thead>
       <tbody>
         <tr v-for="member in leaveEarly" v-bind:key="'leaveEarly-'+member.user_id">
-          <td v-if="canModify"><span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8" @click="removeLeaveEarly(member.user_id)"></span></td>
+          <td v-if="canModify">
+            <span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8"
+                  @click="removeLeaveEarly(member.user_id)"></span>
+          </td>
           <td>{{ member.username }}</td>
           <td>{{ removeSecond(member.estimate_leave_time) }}</td>
           <td>{{ removeSecond(member.leave_time) }}</td>
@@ -134,98 +142,98 @@
 
 
 <script>
-import AttendeeAdder from "./AttendeeAdder";
-import { mapState } from "vuex";
+import { mapState } from 'vuex';
+import AttendeeAdder from './AttendeeAdder';
 
 export default {
-  props: ["meeting", "attendees"],
+  props: ['meeting', 'attendees'],
   components: {
-    AttendeeAdder
+    AttendeeAdder,
   },
   computed: {
-    canModify: function() {
+    canModify() {
       return (
-        this.meeting.status != this.$meetingStatus.Archive &&
-        this.meeting.status != this.$meetingStatus.Init &&
-        this.meeting.owner == this.user.user_id
+        this.meeting.status !== this.$meetingStatus.Archive
+        && this.meeting.status !== this.$meetingStatus.Init
+        && this.meeting.owner === this.user.user_id
       );
     },
-    present: function() {
-      return this.attendees.filter(attendee => attendee.present == "1");
+    present() {
+      return this.attendees.filter(attendee => attendee.present === '1');
     },
-    absent: function() {
-      return this.attendees.filter(attendee => attendee.present == "0");
+    absent() {
+      return this.attendees.filter(attendee => attendee.present === '0');
     },
-    dayoff: function() {
+    dayoff() {
       return this.attendees.filter(attendee => attendee.absent_reason);
     },
-    leaveEarly: function() {
+    leaveEarly() {
       return this.attendees.filter(
-        attendee => attendee.estimate_leave_time || attendee.leave_time
+        attendee => attendee.estimate_leave_time || attendee.leave_time,
       );
     },
-    late: function() {
+    late() {
       return this.attendees.filter(
-        attendee => attendee.estimate_arrive_time || attendee.arrive_time
+        attendee => attendee.estimate_arrive_time || attendee.arrive_time,
       );
     },
-    ...mapState(["user"])
+    ...mapState(['user']),
   },
   data() {
     return {};
   },
   methods: {
-    updateAttendee: function(userId, data) {
+    updateAttendee(userId, data) {
       if (!this.canModify) return;
       axios
         .put(
           `/api/attendee/meeting_id/${this.meeting.id}/user_id/${userId}`,
-          data
+          data,
         )
-        .then(response => {
-          this.$emit("updateAttendee", response.data);
+        .then((response) => {
+          this.$emit('updateAttendee', response.data);
         });
     },
-    changePresent: function(userId, present) {
+    changePresent(userId, present) {
       this.updateAttendee(userId, {
-        present: present
+        present,
       });
     },
-    addLate: function(userId, time, reason) {
+    addLate(userId, time, reason) {
       this.updateAttendee(userId, {
         present: true,
         arrive_time: time,
-        late_reason: reason
+        late_reason: reason,
       });
     },
-    addLeaveEarly: function(userId, time, reason) {
+    addLeaveEarly(userId, time, reason) {
       this.updateAttendee(userId, {
         present: true,
         leave_time: time,
-        leave_early_reason: reason
+        leave_early_reason: reason,
       });
     },
-    removeLate: function(userId) {
+    removeLate(userId) {
       this.updateAttendee(userId, {
         arrive_time: null,
         late_reason: null,
-        estimate_arrive_time: null
+        estimate_arrive_time: null,
       });
     },
-    removeLeaveEarly: function(userId) {
+    removeLeaveEarly(userId) {
       this.updateAttendee(userId, {
         leave_time: null,
         leave_early_reason: null,
-        estimate_leave_time: null
+        estimate_leave_time: null,
       });
     },
-    removeSecond: function(s) {
+    removeSecond(s) {
       if (!s) return s;
       return s
-        .split(":")
+        .split(':')
         .splice(0, 2)
-        .join(":");
-    }
-  }
+        .join(':');
+    },
+  },
 };
 </script>

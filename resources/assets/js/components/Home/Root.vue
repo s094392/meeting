@@ -10,12 +10,13 @@
 </template>
 
 <script>
-import ActiveMeetings from "./ActiveMeetings";
-import InactiveMeetings from "./InactiveMeetings";
+import ActiveMeetings from './ActiveMeetings';
+import InactiveMeetings from './InactiveMeetings';
+
 export default {
   components: {
     ActiveMeetings,
-    InactiveMeetings
-  }
+    InactiveMeetings,
+  },
 };
 </script>

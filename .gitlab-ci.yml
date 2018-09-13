@@ -1,0 +1,111 @@
+image: tsengcy/laravel
+
+stages:
+  - install
+  - build
+  - test
+  - deploy
+  - migrate
+
+Install PHP dependencies:
+  stage: build
+  tags:
+    - builder
+  script:
+    - composer install
+  artifacts:
+    when: on_success
+    expire_in: 1 week
+    paths:
+      - vendor/
+
+Install JS dependencies:
+  stage: build
+  tags:
+    - builder
+  script:
+    - npm install
+  artifacts:
+    when: on_success
+    expire_in: 1 week
+    paths:
+      - node_modules/
+
+PHP test:
+  stage: test
+  script: 
+    - vendor/bin/phpcs --standard=PSR2 app config routes
+
+JS test:
+  stage: test
+  script: 
+    - node_modules/eslint/bin/eslint.js resources/assets/**/*.{js,vue}
+
+Build:
+  stage: build
+  tags:
+    - builder
+  script:
+    - npm run production
+  artifacts:
+    when: on_success
+    expire_in: 1 day
+    paths:
+      - public/
+
+Deploy:
+  only:
+    - dev
+  stage: deploy
+  tags:
+    - training
+  script:
+    - ssh tccws1 "
+        cd /srv/www-available/;
+        git clone $CI_REPOSITORY_URL -b $CI_COMMIT_REF_NAME $CI_PROJECT_NAME || 
+        ( cd $CI_PROJECT_NAME;
+          git remote set-url origin $CI_REPOSITORY_URL;
+          git pull origin $CI_COMMIT_REF_NAME;
+        )"
+    - scp -r vendor tccws1:/srv/www-available/$CI_PROJECT_NAME/
+    - scp -r public tccws1:/srv/www-available/$CI_PROJECT_NAME/
+    - ssh tccws1 "
+        cd /srv/www-available/$CI_PROJECT_NAME/;
+        chmod 775 storage/logs;
+        chmod 775 storage/app;
+        chmod 775 storage/app/public;
+        chmod 775 storage/framework;
+        chmod 775 storage/framework/views;
+        chmod 775 storage/framework/testing;
+        chmod 775 storage/framework/cache;
+        chmod 775 storage/framework/sessions;"
+
+Migrate:
+  only:
+    - dev
+  stage: migrate
+  tags:
+    - training
+  script:
+    # Set Env file
+    - cp .env.example .env
+    - sed -i -e "s,^APP_ENV=.*,APP_ENV=$APP_ENV,g" .env
+    - sed -i -e "s,^APP_URL=.*,APP_URL=$APP_URL,g" .env
+    - sed -i -e "s,^APP_KEY=.*,APP_KEY=$APP_KEY,g" .env
+    - sed -i -e "s,^APP_DEBUG=.*,APP_DEBUG=$APP_DEBUG,g" .env
+
+    - sed -i -e "s,^CSSSO_CLIENT_ID=.*,CSSSO_CLIENT_ID=$CSSSO_CLIENT_ID,g" .env
+    - sed -i -e "s,^CSSSO_CLIENT_SECRET=.*,CSSSO_CLIENT_SECRET=$CSSSO_CLIENT_SECRET,g" .env
+    - sed -i -e "s,^CSSSO_SERVER=.*,CSSSO_SERVER=$CSSSO_SERVER,g" .env
+
+    - sed -i -e "s,^DB_HOST=.*,DB_HOST=$DB_HOST,g" .env
+    - sed -i -e "s,^DB_DATABASE=.*,DB_DATABASE=$DB_DATABASE,g" .env
+    - sed -i -e "s,^DB_USERNAME=.*,DB_USERNAME=$DB_USERNAME,g" .env
+    - sed -i -e "s,^DB_PASSWORD=.*,DB_PASSWORD=$DB_PASSWORD,g" .env
+
+    - sed -i -e "/LOGGING_STORAGE=.*/d" .env
+    - scp .env tccws1:/srv/www-available/$CI_PROJECT_NAME/
+    - ssh tccws1 "
+          cd /srv/www-available/$CI_PROJECT_NAME/;
+          php artisan migrate --force;
+          ln -sfn /srv/www-available/$CI_PROJECT_NAME/public/ /srv/www-enable/$CI_PROJECT_NAME;"
