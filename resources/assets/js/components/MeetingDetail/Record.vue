@@ -31,7 +31,7 @@ export default {
   computed: {
     canModify() {
       return (
-        this.meeting.status !== this.$meetingStatus.Archive
+        this.meeting.status <= this.$meetingStatus.End
         && this.meeting.owner === this.user.user_id
       );
     },

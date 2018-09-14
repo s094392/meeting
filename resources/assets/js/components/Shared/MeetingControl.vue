@@ -25,7 +25,7 @@
               <li><a href="#" @click="changeAbsentReason('回家')">回家</a></li>
               <li><a href="#" @click="changeAbsentReason('大考')">大考</a></li>
               <li class="uk-nav-divider"></li>
-              <li><a href="#" uk-toggle="target: #absent">其他</a></li>
+              <li><a href="#" :uk-toggle="`target: #absent-${meeting.id}`">其他</a></li>
             </ul>
           </div>
         <button class="uk-button uk-button-default"
@@ -33,46 +33,46 @@
                 @click="changeAbsentReason(null)" type="button">取消請假</button>
         <button class="uk-button uk-button-default"
                 v-if="!me.estimate_arrive_time"
-                uk-toggle="target: #late" type="button">遲到報備</button>
+                :uk-toggle="`target: #late-${meeting.id}`" type="button">遲到報備</button>
         <button class="uk-button uk-button-default"
                 v-else type="button" @click="changeLate(true)">取消遲到報備</button>
         <button class="uk-button uk-button-default"
                 v-if="!me.estimate_leave_time"
-                uk-toggle="target: #leave-early" type="button">早退報備</button>
+                :uk-toggle="`target: #leave-early-${meeting.id}`" type="button">早退報備</button>
         <button class="uk-button uk-button-default"
                 v-else type="button" @click="changeLeaveEarly(true)">取消早退報備</button>
       </span>
     </div>
   </div>
 
-  <div id="absent" uk-modal>
+  <div :id="`absent-${meeting.id}`" uk-modal>
     <div class="uk-modal-dialog uk-modal-body">
         <h2 class="uk-modal-title">請假原因？</h2>
         <form @submit.prevent>
           <div class="uk-margin">
-            <input class="uk-input" id="form-stacked-text"
+            <input class="uk-input"
                    type="text" v-model="reason" placeholder="Some text...">
           </div>
           <div class="uk-margin">
             <button class="uk-modal-close uk-button uk-button-primary"
-                    type="button" @click="changeAbsentReason()">送出</button>
+                    type="button" @click="changeAbsentReason(reason)">送出</button>
           </div>
         </form>
     </div>
   </div>
 
-  <div id="late" uk-modal>
+  <div :id="`late-${meeting.id}`" uk-modal>
     <div class="uk-modal-dialog uk-modal-body">
         <h2 class="uk-modal-title">遲到報備</h2>
         <form @submit.prevent class="uk-form-stacked">
           <label class="uk-form-label" for="form-stacked-text">原因</label>
           <div class="uk-margin">
-            <input class="uk-input" id="form-stacked-text"
+            <input class="uk-input"
                    type="text" v-model="reason" placeholder="給個原因...">
           </div>
           <div class="uk-margin">
             <label class="uk-form-label" for="form-stacked-text">預計到達時間</label>
-            <input class="uk-input" id="form-stacked-text" type="time"
+            <input class="uk-input" type="time"
                    pattern="[0-23]{2}:[0-59]{2}" v-model="time" placeholder="HH:mm">
           </div>
           <div class="uk-margin">
@@ -83,18 +83,18 @@
     </div>
   </div>
 
-  <div id="leave-early" uk-modal>
+  <div :id="`leave-early-${meeting.id}`" uk-modal>
     <div class="uk-modal-dialog uk-modal-body">
         <h2 class="uk-modal-title">早退報備</h2>
         <form @submit.prevent class="uk-form-stacked">
           <label class="uk-form-label" for="form-stacked-text">原因</label>
           <div class="uk-margin">
-            <input class="uk-input" id="form-stacked-text" type="text"
+            <input class="uk-input" type="text"
                    v-model="reason" placeholder="給個原因...">
           </div>
           <div class="uk-margin">
             <label class="uk-form-label" for="form-stacked-text">預計離開時間</label>
-            <input class="uk-input" id="form-stacked-text" type="time"
+            <input class="uk-input" type="time"
                    pattern="[0-23]{2}:[0-59]{2}" v-model="time" placeholder="HH:mm">
           </div>
           <div class="uk-margin">
@@ -107,7 +107,7 @@
 </div>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .buttons {
   white-space: nowrap;
   width: 100%;
@@ -120,7 +120,7 @@ import { mapState } from 'vuex';
 
 export default {
   computed: mapState(['user']),
-  props: ['meeting', 'me'],
+  props: ['meeting', 'me', 'id'],
   data() {
     return {
       reason: '',
@@ -138,60 +138,40 @@ export default {
         this.$emit('endMeeting', response.data);
       });
     },
-    changeLate(clear) {
-      if (!this.time && !clear) return;
+    put(data) {
       axios
         .put(
-          `/api/attendee/meeting_id/${this.meeting.id}/user_id/${
-            this.user.user_id
-          }`,
-          {
-            estimate_arrive_time: this.time,
-            late_reason: this.reason,
-          },
-        )
-        .then((response) => {
-          this.$emit('updateMe', response.data);
-        });
-      this.time = null;
-      this.reason = '';
-    },
-    changeLeaveEarly(clear) {
-      if (!this.time && !clear) return;
-      axios
-        .put(
-          `/api/attendee/meeting_id/${this.meeting.id}/user_id/${
-            this.user.user_id
-          }`,
-          {
-            estimate_leave_time: this.time,
-            leave_early_reason: this.reason,
-          },
-        )
-        .then((response) => {
-          this.$emit('updateMe', response.data);
-        });
-      this.time = null;
-      this.reason = '';
-    },
-    changeAbsentReason(reason) {
-      if (!reason) {
-        return;
-      }
-      axios
-        .put(
-          `/api/attendee/meeting_id/${this.meeting.id}/user_id/${
-            this.user.user_id
-          }`,
-          {
-            absent_reason: reason,
-          },
+          `/api/attendee/meeting_id/${this.meeting.id}/`
+          + `user_id/${this.user.user_id}`, data,
         )
         .then((response) => {
           this.$emit('updateMe', response.data);
           this.time = null;
           this.reason = '';
         });
+    },
+    changeLate(clear) {
+      if (!this.time && !clear) return;
+      this.put(
+        {
+          estimate_arrive_time: this.time,
+          late_reason: this.reason,
+        },
+      );
+    },
+    changeLeaveEarly(clear) {
+      if (!this.time && !clear) return;
+      this.put(
+        {
+          estimate_leave_time: this.time,
+          leave_early_reason: this.reason,
+        },
+      );
+    },
+    changeAbsentReason(reason) {
+      this.put({
+        absent_reason: reason,
+      });
     },
     completeRecord() {
       axios

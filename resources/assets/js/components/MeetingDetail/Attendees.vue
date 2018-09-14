@@ -19,93 +19,98 @@
     {{ member.username }}
   </span>
 
-  <div class="uk-width-1-1 section-title">
-    <span class="uk-text-large uk-text-lead">遲到成員</span>
-    <button v-if="canModify" class="uk-button uk-button-default uk-button-small add-button"
-            type="button" uk-toggle="target: #add-late">
-      <span uk-icon="plus"></span>
-      新增
-    </button>
+  <div v-if="late.length">
+    <div class="uk-width-1-1 section-title">
+      <span class="uk-text-large uk-text-lead">遲到成員</span>
+      <button v-if="canModify" class="uk-button uk-button-default uk-button-small add-button"
+              type="button" uk-toggle="target: #add-late">
+        <span uk-icon="plus"></span>
+        新增
+      </button>
+    </div>
+    <div class="uk-overflow-auto uk-width-1-1">
+      <table class="uk-table uk-table-responsive uk-table-divider uk-table-small uk-table-middle">
+        <thead>
+          <tr>
+            <th class="uk-table-shrink"  v-if="canModify"></th>
+            <th class="th-id">ID</th>
+            <th class="th-time">預計到達</th>
+            <th class="th-time">實際到達</th>
+            <th class="uk-table-expand">原因</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="member in late" v-bind:key="'late-'+member.user_id">
+            <td v-if="canModify">
+              <span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8"
+                    @click="removeLate(member.user_id)"></span>
+            </td>
+            <td>{{ member.username }}</td>
+            <td>{{ removeSecond(member.estimate_arrive_time) }}</td>
+            <td>{{ removeSecond(member.arrive_time) }}</td>
+            <td class="td-reason">{{ member.late_reason }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-  <div class="uk-overflow-auto uk-width-1-1">
-    <table class="uk-table uk-table-responsive uk-table-divider uk-table-small uk-table-middle">
-      <thead>
-        <tr>
-          <th class="remove-th"  v-if="canModify"></th>
-          <th>ID</th>
-          <th>預計到達</th>
-          <th>實際到達</th>
-          <th>原因</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="member in late" v-bind:key="'late-'+member.user_id">
-          <td v-if="canModify">
-            <span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8"
-                  @click="removeLate(member.user_id)"></span>
-          </td>
-          <td>{{ member.username }}</td>
-          <td>{{ removeSecond(member.estimate_arrive_time) }}</td>
-          <td>{{ removeSecond(member.arrive_time) }}</td>
-          <td>{{ member.late_reason }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div v-if="leaveEarly.length">
+    <div class="uk-width-1-1 section-title">
+      <span class="uk-text-large uk-text-lead">早退成員</span>
+      <button v-if="canModify" class="uk-button uk-button-default uk-button-small add-button"
+              type="button" uk-toggle="target: #add-leave-early">
+        <span uk-icon="plus"></span>
+        新增
+      </button>
+    </div>
+    <div class="uk-overflow-auto">
+      <table class="uk-table uk-table-responsive uk-table-divider uk-table-small">
+        <thead>
+          <tr>
+            <th class="uk-table-shrink" v-if="canModify"></th>
+            <th class="th-id">ID</th>
+            <th class="th-time">預計離開</th>
+            <th class="th-time">實際離開</th>
+            <th class="uk-table-expand">原因</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="member in leaveEarly" v-bind:key="'leaveEarly-'+member.user_id">
+            <td v-if="canModify">
+              <span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8"
+                    @click="removeLeaveEarly(member.user_id)"></span>
+            </td>
+            <td>{{ member.username }}</td>
+            <td>{{ removeSecond(member.estimate_leave_time) }}</td>
+            <td>{{ removeSecond(member.leave_time) }}</td>
+            <td class="td-reason">{{ member.leave_early_reason }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
-   <div class="uk-width-1-1 section-title">
-    <span class="uk-text-large uk-text-lead">早退成員</span>
-    <button v-if="canModify" class="uk-button uk-button-default uk-button-small add-button"
-            type="button" uk-toggle="target: #add-leave-early">
-      <span uk-icon="plus"></span>
-      新增
-    </button>
-  </div>
-  <div class="uk-overflow-auto">
-    <table class="uk-table uk-table-responsive uk-table-divider uk-table-small">
-      <thead>
-        <tr>
-          <th class="remove-th" v-if="canModify"></th>
-          <th>ID</th>
-          <th>預計離開</th>
-          <th>實際離開</th>
-          <th>原因</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="member in leaveEarly" v-bind:key="'leaveEarly-'+member.user_id">
-          <td v-if="canModify">
-            <span class="uk-icon-button" uk-icon="icon: close; ratio: 0.8"
-                  @click="removeLeaveEarly(member.user_id)"></span>
-          </td>
-          <td>{{ member.username }}</td>
-          <td>{{ removeSecond(member.estimate_leave_time) }}</td>
-          <td>{{ removeSecond(member.leave_time) }}</td>
-          <td>{{ member.leave_early_reason }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-  <div class="uk-width-1-1 section-title">
-    <span class="uk-text-large uk-text-lead">請假成員</span>
-  </div>
-  <div class="uk-overflow-auto">
-    <table class="uk-table uk-table-responsive uk-table-divider uk-table-small">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>原因</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="member in dayoff" v-bind:key="'off-'+member.user_id">
-          <td>{{ member.username }}</td>
-          <td>{{ member.absent_reason }}</td>
-        </tr>
-      </tbody>
-    </table>
+  <div v-if="dayoff.length">
+    <div class="uk-width-1-1 section-title">
+      <span class="uk-text-large uk-text-lead">請假成員</span>
+    </div>
+    <div class="uk-overflow-auto">
+      <table class="uk-table uk-table-responsive uk-table-divider uk-table-small">
+        <thead>
+          <tr>
+            <th class="th-id">ID</th>
+            <th class="uk-table-expand">原因</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="member in dayoff" v-bind:key="'off-'+member.user_id">
+            <td>{{ member.username }}</td>
+            <td class="td-reason">{{ member.absent_reason }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 
   <div id="add-late" uk-modal>
@@ -132,8 +137,14 @@
   cursor: pointer;
   float: right;
 }
-.remove-th {
-  width: 0px;
+.th-time {
+  width: 80px;
+}
+.th-id {
+  width: 100px;
+}
+.td-reason {
+  word-break: break-word;
 }
 .uk-table-small th {
   padding-top: 0px;
@@ -153,7 +164,7 @@ export default {
   computed: {
     canModify() {
       return (
-        this.meeting.status !== this.$meetingStatus.Archive
+        this.meeting.status <= this.$meetingStatus.End
         && this.meeting.status !== this.$meetingStatus.Init
         && this.meeting.owner === this.user.user_id
       );
