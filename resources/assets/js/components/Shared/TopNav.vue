@@ -51,7 +51,7 @@ export default {
     },
     logout() {
       axios.post('/logout').then(() => {
-        window.location = '/login';
+        window.location = `${this.$basePath}login`;
       });
     },
   },

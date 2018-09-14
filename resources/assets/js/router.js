@@ -5,10 +5,12 @@ import Home from './components/Home/Root';
 import MeetingList from './components/MeetingList/Root';
 import MeetingDetail from './components/MeetingDetail/Root';
 import MeetingEditor from './components/Shared/MeetingEditor';
+import BATH_PATH from './base_path';
 
 Vue.use(VueRouter);
 
 export default new VueRouter({
+  base: BATH_PATH,
   mode: 'history',
   routes: [
     {

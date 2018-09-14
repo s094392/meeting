@@ -1,5 +1,6 @@
 
 import Icons from 'uikit/dist/js/uikit-icons';
+import BASE_PATH from './base_path';
 
 window.UIkit = require('uikit');
 
@@ -48,3 +49,6 @@ if (token) {
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     encrypted: true
 // });
+
+
+axios.defaults.baseURL = BASE_PATH;

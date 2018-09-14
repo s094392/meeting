@@ -3,6 +3,7 @@ import Vue from 'vue';
 import router from './router';
 import store from './store';
 import App from './App';
+import BASE_PATH from './base_path';
 
 Vue.prototype.$meetingStatus = Object.freeze({
   Init: 1,
@@ -21,6 +22,7 @@ Vue.prototype.$meetingStatusText = Object.freeze([
   '會議封存',
 ]);
 
+Vue.prototype.$basePath = BASE_PATH;
 
 export default new Vue({
   el: '#app',

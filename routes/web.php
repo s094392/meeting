@@ -53,7 +53,7 @@ Route::get('/login', function () {
     if (session()->get('user')['id']) {
         return redirect("/");
     }
-    return view('login');
+    return view('login', ["APP_URL" => env("APP_URL", "")]);
 });
 
 Route::post('/logout', function (Request $request) {

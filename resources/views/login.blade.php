@@ -40,7 +40,7 @@
 <script>
 	function login(){
 		document.getElementById("loginText").innerText = "Hold...";
-		window.location = "/cssso/redirect";
+		window.location = "{{ $APP_URL }}/cssso/redirect";
 	}
 </script>
 @endsection

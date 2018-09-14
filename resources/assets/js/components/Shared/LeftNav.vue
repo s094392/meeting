@@ -2,7 +2,7 @@
 <div class="uk-margin-left uk-visible@m" uk-sticky="offset: 40;">
   <div>
     <div class="uk-margin-bottom">
-      <img src="/img/meeting.png" class="logo uk-margin-small-right">
+      <img :src="$basePath + 'img/meeting.png'" class="logo uk-margin-small-right">
       <span class="uk-text-large uk-text-bold">Meeting</span>
     </div>
     <ul class="uk-nav uk-nav-default uk-nav-primary">
@@ -41,7 +41,7 @@ export default {
   methods: {
     logout() {
       axios.post('/logout').then(() => {
-        window.location = '/login';
+        window.location = `${this.$basePath}login`;
       });
     },
   },

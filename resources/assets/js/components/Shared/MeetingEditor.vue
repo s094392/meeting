@@ -58,7 +58,7 @@
     <label class="uk-form-label" for="form-horizontal-text">參與人員</label>
     <div class="uk-form-controls">
       <Multiselect class="multi-select" v-model="attendees" @input="attendeeSelected"
-            placeholder="選擇參與人員..."
+            placeholder="選擇參與人員..." :options="attendeeOptions"
             :hideSelected="true" :multiple="true" :closeOnSelect="false"
             :trackBy="'user_id'" :label="'username'"
             :class="{'form-danger': attendees.length == 0 && triedPost}"></MultiSelect>
@@ -137,7 +137,7 @@ export default {
           user_id: group,
           type: 'group',
         }));
-        for (let i = 0; i < Object.values(this.groupedTas).length(); i += 1) {
+        for (let i = 0; i < Object.values(this.groupedTas).length; i += 1) {
           this.attendeeOptions = this.attendeeOptions.concat(
             Object.values(this.groupedTas)[i],
           );
@@ -186,7 +186,7 @@ export default {
               this.postAttendees(response.data.id);
             });
         } else {
-          axios.post('/api/meeting/', this.meeting).then((response) => {
+          axios.post('/api/meeting', this.meeting).then((response) => {
             this.postAttendees(response.data.id);
           });
         }

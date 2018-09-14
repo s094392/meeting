@@ -18,7 +18,7 @@
     z-index: -1000;
     background-attachment: fixed;
     background-size: cover;
-    background-image: url(/img/background.svg);
+    background-image: url($APP_URL + '/img/background.svg');
 }
 
 .flatpickr-input {

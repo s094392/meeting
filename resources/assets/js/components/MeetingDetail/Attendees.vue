@@ -159,10 +159,10 @@ export default {
       );
     },
     present() {
-      return this.attendees.filter(attendee => attendee.present === '1');
+      return this.attendees.filter(attendee => attendee.present);
     },
     absent() {
-      return this.attendees.filter(attendee => attendee.present === '0');
+      return this.attendees.filter(attendee => !attendee.present);
     },
     dayoff() {
       return this.attendees.filter(attendee => attendee.absent_reason);
