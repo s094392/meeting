@@ -11,12 +11,12 @@
   position: absolute;
   top: 50%;
   left: 50%;
-	width: 100%;
   transform: translate(-50%, -50%);
 }
 .o_o {
 	font-family: monospace;
   font-size: 110px;
+	white-space: nowrap;
 }
 @media only screen and (max-width: 500px) {
   .o_o {
@@ -29,7 +29,11 @@
 @section('content')
 <div class="container">
 	<div class="child">
+		@if ($expired)
+			<h3 class="uk-card-title uk-text-center">因閒置過久而被登出</h3>
+		@else
 		<h3 class="uk-card-title uk-text-center">又要開會？</h3>
+		@endif
 		<div class="o_o uk-text-center">\(o_o)/</div>
 		<button onclick="login()" id="loginButton" class="uk-button uk-button-primary uk-button-large uk-align-center">
 			<span id="loginText">Login</span>

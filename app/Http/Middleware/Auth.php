@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Input;
 
 class Auth
 {
@@ -13,12 +14,14 @@ class Auth
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, $api = '')
     {
-        error_log(session()->get('user')['uid']);
-        if (!session()->get('user')['id']) {
+        if (Input::get("expired") || !session()->get('user')['id']) {
+            if ($api) {
+                return response('', 403);
+            }
             session([ 'redirect_url' => $request->path() ]);
-            return redirect('/login');
+            return redirect()->route('login', ['expired'=>Input::get("expired")]);
         };
         return $next($request);
     }

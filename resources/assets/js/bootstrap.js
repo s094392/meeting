@@ -52,3 +52,10 @@ if (token) {
 
 
 axios.defaults.baseURL = BASE_PATH;
+
+axios.interceptors.response.use(null, (error) => {
+  if (error.response.status === 403 || error.response.status === 419) {
+    return window.location.assign(`${window.location}?expired=true`);
+  }
+  return Promise.reject(error);
+});

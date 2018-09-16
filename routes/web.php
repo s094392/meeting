@@ -11,8 +11,9 @@
 |
 */
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 
-Route::prefix('api/')->group(function () {
+Route::prefix('api/')->middleware('auth:api')->group(function () {
     Route::post('meeting/start/{meetingId}', 'MeetingController@start');
     Route::post('meeting/end/{meetingId}', 'MeetingController@end');
 
@@ -50,11 +51,12 @@ Route::get('/cssso/handle', function (Request $request) {
 });
 
 Route::get('/login', function () {
-    if (session()->get('user')['id']) {
+    if (!Input::get("expired") && session()->get('user')['id']) {
         return redirect("/");
     }
-    return view('login', ["APP_URL" => env("APP_URL", "")]);
-});
+    return view('login', ["APP_URL" => env("APP_URL", ""),
+                            "expired"=> Input::get("expired")]);
+})->name('login');
 
 Route::post('/logout', function (Request $request) {
     $request->session()->flush();

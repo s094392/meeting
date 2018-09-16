@@ -37,7 +37,7 @@
     </div>
   </div>
 
-  <div class="uk-width-1-4@l" :class="{'visibility-hidden': view != 'record'}">
+  <div class="uk-visible@l uk-width-1-4@l" :class="{'visibility-hidden': view != 'record'}">
     <h4>目錄</h4>
     <div class="uk-card uk-card-small uk-card-default uk-card-body"
          uk-sticky="offset:40;" id="toc"></div>
