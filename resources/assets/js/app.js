@@ -15,11 +15,11 @@ Vue.prototype.$meetingStatus = Object.freeze({
 
 Vue.prototype.$meetingStatusText = Object.freeze([
   '',
-  '會議初始化',
-  '會議開始',
-  '會議結束',
+  '新會議',
+  '進行中',
+  '已結束，等待確認會議記錄',
   '會議記錄完成',
-  '會議封存',
+  '已報帳封存',
 ]);
 
 Vue.prototype.$basePath = BASE_PATH;

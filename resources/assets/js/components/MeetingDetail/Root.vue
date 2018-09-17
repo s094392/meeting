@@ -99,6 +99,7 @@ export default {
     init() {
       axios.get(`/api/meeting/${this.id}`).then((response) => {
         this.meeting = response.data;
+        document.title = `${this.meeting.title} - Meeting`;
       });
       axios
         .get(`/api/attendee/meeting_id/${this.id}/user_id`)

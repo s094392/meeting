@@ -9,7 +9,7 @@ import BATH_PATH from './base_path';
 
 Vue.use(VueRouter);
 
-export default new VueRouter({
+const router = new VueRouter({
   base: BATH_PATH,
   mode: 'history',
   routes: [
@@ -17,25 +17,30 @@ export default new VueRouter({
       path: '/',
       name: '/',
       component: Home,
+      meta: { title: '首頁' },
     },
     {
       path: '/list',
       name: 'list',
       component: MeetingList,
+      meta: { title: '會議列表' },
     },
     {
       path: '/detail/:id/:view',
       name: 'detail',
       component: MeetingDetail,
+      meta: { title: '會議資料' },
     },
     {
       path: '/create',
       name: 'create',
       component: MeetingEditor,
+      meta: { title: '新建會議' },
     },
     {
       path: '/edit/:id',
       name: 'edit',
+      meta: { title: '編輯會議' },
       component: MeetingEditor,
     },
   ],
@@ -48,3 +53,13 @@ export default new VueRouter({
     return { x: 0, y: 0 };
   },
 });
+
+router.beforeEach((to, from, next) => {
+  // dont update title when switching tab in detail page
+  if (!(to.name === 'detail' && from.name === 'detail')) {
+    document.title = `${to.meta.title} - Meeting`;
+  }
+  next();
+});
+
+export default router;

@@ -12,9 +12,9 @@
             <th>#</th>
             <th>會議分類</th>
             <th>會議名稱</th>
-            <th>開始時間</th>
-            <th>結束時間</th>
-            <th>發起人</th>
+            <th class="uk-visible@m">開始時間</th>
+            <th class="uk-visible@m">結束時間</th>
+            <th class="uk-visible@m">發起人</th>
             <th>會議狀態</th>
           </tr>
         </thead>
@@ -24,9 +24,9 @@
             <td>{{ meeting.id }}</td>
             <td >{{ meeting.group }}</td>
             <td >{{ meeting.title }}</td>
-            <td >{{ meeting.start_time }}</td>
-            <td>{{ meeting.end_time }}</td>
-            <td>{{ meeting.owner }}</td>
+            <td class="uk-visible@m">{{ meeting.start_time }}</td>
+            <td class="uk-visible@m">{{ meeting.end_time }}</td>
+            <td class="uk-visible@m">{{ meeting.owner }}</td>
             <td>{{ $meetingStatusText[meeting.status] }}</td>
           </tr>
         </tbody>
