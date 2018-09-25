@@ -23,7 +23,7 @@
     </tr>
     <tr>
       <th>發起人:</th>
-      <td>{{ meeting.owner }}</td>
+      <td>{{ meeting.owner_name }}</td>
     </tr>
     <tr>
       <th>會議狀態:</th>

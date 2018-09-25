@@ -27,7 +27,7 @@ class MeetingController extends Controller
         $sortby =  Input::get('sortby');
         $desc = Input::get('desc');
         
-        return Meeting::when($status, function ($query, $status) {
+        $meetings = Meeting::when($status, function ($query, $status) {
             foreach ($status as $chosen) {
                 $query->orWhere('status', $chosen);
             }
@@ -54,6 +54,12 @@ class MeetingController extends Controller
         }, function ($query) {
             return $query->orderBy('scheduled_time', 'desc');
         })->get();
+
+        $taMap = app('App\Http\Controllers\TAsController')->map();
+        foreach ($meetings as $val) {
+            $val['owner_name'] = $taMap[$val['owner']];
+        }
+        return $meetings;
     }
 
     /**
@@ -78,6 +84,8 @@ class MeetingController extends Controller
         */
     public function show(Meeting $meeting)
     {
+        $taMap = app('App\Http\Controllers\TAsController')->map();
+        $meeting['owner_name'] = $taMap[$meeting['owner']];
         return $meeting;
     }
 
@@ -91,6 +99,8 @@ class MeetingController extends Controller
     public function update(Request $request, Meeting $meeting)
     {
         $meeting->update($request->all());
+        $taMap = app('App\Http\Controllers\TAsController')->map();
+        $meeting['owner_name'] = $taMap[$meeting['owner']];
         return $meeting;
     }
 

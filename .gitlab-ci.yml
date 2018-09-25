@@ -128,6 +128,6 @@ migrate:
     - scp .env tccws1:/srv/www-available/$CI_PROJECT_NAME/
     - ssh tccws1 "
           cd /srv/www-available/$CI_PROJECT_NAME/;
-          php artisan migrate:fresh --force;
+          php artisan migrate --force;
           ln -sfn /srv/www-available/$CI_PROJECT_NAME/public/ /srv/www-enable/$CI_PROJECT_NAME;"
   dependencies: []

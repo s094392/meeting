@@ -7,7 +7,7 @@
       <span v-if="me"  class="uk-label uk-align-right">你的會議</span>
     </div>
     <p>
-      <span class="uk-margin-small-right" uk-icon="user" />{{ meeting.owner }}<br>
+      <span class="uk-margin-small-right" uk-icon="user" />{{ meeting.owner_name }}<br>
       <span class="uk-margin-small-right" uk-icon="tag" />{{ meeting.group }}<br>
       <span class="uk-margin-small-right" uk-icon="clock" />{{ meeting.scheduled_time }}
     </p>
