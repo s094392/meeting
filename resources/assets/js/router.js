@@ -20,7 +20,7 @@ const router = new VueRouter({
       meta: { title: '首頁' },
     },
     {
-      path: '/list',
+      path: '/list/:page',
       name: 'list',
       component: MeetingList,
       meta: { title: '會議列表' },

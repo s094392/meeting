@@ -14,7 +14,9 @@
             <div ref="dropdown" class="uk-navbar-dropdown uk-padding-small">
               <ul class="uk-nav uk-navbar-dropdown-nav">
                 <li><a @click="routerPush('/')" href="#">首頁</a></li>
-                <li><a @click="routerPush('list')" href="#">會議列表</a></li>
+                <li>
+                  <a @click="routerPush({name :'list',  params: { page: 1 } })" href="#">會議列表</a>
+                </li>
                 <li><a href="#">個人報表</a></li>
                 <li><a @click="logout">登出</a></li>
               </ul>

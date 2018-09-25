@@ -17,19 +17,21 @@ class MeetingController extends Controller
     public function index()
     {
         $status =  Input::get('status');
-        $limit =  Input::get('limit');
         $group =  Input::get('group');
         $owner =  Input::get('owner');
         $title =  Input::get('title');
         $startDate =  Input::get('startDate');
         $endDate =  Input::get('endDate');
-        $offset =  Input::get('offset');
         $sortby =  Input::get('sortby');
         $desc = Input::get('desc');
         
         $meetings = Meeting::when($status, function ($query, $status) {
-            foreach ($status as $chosen) {
-                $query->orWhere('status', $chosen);
+            if (is_array($status)) {
+                foreach ($status as $chosen) {
+                    $query->orWhere('status', $chosen);
+                }
+            } else {
+                $query->where('status', $status);
             }
         })->when($owner, function ($query, $owner) {
             return $query->where('owner', $owner);
@@ -41,10 +43,6 @@ class MeetingController extends Controller
             return $query->where('scheduled_time', '>=', $startDate);
         })->when($endDate, function ($query, $endDate) {
             return $query->where('scheduled_time', '<=', $endDate);
-        })->when($offset, function ($query, $offset) {
-            return $query->skip($offset);
-        })->when($limit, function ($query, $limit) {
-            return $query->take($limit);
         })->when($sortby, function ($query, $sortby) {
             return $query->when($desc, function ($query, $desc) {
                 return $query->orderBy($sortby, 'desc');
@@ -53,7 +51,7 @@ class MeetingController extends Controller
             });
         }, function ($query) {
             return $query->orderBy('scheduled_time', 'desc');
-        })->get();
+        })->paginate(10);
 
         $taMap = app('App\Http\Controllers\TAsController')->map();
         foreach ($meetings as $val) {

@@ -37,7 +37,7 @@ export default {
           },
         })
         .then((response) => {
-          this.meetings = response.data;
+          this.meetings = response.data.data;
         });
     },
     deleteMeeting(id) {

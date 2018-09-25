@@ -26,28 +26,54 @@
             <td >{{ meeting.title }}</td>
             <td class="uk-visible@m">{{ meeting.start_time }}</td>
             <td class="uk-visible@m">{{ meeting.end_time }}</td>
-            <td class="uk-visible@m">{{ meeting.owner }}</td>
+            <td class="uk-visible@m">{{ meeting.owner_name }}</td>
             <td>{{ $meetingStatusText[meeting.status] }}</td>
           </tr>
         </tbody>
       </table>
     </div>
     <ul class="uk-pagination uk-flex-center" uk-margin>
-      <li><a href="#"><span uk-pagination-previous></span></a></li>
-      <li><a href="#">1</a></li>
-      <li class="uk-disabled"><span>...</span></li>
-      <li><a href="#">5</a></li>
-      <li><a href="#">6</a></li>
-      <li class="uk-active"><span>7</span></li>
-      <li><a href="#">8</a></li>
-      <li><a href="#"><span uk-pagination-next></span></a></li>
+      <li v-if="page !== 1">
+        <router-link :to="{ name: 'list', params: { page: 1 } }">
+          <span class="uk-icon">
+            <svg class="svg-fix" width="7" height="12"
+              viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+              <polyline fill="none" stroke="#000" stroke-width="1" points="6 1 1 6 6 11">
+              </polyline>
+            </svg><svg class="svg-fix" width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+              <polyline fill="none" stroke="#000" stroke-width="1" points="6 1 1 6 6 11">
+            </polyline>
+            </svg>
+          </span>
+        </router-link>
+      </li>
+      <template v-for="idx in pageRange()">
+        <li :key="idx" >
+          <router-link :to="{ name: 'list', params: { page: idx } }">{{idx}}</router-link>
+        </li>
+      </template>
+      <li v-if="page !== lastPage">
+        <router-link :to="{ name: 'list', params: { page: lastPage } }">
+          <span class="uk-icon">
+            <svg class="svg-fix" width="7" height="12"
+              viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+              <polyline fill="none" stroke="#000" stroke-width="1" points="1 1 6 6 1 11">
+              </polyline>
+            </svg><svg class="svg-fix" width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+              <polyline fill="none" stroke="#000" stroke-width="1" points="1 1 6 6 1 11">
+            </polyline>
+            </svg>
+          </span>
+        </router-link>
+      </li>
     </ul>
   </div>
 
   <div class="uk-width-1-4@l uk-visible@l">
     <h4>篩選器</h4>
     <div class="uk-card uk-card-body uk-card-small uk-card-default" uk-sticky="offset: 40;">
-      <MeetingFilter :groupOptions="groupOptions" :ownerOptions="ownerOptions" @search="search"/>
+      <MeetingFilter :query="query" :groupOptions="groupOptions"
+                     :ownerOptions="ownerOptions"/>
     </div>
   </div>
 
@@ -55,7 +81,8 @@
     <div class="uk-modal-dialog uk-modal-body">
       <button class="uk-modal-close-default" type="button" uk-close></button>
       <h4>篩選器</h4>
-      <MeetingFilter :groupOptions="groupOptions" :ownerOptions="ownerOptions" @search="search"/>
+      <MeetingFilter :query="query" :groupOptions="groupOptions"
+                     :ownerOptions="ownerOptions"/>
     </div>
   </div>
 </div>
@@ -64,6 +91,9 @@
 <style lang="scss" scoped>
 .meeting-tr {
   cursor: pointer;
+}
+.svg-fix {
+  padding-bottom: 2px;
 }
 </style>
 
@@ -84,12 +114,45 @@ export default {
       meetings: [],
       groupOptions: [],
       ownerOptions: [],
+      lastPage: undefined,
     };
   },
+  computed: {
+    query() {
+      return this.$route.query;
+    },
+    page() {
+      return parseInt(this.$route.params.page, 10);
+    },
+  },
+  watch: {
+    query() {
+      this.fetchMeetings();
+    },
+  },
   methods: {
+    pageRange() {
+      let start = this.page - 3;
+      let end = this.page + 3;
+      if (start <= 0) {
+        end += Math.abs(start - 1);
+        start = 1;
+      }
+      if (end > this.lastPage) {
+        start -= Math.abs(end - this.lastPage);
+        end = this.lastPage;
+      }
+      return _.range(Math.max(1, start), end + 1);
+    },
     fetchMeetings() {
-      axios.get('/api/meeting').then((response) => {
-        this.meetings = response.data;
+      axios.get('/api/meeting', {
+        params: {
+          page: this.page,
+          ...this.query,
+        },
+      }).then((response) => {
+        this.lastPage = parseInt(response.data.last_page, 10);
+        this.meetings = response.data.data;
       });
     },
     fetchTas() {
@@ -105,20 +168,6 @@ export default {
         name: 'detail',
         params: { id: meetingId, view: 'properties' },
       });
-    },
-    search(title, group, startDate, endDate, owner, status) {
-      axios
-        .get('api/meeting', {
-          params: {
-            title,
-            group,
-            startDate,
-            endDate,
-            owner,
-            'status[]': status,
-          },
-        })
-        .then((response) => { this.meetings = response.data; });
     },
   },
 };

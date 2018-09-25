@@ -3,7 +3,7 @@
     <h4>已結束的會議</h4>
     <InactiveMeetingCard v-for="meeting in meetings" :key="meeting.id" :meeting="meeting"/>
     <div class="uk-text-right uk-margin-left">
-      <router-link :to="{name:'list'}">顯示更多</router-link>
+      <router-link :to="{ name: 'list', params: { page: 1 } }">顯示更多</router-link>
     </div>
   </div>
 </template>
@@ -36,7 +36,7 @@ export default {
           },
         })
         .then((response) => {
-          this.meetings = response.data;
+          this.meetings = response.data.data;
         });
     },
   },

@@ -17,7 +17,7 @@
         <router-link :to="{ name: '/'}">首頁</router-link>
       </li>
       <li>
-        <router-link :to="{ name: 'list'}">會議列表</router-link>
+        <router-link :to="{ name: 'list', params: { page: 1 } }">會議列表</router-link>
       </li>
       <li><a href="#">個人報表</a></li>
       <li><a href="#" @click="logout">登出</a></li>
