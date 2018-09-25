@@ -37,9 +37,20 @@
   visibility: hidden;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.pre-wrap {
+  white-space: pre-wrap;
+}
+
+.monospace {
+  font-family: "Courier New", Courier, monospace;
+}
 .name-tag {
   display: inline-block;
-  padding: 0px 15px;
+  padding: 0 15px;
   margin-right: 4px;
   margin-top: 4px;
   line-height: 28px;

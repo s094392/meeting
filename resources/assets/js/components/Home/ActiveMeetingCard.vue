@@ -46,7 +46,7 @@ export default {
           + `user_id/${this.user.user_id}`,
         )
         .then((response) => {
-          this.me = response.data;
+          this.me = response.data ? response.data : {};
         });
     },
     updateMe(me) {

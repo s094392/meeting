@@ -3,8 +3,7 @@
  sel-target: .uk-navbar-container; cls-active: uk-navbar-sticky; bottom: #scrollup-dropbar">
   <nav class="uk-navbar-container" uk-navbar="mode: click">
     <div class="uk-container-expand">
-      <div  class="top-nav"
-            uk-navbar="dropbar: true; dropbar-anchor: !.uk-navbar-container; duration:150">
+      <div uk-navbar="dropbar: true; dropbar-anchor: !.uk-navbar-container; duration:150">
         <div class="uk-navbar-left">
           <ul class="uk-navbar-nav">
             <li>
@@ -35,11 +34,8 @@
 </template>
 
 <style lang="scss" scoped>
-.top-nav{
-  height: 60px;
-}
-.uk-navbar-dropdown{
-  top: 60px !important;
+.uk-navbar-toggle {
+  min-height: 60px;
 }
 </style>
 

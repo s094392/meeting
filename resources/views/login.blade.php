@@ -14,7 +14,6 @@
   transform: translate(-50%, -50%);
 }
 .o_o {
-	font-family: monospace;
   font-size: 110px;
 	white-space: nowrap;
 }
@@ -34,7 +33,7 @@
 		@else
 		<h3 class="uk-card-title uk-text-center">又要開會？</h3>
 		@endif
-		<div class="o_o uk-text-center">\(o_o)/</div>
+		<div class="o_o monospace uk-text-center">\(o_o)/</div>
 		<button onclick="login()" id="loginButton" class="uk-button uk-button-primary uk-button-large uk-align-center">
 			<span id="loginText">Login</span>
 		</button>

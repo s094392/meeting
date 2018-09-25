@@ -35,7 +35,7 @@
     </tr>
     <tr>
       <th>會議說明:</th>
-      <td class="description">{{ meeting.description }}</td>
+      <td class="pre-wrap">{{ meeting.description }}</td>
     </tr>
   </table>
   <hr class="uk-divider-icon">
@@ -45,9 +45,6 @@
 <style lang="scss" scoped>
 th {
   vertical-align: initial;
-}
-.description {
-  white-space: pre-wrap;
 }
 </style>
 

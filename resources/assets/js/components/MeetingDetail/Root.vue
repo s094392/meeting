@@ -68,9 +68,10 @@ export default {
   computed: {
     me: {
       get() {
-        return this.attendees.find(
+        const me = this.attendees.find(
           attendees => attendees.user_id === this.user.user_id,
         );
+        return me === undefined ? {} : me;
       },
       set(me) {
         const index = this.attendees.findIndex(

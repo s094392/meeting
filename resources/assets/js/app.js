@@ -22,6 +22,12 @@ Vue.prototype.$meetingStatusText = Object.freeze([
   '已報帳封存',
 ]);
 
+Vue.prototype.$attendeeStatus = Object.freeze({
+  Absent: 1,
+  LateOrLeaveEarly: 2,
+  OnTime: 3,
+});
+
 Vue.prototype.$basePath = BASE_PATH;
 
 export default new Vue({

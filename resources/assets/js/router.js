@@ -56,10 +56,10 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   // dont update title when switching tab in detail page
+  next();
   if (!(to.name === 'detail' && from.name === 'detail')) {
     document.title = `${to.meta.title} - Meeting`;
   }
-  next();
 });
 
 export default router;
