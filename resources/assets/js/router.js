@@ -4,6 +4,7 @@ import VueRouter from 'vue-router';
 import Home from './components/Home/Root';
 import MeetingList from './components/MeetingList/Root';
 import MeetingDetail from './components/MeetingDetail/Root';
+import Profile from './components/Profile/Root';
 import MeetingEditor from './components/Shared/MeetingEditor';
 import BATH_PATH from './base_path';
 
@@ -42,6 +43,12 @@ const router = new VueRouter({
       name: 'edit',
       meta: { title: '編輯會議' },
       component: MeetingEditor,
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      meta: { title: '個人報表' },
+      component: Profile,
     },
   ],
   scrollBehavior(to, from, savedPosition) {

@@ -18,15 +18,18 @@
         "laravel-mix": "^2.0"
     },
     "dependencies": {
-        "uikit": "^3.0.0-rc.11",
-        "lodash": "^4.17.5",
         "axios": "^0.18",
+        "chart.js": "^2.7.2",
+        "lodash": "^4.17.5",
+        "moment": "^2.22.2",
+        "uikit": "^3.0.0-rc.11",
+        "vue": "^2.5.7",
+        "vue-chartjs": "^3.4.0",
         "vue-flatpickr-component": "^7.0.6",
         "vue-markdown": "^2.2.4",
         "vue-multiselect": "2.0.3",
         "vue-router": "^3.0.1",
         "vue-simplemde": "^0.4.8",
-        "vuex": "^3.0.1",
-        "vue": "^2.5.7"
+        "vuex": "^3.0.1"
     }
 }

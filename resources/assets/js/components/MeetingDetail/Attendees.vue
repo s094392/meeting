@@ -7,8 +7,7 @@
     @click="changePresent(member.user_id, false)" class="name-tag" :class="{clickable: canModify}">
     {{ member.username }}
   </span>
-  <div v-if="absent.length + absentWithReason.length  ||
-             meeting.status === $meetingStatus.Start" uk-grid>
+  <div v-if="absent.length + absentWithReason.length || canModify" uk-grid>
     <div class="uk-width-1-2@s">
     <div class="uk-width-1-1 section-title">
       <span class="uk-text-large uk-text-lead">
@@ -39,8 +38,7 @@
     </div>
   </div>
 
-  <div v-if="late.length + leaveEarly.length ||
-             meeting.status === $meetingStatus.Start"  uk-grid>
+  <div v-if="late.length + leaveEarly.length || canModify"  uk-grid>
     <div class="uk-width-1-2@s">
       <div class="uk-width-1-1 section-title">
         <span class="uk-text-large uk-text-lead">遲到成員</span>

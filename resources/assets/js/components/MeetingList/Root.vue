@@ -1,6 +1,5 @@
 <template>
 <div uk-grid>
-
   <div class="uk-width-3-4@l">
     <h2 class="uk-display-inline">所有會議</h2>
     <button class="uk-button uk-button-primary uk-align-right uk-hidden@l"
@@ -20,7 +19,7 @@
         </thead>
         <tbody @click="toMeeting(meeting.id)" v-for="meeting in meetings"
                :key="meeting.id" :meeting="meeting">
-          <tr class="meeting-tr">
+          <tr class="cursor-pointer">
             <td>{{ meeting.id }}</td>
             <td >{{ meeting.group }}</td>
             <td >{{ meeting.title }}</td>
@@ -89,9 +88,6 @@
 </template>
 
 <style lang="scss" scoped>
-.meeting-tr {
-  cursor: pointer;
-}
 .svg-fix {
   padding-bottom: 2px;
 }

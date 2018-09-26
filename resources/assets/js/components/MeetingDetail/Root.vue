@@ -43,7 +43,6 @@
          uk-sticky="offset:40;" id="toc"></div>
   </div>
 </div>
-
 </template>
 
 <style lang="scss">
