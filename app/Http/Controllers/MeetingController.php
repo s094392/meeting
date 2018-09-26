@@ -24,6 +24,7 @@ class MeetingController extends Controller
         $endDate =  Input::get('endDate');
         $sortby =  Input::get('sortby');
         $desc = Input::get('desc');
+        $page = Input::get('page');
         
         $meetings = Meeting::when($status, function ($query, $status) {
             if (is_array($status)) {
@@ -51,12 +52,14 @@ class MeetingController extends Controller
             });
         }, function ($query) {
             return $query->orderBy('scheduled_time', 'desc');
-        })->paginate(10);
+        });
 
+        $meetings = $page ? $meetings->paginate(10) : $meetings->get();
         $taMap = app('App\Http\Controllers\TAsController')->map();
-        foreach ($meetings as $val) {
+        ($page ? $meetings->getCollection() : $meetings)->transform(function ($val) use ($taMap) {
             $val['owner_name'] = $taMap[$val['owner']];
-        }
+            return $val;
+        });
         return $meetings;
     }
 

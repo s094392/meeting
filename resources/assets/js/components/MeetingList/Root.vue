@@ -34,7 +34,7 @@
     </div>
     <ul class="uk-pagination uk-flex-center" uk-margin>
       <li v-if="page !== 1">
-        <router-link :to="{ name: 'list', params: { page: 1 } }">
+        <router-link :to="{ name: 'list', params: { page: 1 }, query }">
           <span class="uk-icon">
             <svg class="svg-fix" width="7" height="12"
               viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
@@ -49,11 +49,11 @@
       </li>
       <template v-for="idx in pageRange()">
         <li :key="idx" >
-          <router-link :to="{ name: 'list', params: { page: idx } }">{{idx}}</router-link>
+          <router-link :to="{ name: 'list', params: { page: idx }, query}">{{idx}}</router-link>
         </li>
       </template>
       <li v-if="page !== lastPage">
-        <router-link :to="{ name: 'list', params: { page: lastPage } }">
+        <router-link :to="{ name: 'list', params: { page: lastPage }, query }">
           <span class="uk-icon">
             <svg class="svg-fix" width="7" height="12"
               viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
