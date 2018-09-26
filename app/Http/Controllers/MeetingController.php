@@ -17,6 +17,7 @@ class MeetingController extends Controller
     public function index()
     {
         $status =  Input::get('status');
+        $limit =  Input::get('limit');
         $group =  Input::get('group');
         $owner =  Input::get('owner');
         $title =  Input::get('title');
@@ -44,6 +45,8 @@ class MeetingController extends Controller
             return $query->where('scheduled_time', '>=', $startDate);
         })->when($endDate, function ($query, $endDate) {
             return $query->where('scheduled_time', '<=', $endDate);
+        })->when($limit, function ($query, $limit) {
+            return $query->take($limit);
         })->when($sortby, function ($query, $sortby) {
             return $query->when($desc, function ($query, $desc) {
                 return $query->orderBy($sortby, 'desc');

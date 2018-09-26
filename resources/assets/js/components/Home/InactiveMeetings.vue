@@ -28,7 +28,7 @@ export default {
       axios
         .get('/api/meeting', {
           params: {
-            page: 1,
+            limit: 5,
             status: [
               this.$meetingStatus.End,
               this.$meetingStatus.RecordComplete,
@@ -37,7 +37,7 @@ export default {
           },
         })
         .then((response) => {
-          this.meetings = response.data.data;
+          this.meetings = response.data;
         });
     },
   },
