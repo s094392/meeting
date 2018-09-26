@@ -55,7 +55,8 @@ Route::get('/login', function () {
         return redirect("/");
     }
     return view('login', ["APP_URL" => env("APP_URL", ""),
-                            "expired"=> Input::get("expired")]);
+                            "expired"=> Input::get("expired"),
+                            "csTaOnly"=> Input::get("cs-ta-only")]);
 })->name('login');
 
 Route::post('/logout', function (Request $request) {

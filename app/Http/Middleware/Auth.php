@@ -16,12 +16,20 @@ class Auth
      */
     public function handle($request, Closure $next, $api = '')
     {
-        if (Input::get("expired") || !session()->get('user')['id']) {
+        if (Input::get("expired") ||
+        !session()->get('user')['groups'] ||
+        !in_array("cs-ta", session()->get('user')['groups'])) {
             if ($api) {
                 return response('', 403);
             }
             session([ 'redirect_url' => $request->path() ]);
-            return redirect()->route('login', ['expired'=>Input::get("expired")]);
+            $params = ['expired'=>Input::get("expired")];
+            if (session()->get('user')['groups'] &&
+                !in_array("cs-ta", session()->get('user')['groups'])) {
+                $params["cs-ta-only"] = true;
+            }
+            session()->forget('user');
+            return redirect()->route('login', $params);
         };
         return $next($request);
     }

@@ -28,10 +28,12 @@
 @section('content')
 <div class="container">
 	<div class="child">
-		@if ($expired)
+		@if ($csTaOnly)
+			<h3 class="uk-card-title uk-text-center">權限不足，此系統僅限系計中助教使用</h3>
+		@elseif ($expired)
 			<h3 class="uk-card-title uk-text-center">因閒置過久而被登出</h3>
 		@else
-		<h3 class="uk-card-title uk-text-center">又要開會？</h3>
+			<h3 class="uk-card-title uk-text-center">又要開會？</h3>
 		@endif
 		<div class="o_o monospace uk-text-center">\(o_o)/</div>
 		<button onclick="login()" id="loginButton" class="uk-button uk-button-primary uk-button-large uk-align-center">
