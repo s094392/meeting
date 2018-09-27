@@ -49,7 +49,7 @@ import Multiselect from 'vue-multiselect';
 import FlatPickr from 'vue-flatpickr-component';
 
 export default {
-  props: ['attendees', 'type'],
+  props: ['attendees', 'type', 'time'],
   components: {
     Multiselect,
     FlatPickr,
@@ -63,7 +63,6 @@ export default {
       },
       attendeeValue: null,
       reason: '',
-      time: new Date().toTimeString().split(' ')[0],
     };
   },
   methods: {
@@ -76,7 +75,6 @@ export default {
           this.reason,
         );
       }
-      [this.time] = new Date().toTimeString().split(' ');
       this.attendeeValue = null;
       this.reason = '';
     },

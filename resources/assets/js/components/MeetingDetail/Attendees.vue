@@ -43,7 +43,7 @@
       <div class="uk-width-1-1 section-title">
         <span class="uk-text-large uk-text-lead">遲到成員</span>
         <button v-if="canModify" class="uk-button uk-button-default uk-button-small"
-                type="button" uk-toggle="target: #add-late">
+                @click="setTempTime()" type="button" uk-toggle="target: #add-late">
           <span uk-icon="plus"></span>
           新增
         </button>
@@ -55,8 +55,8 @@
             <td class="td-id">
           <tr>{{ member.username }}</tr>
           <tr class="monospace">
-            <span>{{ removeSecond(member.arrive_time) }}</span>
-            <span class="cursor-pointer" v-if="canModify"
+            <span>{{ removeSecond(member.arrive_time) }}</span><span
+                  class="cursor-pointer edit-icon" v-if="canModify"
                   uk-icon="icon: pencil; ratio: 0.7" @click="setTempTime(member.arrive_time)">
             </span>
             <div v-if="canModify" uk-drop="mode: click; offset: 5; pos: bottom-center"
@@ -88,7 +88,7 @@
       <div class="uk-width-1-1 section-title">
         <span class="uk-text-large uk-text-lead">早退成員</span>
         <button v-if="canModify" class="uk-button uk-button-default uk-button-small"
-                type="button" uk-toggle="target: #add-leave-early">
+                @click="setTempTime()" type="button" uk-toggle="target: #add-leave-early">
           <span uk-icon="plus"></span>
           新增
         </button>
@@ -100,8 +100,8 @@
             <td class="td-id">
               <tr>{{ member.username }}</tr>
               <tr class="monospace">
-                <span>{{ removeSecond(member.leave_time) }}</span>
-                <span class="cursor-pointer" v-if="canModify"
+                <span>{{ removeSecond(member.leave_time) }}</span><span
+                      class="cursor-pointer edit-icon" v-if="canModify"
                       uk-icon="icon: pencil; ratio: 0.7" @click="setTempTime(member.leave_time)">
                 </span>
                 <div v-if="canModify" uk-drop="mode: click; offset: 5; pos: bottom-center"
@@ -131,11 +131,12 @@
   </div>
 
   <div id="add-late" uk-modal>
-    <AttendeeAdder :attendees="attendees" :type="'late'" @selected="addLate"/>
+    <AttendeeAdder :attendees="attendees" :time="temp_time" :type="'late'" @selected="addLate"/>
   </div>
 
   <div id="add-leave-early" uk-modal>
-    <AttendeeAdder :attendees="attendees" :type="'leaveEarly'" @selected="addLeaveEarly"/>
+    <AttendeeAdder :attendees="attendees" :time="temp_time"
+                   :type="'leaveEarly'" @selected="addLeaveEarly"/>
   </div>
 </div>
 </template>
@@ -174,11 +175,15 @@
   -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
+.edit-icon {
+  margin-left: 5px;
+}
 </style>
 
 
 <script>
 import { mapState } from 'vuex';
+import moment from 'moment';
 import AttendeeAdder from './AttendeeAdder';
 
 export default {
@@ -223,13 +228,7 @@ export default {
   },
   methods: {
     setTempTime(time) {
-      if (time) this.temp_time = this.removeSecond(time);
-      else {
-        const now = new Date();
-        const hour = `0${now.getHours()}`.slice(-2);
-        const min = `0${now.getMinutes()}`.slice(-2);
-        this.temp_time = `${hour}:${min}`;
-      }
+      this.temp_time = time ? this.removeSecond(time) : moment().format('HH:mm');
     },
     updateAttendee(userId, data) {
       if (!this.canModify) return;

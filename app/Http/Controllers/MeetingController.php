@@ -54,9 +54,7 @@ class MeetingController extends Controller
         
         $meetings = Meeting::when($status, function ($query, $status) {
             if (is_array($status)) {
-                foreach ($status as $chosen) {
-                    $query->orWhere('status', $chosen);
-                }
+                $query->whereIn('status', $status);
             } else {
                 $query->where('status', $status);
             }
@@ -151,13 +149,19 @@ class MeetingController extends Controller
     {
         $time = Carbon::now();
         Meeting::where("id", $meetingId)->update(['status' => 2, 'start_time' => $time]);
-        return Meeting::where("id", $meetingId)->first();
+        $taMap = app('App\Http\Controllers\TAsController')->map();
+        $meeting = Meeting::where("id", $meetingId)->first();
+        $meeting['owner_name'] = $taMap[$meeting['owner']];
+        return $meeting;
     }
 
     public function end($meetingId)
     {
         $time = Carbon::now();
         Meeting::where("id", $meetingId)->update(['status' => 3, 'end_time' => $time]);
-        return Meeting::where("id", $meetingId)->first();
+        $taMap = app('App\Http\Controllers\TAsController')->map();
+        $meeting = Meeting::where("id", $meetingId)->first();
+        $meeting['owner_name'] = $taMap[$meeting['owner']];
+        return $meeting;
     }
 }

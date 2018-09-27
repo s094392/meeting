@@ -2,11 +2,21 @@
 <div uk-grid>
   <div class="uk-width-3-4@l">
     <h2>個人報表</h2>
-    <div v-if="!loading"  class="uk-card uk-card-default uk-card-body uk-card-small">
+    <div class="uk-card uk-card-default uk-card-body uk-card-small">
       <div uk-grid >
          <div class="uk-width-1-2@s">
-          <div class="uk-text-large uk-text-lead">過去一個月你總共</div>
-          <ul class="uk-list uk-list-bullet">
+          <div class="uk-text-large uk-text-lead">
+            <select class="uk-select" v-model="year">
+              <option v-for="year in yearList" :key="year" :value="year">{{year}}</option>
+            </select>
+            <select class="uk-select" v-model="month">
+              <option v-for="month in 12" :key="month" :value="month">{{month}}</option>
+            </select>
+            <button @click="fetchMeetings" class="uk-button uk-button-primary" :disabled="loading">
+              查詢
+            </button>
+          </div>
+          <ul class="uk-list uk-list-bullet" v-if="!loading">
             <li><span class="uk-text-bold meeting-hours">開了{{ totalTime }}小時的會議</span></li>
             <li>應該參加：{{ shouldAttend }}次</li>
             <li>舉辦：{{ own }}次</li>
@@ -18,10 +28,10 @@
 
         </div>
         <Doughnut class="uk-width-1-2@s" :labels="Object.keys(timePerGroup)"
-                  :data="Object.values(timePerGroup)">
+                  :data="Object.values(timePerGroup)" v-if="!loading">
         </Doughnut>
       </div>
-      <div class="uk-margin-top">
+      <div class="uk-margin-top" v-if="!loading">
         <table class="uk-table uk-table-hover uk-table-divider meetings-table">
           <thead>
             <tr>
@@ -57,6 +67,9 @@
 .meeting-hours {
   font-size: 1.2rem;
 }
+.uk-select {
+  width: inherit;
+}
 </style>
 
 
@@ -79,11 +92,18 @@ export default {
       absentWithoutReason: 0,
       late: 0,
       leaveEarly: 0,
-      loading: true,
+      loading: false,
       totalTime: 0,
+      year: 0,
+      month: 0,
+      yearList: [],
     };
   },
   created() {
+    const now = moment();
+    this.year = now.year();
+    this.yearList = _.range(this.year - 10, this.year + 1);
+    this.month = now.month() + 1;
     this.fetchMeetings();
   },
   methods: {
@@ -93,12 +113,31 @@ export default {
         params: { id: meetingId, view: 'properties' },
       });
     },
+    clearVariables() {
+      this.meetings = [];
+      this.timePerGroup = {};
+      this.shouldAttend = 0;
+      this.own = 0;
+      this.absentWithReason = 0;
+      this.absentWithoutReason = 0;
+      this.late = 0;
+      this.leaveEarly = 0;
+      this.totalTime = 0;
+    },
     fetchMeetings() {
+      if (this.loading) return;
+      this.loading = true;
+      this.clearVariables();
+      const startDate = moment().set({
+        year: this.year,
+        month: this.month - 1,
+        date: 1,
+      });
       axios
         .get('/api/meeting', {
           params: {
-            startDate: moment().subtract(1, 'month').format('YYYY-MM-DD'),
-            endDate: moment().format('YYYY-MM-DD'),
+            startDate: startDate.format('YYYY-MM-DD'),
+            endDate: startDate.add(1, 'month').subtract(1, 'day').format('YYYY-MM-DD'),
             status: [this.$meetingStatus.End, this.$meetingStatus.RecordComplete,
               this.$meetingStatus.Archive],
           },

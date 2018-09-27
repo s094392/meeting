@@ -111,7 +111,7 @@ import { mapState } from 'vuex';
 export default {
   computed: {
     isAttendee() {
-      return !_.isEmpty(this.me);
+      return !_.isEmpty(this.me) && this.meeting.owner !== this.user.user_id;
     },
     ...mapState(['user']),
   },

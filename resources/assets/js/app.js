@@ -17,7 +17,7 @@ Vue.prototype.$meetingStatusText = Object.freeze([
   '',
   '新會議',
   '進行中',
-  '等待舉辦人確認',
+  '等待發起人確認',
   '會議記錄完成',
   '已報帳封存',
 ]);

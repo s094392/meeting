@@ -32,28 +32,6 @@
       </div>
     </div>
 
-    <div class="uk-margin" v-if="editMode && meeting.status != $meetingStatus.Archive
-                                 && meeting.status >= $meetingStatus.Start">
-      <label class="uk-form-label" for="form-horizontal-text">開始時間</label>
-      <div class="uk-form-controls">
-        <FlatPickr v-model="meeting.start_time" :config="flatPickrConfig"
-        class="flatpickr-input" placeholder="選擇開會時間..."
-        :class="{'form-danger': !meeting.start_time && triedPost}">
-        </FlatPickr>
-      </div>
-    </div>
-
-    <div class="uk-margin" v-if="editMode && meeting.status != $meetingStatus.Archive
-                                 && meeting.status >= $meetingStatus.End">
-      <label class="uk-form-label" for="form-horizontal-text">結束時間</label>
-      <div class="uk-form-controls">
-        <FlatPickr v-model="meeting.end_time" :config="flatPickrConfig"
-        class="flatpickr-input" placeholder="選擇開會時間..."
-        :class="{'form-danger': !meeting.end_time && triedPost}">
-        </FlatPickr>
-      </div>
-    </div>
-
     <div class="uk-margin">
     <label class="uk-form-label" for="form-horizontal-text">參與人員</label>
     <div class="uk-form-controls">
@@ -94,6 +72,7 @@
 <script>
 import Multiselect from 'vue-multiselect';
 import FlatPickr from 'vue-flatpickr-component';
+import moment from 'moment';
 
 export default {
   data() {
@@ -108,6 +87,10 @@ export default {
       attendeeOptions: [],
       flatPickrConfig: {
         enableTime: true,
+        disable: [{
+          from: '0000-00-00',
+          to: moment().format('YYYY-MM-DD'),
+        }],
       },
     };
   },
@@ -137,11 +120,9 @@ export default {
           user_id: group,
           type: 'group',
         }));
-        for (let i = 0; i < Object.values(this.groupedTas).length; i += 1) {
-          this.attendeeOptions = this.attendeeOptions.concat(
-            Object.values(this.groupedTas)[i],
-          );
-        }
+        Object.values(this.groupedTas).forEach((tas) => {
+          this.attendeeOptions = this.attendeeOptions.concat(tas);
+        });
         this.attendeeOptions = _.uniqBy(this.attendeeOptions, 'user_id');
       });
     },
@@ -158,7 +139,6 @@ export default {
           });
       }
     },
-
     attendeeSelected(selectedOption) {
       const selected = _.last(selectedOption);
       if (selected.type === 'group') {
