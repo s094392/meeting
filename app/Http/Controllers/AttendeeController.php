@@ -2,11 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use Mail;
+use App\Meeting;
 use App\Attendee;
 use Illuminate\Http\Request;
 
 class AttendeeController extends Controller
 {
+    /**
+     * Send an e-mail reminder to the user.
+     *
+     * @param  Attendee  $attendee
+     */
+    public function sendMeetingCreated(Attendee $attendee)
+    {
+        $meeting = Meeting::where("id", $attendee->meeting_id)->first();
+        $taMap = app('App\Http\Controllers\TAsController')->map();
+        $user = $taMap[$attendee->user_id];
+        $meeting->owner = $taMap[$meeting->owner];
+        Mail::send('emails.create', ['meeting' => $meeting], function ($m) use ($meeting, $user) {
+            $m->sender('mllee@cs.nctu.edu.tw');
+            $m->to($user . "@cs.nctu.edu.tw", "help")->subject('[Meeting] [新開會通知] ' . $meeting->title . ' 會議將在 ' . $meeting->scheduled_time . ' 舉行');
+        });
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,7 +39,7 @@ class AttendeeController extends Controller
         foreach ($attendees as $val) {
             $val['username'] = $taMap[$val['user_id']];
         }
-         return $attendees;
+        return $attendees;
     }
 
     /**
@@ -34,7 +53,9 @@ class AttendeeController extends Controller
     {
         $data = $request->all();
         $data['meeting_id'] = $meeting_id;
-        return Attendee::create($data);
+        $attendee = Attendee::create($data);
+        $this->sendMeetingCreated($attendee);
+        return $attendee;
     }
 
     /**

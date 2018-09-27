@@ -2,13 +2,38 @@
 
 namespace App\Http\Controllers;
 
+use Mail;
 use App\Meeting;
+use App\Attendee;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use View\UserController;
 
 class MeetingController extends Controller
 {
+
+    /**
+     * Send an e-mail reminder to the user.
+     *
+     * @param  Meeting  $meeting
+     */
+    public function sendMeetingUpdated(Meeting $meeting)
+    {
+        $attendees = Attendee::where('meeting_id', $meeting->id)->get();
+        $taMap = app('App\Http\Controllers\TAsController')->map();
+        $users = array();
+        foreach ($attendees as $val) {
+            $users[] = $taMap[$val['user_id']] . '@cs.nctu.edu.tw';
+        }
+        $url = url('/') . '/detail/' . $meeting->id . '/properties';
+        $meeting->owner = $taMap[$meeting->owner];
+        Mail::send('emails.create', ['meeting' => $meeting, 'url' => $url], function ($m) use ($meeting, $users) {
+            $m->sender('mllee@cs.nctu.edu.tw');
+            $m->subject('[Meeting] [異動通知] "' . $meeting->title . '" 會議異動');
+            $m->bcc($users);
+        });
+    }
     /**
      * Display a listing of the resource.
      *
@@ -77,7 +102,8 @@ class MeetingController extends Controller
         $data = $request->all();
         $data['owner'] = session('user')['user_id'];
         $data['status'] = 1;
-        return Meeting::create($data);
+        $meeting = Meeting::create($data);
+        return $meeting;
     }
 
         /**
@@ -105,6 +131,7 @@ class MeetingController extends Controller
         $meeting->update($request->all());
         $taMap = app('App\Http\Controllers\TAsController')->map();
         $meeting['owner_name'] = $taMap[$meeting['owner']];
+        $this->sendMeetingUpdated($meeting);
         return $meeting;
     }
 
