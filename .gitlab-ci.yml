@@ -124,6 +124,13 @@ migrate:
     - sed -i -e "s,^REDIS_PASSWORD=.*,REDIS_PASSWORD=$REDIS_PASSWORD,g" .env
     - sed -i -e "s,^REDIS_PORT=.*,REDIS_PORT=$REDIS_PORT,g" .env
 
+    - sed -i -e "s,^MAIL_DRIVER=.*,MAIL_DRIVER=$MAIL_DRIVER,g" .env
+    - sed -i -e "s,^MAIL_HOST=.*,MAIL_HOST=$MAIL_HOST,g" .env
+    - sed -i -e "s,^MAIL_PORT=.*,MAIL_PORT=$MAIL_PORT,g" .env
+    - sed -i -e "s,^MAIL_USERNAME=.*,MAIL_USERNAME=$MAIL_USERNAME,g" .env
+    - sed -i -e "s,^MAIL_PASSWORD=.*,MAIL_PASSWORD=$MAIL_PASSWORD,g" .env
+    - sed -i -e "s,^MAIL_ENCRYPTION=.*,MAIL_ENCRYPTION=$MAIL_ENCRYPTION,g" .env
+
     - sed -i -e "/LOGGING_STORAGE=.*/d" .env
     - scp .env tccws1:/srv/www-available/$CI_PROJECT_NAME/
     - ssh tccws1 "
