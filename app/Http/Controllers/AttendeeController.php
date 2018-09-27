@@ -20,9 +20,13 @@ class AttendeeController extends Controller
         $taMap = app('App\Http\Controllers\TAsController')->map();
         $user = $taMap[$attendee->user_id];
         $meeting->owner = $taMap[$meeting->owner];
-        Mail::send('emails.create', ['meeting' => $meeting], function ($m) use ($meeting, $user) {
+        $url = url('/') . '/detail/' . $meeting->id . '/properties';
+        Mail::send('emails.create', ['meeting' => $meeting, 'url' => $url], function ($m) use ($meeting, $user) {
             $m->sender('mllee@cs.nctu.edu.tw');
-            $m->to($user . "@cs.nctu.edu.tw", "help")->subject('[Meeting] [新開會通知] ' . $meeting->title . ' 會議將在 ' . $meeting->scheduled_time . ' 舉行');
+            $m->to($user . "@cs.nctu.edu.tw", "help");
+            $m->subject(
+                '[Meeting] [新開會通知] '.$meeting->title.' 會議將在 '.$meeting->scheduled_time.' 舉行'
+            );
         });
     }
 
