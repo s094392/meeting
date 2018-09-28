@@ -48,10 +48,10 @@ class MeetingController extends Controller
         $title =  Input::get('title');
         $startDate =  Input::get('startDate');
         $endDate =  Input::get('endDate');
-        $sortby =  Input::get('sortby');
+        $sortBy =  Input::get('sortBy');
         $desc = Input::get('desc');
         $page = Input::get('page');
-        
+
         $meetings = Meeting::when($status, function ($query, $status) {
             if (is_array($status)) {
                 $query->whereIn('status', $status);
@@ -70,11 +70,11 @@ class MeetingController extends Controller
             return $query->where('scheduled_time', '<=', $endDate);
         })->when($limit, function ($query, $limit) {
             return $query->take($limit);
-        })->when($sortby, function ($query, $sortby) {
-            return $query->when($desc, function ($query, $desc) {
-                return $query->orderBy($sortby, 'desc');
-            }, function ($query) {
-                return $query->orderBy($sortby);
+        })->when($sortBy, function ($query, $sortBy) use ($desc) {
+            return $query->when($desc, function ($query, $desc) use ($sortBy) {
+                return $query->orderBy($sortBy, 'desc');
+            }, function ($query) use ($sortBy) {
+                return $query->orderBy($sortBy);
             });
         }, function ($query) {
             return $query->orderBy('scheduled_time', 'desc');
@@ -99,8 +99,8 @@ class MeetingController extends Controller
     {
         $data = $request->all();
         $data['owner'] = session('user')['user_id'];
-        $data['status'] = 1;
         $meeting = Meeting::create($data);
+        $meeting->attendees()->createMany($request['attendees']);
         return $meeting;
     }
 
@@ -114,7 +114,11 @@ class MeetingController extends Controller
     {
         $taMap = app('App\Http\Controllers\TAsController')->map();
         $meeting['owner_name'] = $taMap[$meeting['owner']];
-        return $meeting;
+        $data = $meeting->load('attendees');
+        foreach ($data->attendees as $val) {
+            $val['username'] = $taMap[$val['user_id']];
+        }
+        return $data;
     }
 
         /**
@@ -127,10 +131,22 @@ class MeetingController extends Controller
     public function update(Request $request, Meeting $meeting)
     {
         $meeting->update($request->all());
+        if (isset($request['attendees'])) {
+            foreach ($request['attendees'] as $val) {
+                $meeting->attendees()->
+                updateOrCreate(['user_id' => $val['user_id'], 'meeting_id' => $meeting['id']], $val);
+            }
+            $originalAttendeesId = $meeting->attendees->pluck('user_id')->toArray();
+            foreach ($originalAttendeesId as $id) {
+                if (!in_array($id, array_column($request['attendees'], 'user_id'))) {
+                    $meeting->attendees()->where('user_id', $id)->delete();
+                };
+            }
+        }
         $taMap = app('App\Http\Controllers\TAsController')->map();
         $meeting['owner_name'] = $taMap[$meeting['owner']];
         $this->sendMeetingUpdated($meeting);
-        return $meeting;
+        return $meeting->load('attendees');
     }
 
         /**
@@ -152,7 +168,11 @@ class MeetingController extends Controller
         $taMap = app('App\Http\Controllers\TAsController')->map();
         $meeting = Meeting::where("id", $meetingId)->first();
         $meeting['owner_name'] = $taMap[$meeting['owner']];
-        return $meeting;
+        $data = $meeting->load('attendees');
+        foreach ($data->attendees as $val) {
+            $val['username'] = $taMap[$val['user_id']];
+        }
+        return $data;
     }
 
     public function end($meetingId)
@@ -162,6 +182,10 @@ class MeetingController extends Controller
         $taMap = app('App\Http\Controllers\TAsController')->map();
         $meeting = Meeting::where("id", $meetingId)->first();
         $meeting['owner_name'] = $taMap[$meeting['owner']];
-        return $meeting;
+        $data = $meeting->load('attendees');
+        foreach ($data->attendees as $val) {
+            $val['username'] = $taMap[$val['user_id']];
+        }
+        return $data;
     }
 }

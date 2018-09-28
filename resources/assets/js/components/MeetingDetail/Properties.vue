@@ -30,10 +30,6 @@
       <td>{{ this.$meetingStatusText[meeting.status] }}</td>
     </tr>
     <tr>
-      <th>會議時數:</th>
-      <td>{{ meeting.title }}</td>
-    </tr>
-    <tr>
       <th>會議說明:</th>
       <td class="pre-wrap">{{ meeting.description }}</td>
     </tr>

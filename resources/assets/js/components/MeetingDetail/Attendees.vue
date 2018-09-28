@@ -278,10 +278,7 @@ export default {
     },
     removeSecond(s) {
       if (!s) return '--:--';
-      return s
-        .split(':')
-        .splice(0, 2)
-        .join(':');
+      return s.slice(0, -3);
     },
   },
 };

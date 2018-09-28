@@ -5,31 +5,7 @@
     <button class="uk-button uk-button-primary uk-align-right uk-hidden@l"
             uk-toggle="target: #meeting-filter">篩選器</button>
     <div class="uk-card uk-card-default uk-overflow-auto uk-width-1-1 uk-margin-top">
-      <table class="uk-table uk-table-hover uk-table-divider meetings-table">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>會議分類</th>
-            <th>會議名稱</th>
-            <th class="uk-visible@m">開始時間</th>
-            <th class="uk-visible@m">結束時間</th>
-            <th class="uk-visible@m">發起人</th>
-            <th>會議狀態</th>
-          </tr>
-        </thead>
-        <tbody @click="toMeeting(meeting.id)" v-for="meeting in meetings"
-               :key="meeting.id" :meeting="meeting">
-          <tr class="cursor-pointer">
-            <td>{{ meeting.id }}</td>
-            <td >{{ meeting.group }}</td>
-            <td >{{ meeting.title }}</td>
-            <td class="uk-visible@m">{{ meeting.start_time }}</td>
-            <td class="uk-visible@m">{{ meeting.end_time }}</td>
-            <td class="uk-visible@m">{{ meeting.owner_name }}</td>
-            <td>{{ $meetingStatusText[meeting.status] }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <MeetingTable :meetings="meetings"></MeetingTable>
     </div>
     <ul class="uk-pagination uk-flex-center" uk-margin>
       <li v-if="page !== 1">
@@ -96,6 +72,7 @@
 
 <script>
 import MeetingFilter from './MeetingFilter';
+import MeetingTable from '../Shared/MeetingTable';
 
 export default {
   created() {
@@ -104,13 +81,14 @@ export default {
   },
   components: {
     MeetingFilter,
+    MeetingTable,
   },
   data() {
     return {
       meetings: [],
       groupOptions: [],
       ownerOptions: [],
-      lastPage: undefined,
+      lastPage: 1,
     };
   },
   computed: {
@@ -158,12 +136,6 @@ export default {
       axios
         .get('api/tas/grouped')
         .then((response) => { this.groupOptions = Object.keys(response.data); });
-    },
-    toMeeting(meetingId) {
-      this.$router.push({
-        name: 'detail',
-        params: { id: meetingId, view: 'properties' },
-      });
     },
   },
 };

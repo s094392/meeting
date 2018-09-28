@@ -51,7 +51,7 @@ export default {
     markdownEditor,
   },
   created() {
-    this.recordTimer = setInterval(this.saveRecord, 10000);
+    this.recordTimer = setInterval(this.saveRecord, 30000);
   },
   beforeDestroy() {
     clearInterval(this.recordTimer);

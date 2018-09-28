@@ -32,31 +32,7 @@
         </Doughnut>
       </div>
       <div class="uk-margin-top" v-if="!loading">
-        <table class="uk-table uk-table-hover uk-table-divider meetings-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>會議分類</th>
-              <th>會議名稱</th>
-              <th class="uk-visible@m">開始時間</th>
-              <th class="uk-visible@m">結束時間</th>
-              <th class="uk-visible@m">發起人</th>
-              <th>會議狀態</th>
-            </tr>
-          </thead>
-          <tbody @click="toMeeting(meeting.id)" v-for="meeting in meetings"
-                :key="meeting.id" :meeting="meeting">
-            <tr class="cursor-pointer">
-              <td>{{ meeting.id }}</td>
-              <td >{{ meeting.group }}</td>
-              <td >{{ meeting.title }}</td>
-              <td class="uk-visible@m">{{ meeting.start_time }}</td>
-              <td class="uk-visible@m">{{ meeting.end_time }}</td>
-              <td class="uk-visible@m">{{ meeting.owner_name }}</td>
-              <td>{{ $meetingStatusText[meeting.status] }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <MeetingTable :meetings="meetings"></MeetingTable>
       </div>
     </div>
   </div>
@@ -77,11 +53,14 @@
 import { mapState } from 'vuex';
 import moment from 'moment';
 import Doughnut from './Doughnut';
-
+import MeetingTable from '../Shared/MeetingTable';
 
 export default {
   computed: mapState(['user']),
-  components: { Doughnut },
+  components: {
+    Doughnut,
+    MeetingTable,
+  },
   data() {
     return {
       meetings: [],

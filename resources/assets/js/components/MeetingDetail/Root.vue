@@ -25,14 +25,14 @@
       <span>
         <div v-show="view == 'properties'">
           <Properties :meeting="meeting"/>
-          <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe" v-if="attendees"
+          <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe"
                           @startMeeting="startMeeting" @endMeeting="endMeeting"
                           @completeRecord="completeRecord"/>
         </div>
-        <Attendees v-if="attendees" v-show="view == 'attendees'"
-                  :meeting="meeting" :attendees="attendees"
+        <Attendees v-show="view == 'attendees'"
+                  :meeting="meeting" :attendees="meeting.attendees"
                   @updateAttendee="updateAttendee"/>
-        <Record v-if="attendees" v-show="view == 'record'" :meeting="meeting"/>
+        <Record v-show="view == 'record'" :meeting="meeting"/>
       </span>
     </div>
   </div>
@@ -67,16 +67,16 @@ export default {
   computed: {
     me: {
       get() {
-        const me = this.attendees.find(
+        const me = this.meeting.attendees.find(
           attendees => attendees.user_id === this.user.user_id,
         );
         return me === undefined ? {} : me;
       },
       set(me) {
-        const index = this.attendees.findIndex(
+        const index = this.meeting.attendees.findIndex(
           attendees => attendees.user_id === this.user.user_id,
         );
-        this.$set(this.attendees, index, me);
+        this.$set(this.meeting.attendees, index, me);
       },
     },
     ...mapState(['user']),
@@ -86,7 +86,6 @@ export default {
       id: this.$route.params.id,
       view: this.$route.params.view,
       meeting: undefined,
-      attendees: null,
     };
   },
   components: {
@@ -101,20 +100,15 @@ export default {
         this.meeting = response.data;
         document.title = `${this.meeting.title} - Meeting`;
       });
-      axios
-        .get(`/api/attendee/meeting_id/${this.id}/user_id`)
-        .then((response) => {
-          this.attendees = response.data;
-        });
     },
     updateMe(me) {
       this.me = me;
     },
     updateAttendee(modifiedAttendee) {
-      const index = this.attendees.findIndex(
+      const index = this.meeting.attendees.findIndex(
         attendee => attendee.user_id === modifiedAttendee.user_id,
       );
-      this.$set(this.attendees, index, modifiedAttendee);
+      this.$set(this.meeting.attendees, index, modifiedAttendee);
     },
     startMeeting(meeting) {
       this.meeting = meeting;

@@ -35,11 +35,11 @@
     <div class="uk-margin">
     <label class="uk-form-label" for="form-horizontal-text">參與人員</label>
     <div class="uk-form-controls">
-      <Multiselect class="multi-select" v-model="attendees" @input="attendeeSelected"
+      <Multiselect class="multi-select" v-model="meeting.attendees" @input="attendeeSelected"
             placeholder="選擇參與人員..." :options="attendeeOptions"
             :hideSelected="true" :multiple="true" :closeOnSelect="false"
             :trackBy="'user_id'" :label="'username'"
-            :class="{'form-danger': attendees.length == 0 && triedPost}"></MultiSelect>
+            :class="{'form-danger': meeting.attendees.length == 0 && triedPost}"></MultiSelect>
     </div>
     </div>
 
@@ -78,12 +78,12 @@ export default {
   data() {
     return {
       editMode: !!this.$route.params.id,
-      meeting: {},
+      meeting: {
+        attendees: [],
+      },
       groupedTas: {},
       triedPost: false,
       groupOptions: [],
-      originalAttendees: [],
-      attendees: [],
       attendeeOptions: [],
       flatPickrConfig: {
         enableTime: true,
@@ -100,15 +100,9 @@ export default {
   },
   created() {
     this.fetchTAs();
-    this.fetchMeeting();
-  },
-  computed: {
-    attendeesId() {
-      return this.attendees.map(att => att.user_id);
-    },
-    originalAttendeesId() {
-      return this.originalAttendees.map(att => att.user_id);
-    },
+    if (this.editMode) {
+      this.fetchMeeting();
+    }
   },
   methods: {
     fetchTAs() {
@@ -127,29 +121,20 @@ export default {
       });
     },
     fetchMeeting() {
-      if (this.editMode) {
-        axios.get(`/api/meeting/${this.$route.params.id}`).then((response) => {
-          this.meeting = response.data;
-        });
-        axios
-          .get(`/api/attendee/meeting_id/${this.$route.params.id}/user_id`)
-          .then((response) => {
-            this.attendees = response.data;
-            this.originalAttendees = this.attendees;
-          });
-      }
+      axios.get(`/api/meeting/${this.$route.params.id}`).then((response) => {
+        this.meeting = response.data;
+      });
     },
     attendeeSelected(selectedOption) {
       const selected = _.last(selectedOption);
       if (selected.type === 'group') {
-        this.attendees.pop();
-        this.attendees = this.attendees.concat(
+        this.meeting.attendees.pop();
+        this.meeting.attendees = this.meeting.attendees.concat(
           this.groupedTas[selected.username],
         );
-        this.attendees = _.uniqBy(this.attendees, 'user_id');
+        this.meeting.attendees = _.uniqBy(this.meeting.attendees, 'user_id');
       }
     },
-
     postMeeting() {
       this.triedPost = true;
       if (
@@ -157,54 +142,19 @@ export default {
         && !!this.meeting.description
         && !!this.meeting.group
         && !!this.meeting.scheduled_time
-        && !!this.attendees
+        && !!this.meeting.attendees
       ) {
-        if (this.editMode) {
-          axios
-            .put(`/api/meeting/${this.$route.params.id}`, this.meeting)
-            .then((response) => {
-              this.postAttendees(response.data.id);
-            });
-        } else {
-          axios.post('/api/meeting', this.meeting).then((response) => {
-            this.postAttendees(response.data.id);
+        axios({
+          method: this.editMode ? 'put' : 'post',
+          url: this.editMode ? `/api/meeting/${this.$route.params.id}` : '/api/meeting',
+          data: this.meeting,
+        }).then((response) => {
+          this.$router.push({
+            name: 'detail',
+            params: { id: response.data.id, view: 'properties' },
           });
-        }
-      }
-    },
-    postAttendees(meetingId) {
-      const promises = [];
-      const removedAttendees = _.without(
-        this.originalAttendeesId,
-        ...this.attendeesId,
-      );
-      const newAttendees = _.without(
-        this.attendeesId,
-        ...this.originalAttendeesId,
-      );
-
-      newAttendees.forEach((attendee) => {
-        promises.push(
-          axios.post(`/api/attendee/meeting_id/${meetingId}/user_id`, {
-            user_id: attendee,
-          }),
-        );
-      });
-
-      removedAttendees.forEach((attendee) => {
-        promises.push(
-          axios.delete(
-            `/api/attendee/meeting_id/${meetingId}/user_id/${attendee}`,
-          ),
-        );
-      });
-
-      axios.all(promises).then(() => {
-        this.$router.push({
-          name: 'detail',
-          params: { id: meetingId, view: 'properties' },
         });
-      });
+      }
     },
   },
 };

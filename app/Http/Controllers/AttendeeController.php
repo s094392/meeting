@@ -69,9 +69,8 @@ class AttendeeController extends Controller
      * @param  string $user_id
      * @return \Illuminate\Http\Response
      */
-    public function show($meeting_id, $user_id)
+    public function show(Attendee $attendee)
     {
-        $attendee = Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first();
         return $attendee;
     }
 
@@ -85,7 +84,7 @@ class AttendeeController extends Controller
      */
     public function update(Request $request, $meeting_id, $user_id)
     {
-        Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->update($request->all());
+        Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first()->update($request->all());
         $attendee =  Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first();
         $taMap = app('App\Http\Controllers\TAsController')->map();
         $attendee["username"] = $taMap[$attendee["user_id"]];
