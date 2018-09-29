@@ -7,9 +7,8 @@
 @import "~uikit/src/scss/mixins-theme.scss";
 @import "~uikit/src/scss/uikit-theme.scss";
 
-
-@import "~flatpickr/dist/flatpickr.css";
-@import "~vue-multiselect/dist/vue-multiselect.min.css";
+@import 'multiselect';
+@import 'flatpickr';
 
 .background {
     position: fixed;
@@ -21,15 +20,11 @@
     background-image: url($APP_URL + '/img/background.svg');
 }
 
-.flatpickr-input {
-  @extend .uk-input;
-}
-
 .router-link-exact-active {
   color: #666 !important;
 }
 
-.uk-sticky-fixed{
+.uk-sticky-fixed {
   z-index: 5;
 }
 
@@ -48,6 +43,12 @@
 .monospace {
   font-family: "Courier New", Courier, monospace;
 }
+
+.deep-shadow {
+  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
 .name-tag {
   display: inline-block;
   padding: 0 15px;

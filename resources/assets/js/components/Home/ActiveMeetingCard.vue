@@ -13,7 +13,7 @@
     </p>
     <p>{{ meeting.description }}<br></p>
     <MeetingControl :meeting="meeting" :me="me"
-      @updateMe="updateMe" @delete="$emit('delete', meeting.id);"
+      @updateMe="updateMe" @cancelMeeting="$emit('cancelMeeting');"
       @startMeeting="startMeeting" @endMeeting="endMeeting"/>
   </div>
 </div>
@@ -55,13 +55,13 @@ export default {
     startMeeting(meeting) {
       this.$router.push({
         name: 'detail',
-        params: { id: meeting.id, view: 'attendees' },
+        params: { id: meeting.id, view: 'properties' },
       });
     },
     endMeeting(meeting) {
       this.$router.push({
         name: 'detail',
-        params: { id: meeting.id, view: 'record' },
+        params: { id: meeting.id, view: 'properties' },
       });
     },
   },

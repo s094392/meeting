@@ -27,7 +27,7 @@
           <Properties :meeting="meeting"/>
           <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe"
                           @startMeeting="startMeeting" @endMeeting="endMeeting"
-                          @completeRecord="completeRecord"/>
+                          @completeRecord="completeRecord" @cancelMeeting="$router.replace('/')"/>
         </div>
         <Attendees v-show="view == 'attendees'"
                   :meeting="meeting" :attendees="meeting.attendees"

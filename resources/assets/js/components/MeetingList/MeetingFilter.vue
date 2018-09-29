@@ -8,6 +8,7 @@
 
       <div class="uk-margin">
         <Multiselect v-model="localQuery.group" :options="groupOptions" placeholder="任何會議類別">
+          <span slot="noResult">查無資料</span>
         </MultiSelect>
       </div>
 
@@ -18,7 +19,9 @@
 
       <div class="uk-margin">
         <Multiselect v-model="owner" :label="'username'" :trackBy="'user_id'"
-                     :options="ownerOptions" placeholder="任何發起人"></MultiSelect>
+                     :options="ownerOptions" placeholder="任何發起人">
+          <span slot="noResult">查無資料</span>
+        </MultiSelect>
       </div>
 
       <div class="uk-margin">
@@ -48,7 +51,7 @@
 
 <script>
 import FlatPickr from 'vue-flatpickr-component';
-import Multiselect from 'vue-multiselect';
+import Multiselect from '../Shared/MultiSelect';
 
 export default {
   props: ['groupOptions', 'ownerOptions', 'query'],

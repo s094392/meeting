@@ -20,3 +20,8 @@ $teal: #4dc0b5;
 $cyan: #6cb2eb;
 
 $APP_URL:'http://localhost';
+
+$global-primary-background: rgb(33, 106, 117);
+$global-link-color: $global-primary-background;
+$global-link-hover-color: rgb(3, 76, 87);
+$global-danger-background: rgb(198, 10, 55);

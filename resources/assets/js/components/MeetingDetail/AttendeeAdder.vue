@@ -9,6 +9,7 @@
         <div class="uk-form-controls">
             <Multiselect v-model="attendeeValue" :options="attendees"
                          :trackBy="'user_id'" :label="'username'">
+                <span slot="noResult">查無資料</span>
             </MultiSelect>
         </div>
     </div>
@@ -25,8 +26,8 @@
         <label class="uk-form-label" for="form-stacked-text" v-if="type === 'late'">遲到原因</label>
         <label class="uk-form-label" for="form-stacked-text" v-else>早退原因</label>
         <div class="uk-form-controls">
-            <input class="uk-input" id="form-stacked-text"
-                   type="text" v-model="reason" placeholder="Some text...">
+            <textarea class="uk-textarea" rows=5 id="form-stacked-text"
+                   v-model="reason" placeholder="給個好理由吧..."></textarea>
         </div>
     </div>
 
@@ -45,8 +46,8 @@
 
 
 <script>
-import Multiselect from 'vue-multiselect';
 import FlatPickr from 'vue-flatpickr-component';
+import Multiselect from '../Shared/MultiSelect';
 
 export default {
   props: ['attendees', 'type', 'time'],

@@ -1,14 +1,15 @@
 <template>
-<div style="margin-bottom: 40px;">
-  <div v-if="meeting.status >= $meetingStatus.Start" class="uk-width-1-1 section-title">
-    <span class="uk-text-large uk-text-lead">已到成員</span>
-  </div>
-  <span v-for="member in present" :key="member.user_id"
-    @click="changePresent(member.user_id, false)" class="name-tag" :class="{clickable: canModify}">
-    {{ member.username }}
-  </span>
+<div class="uk-margin-bottom">
+  <div class="uk-margin-medium-bottom uk-width-1-1" v-if="meeting.status >= $meetingStatus.Start">
+    <div class="uk-text-large uk-text-lead section-title">已到成員</div>
+    <span v-for="member in present" :key="member.user_id"
+      @click="changePresent(member.user_id, false)" class="name-tag"
+      :class="{clickable: canModify}">
+      {{ member.username }}
+    </span>
+    </div>
   <div v-if="absent.length + absentWithReason.length || canModify" uk-grid>
-    <div class="uk-width-1-2@s">
+    <div class="uk-width-1-2@s uk-margin-medium-bottom">
     <div class="uk-width-1-1 section-title">
       <span class="uk-text-large uk-text-lead">
         <span v-if="meeting.status >= $meetingStatus.Start">未到成員</span>
@@ -20,8 +21,7 @@
       {{ member.username }}
     </span>
     </div>
-
-      <div class="uk-width-1-2@s">
+      <div class="uk-width-1-2@s uk-margin-medium-bottom">
       <div class="section-title">
         <span class="uk-text-large uk-text-lead">請假成員</span>
       </div>
@@ -39,7 +39,7 @@
   </div>
 
   <div v-if="late.length + leaveEarly.length || canModify"  uk-grid>
-    <div class="uk-width-1-2@s">
+    <div class="uk-width-1-2@s uk-margin-medium-bottom">
       <div class="uk-width-1-1 section-title">
         <span class="uk-text-large uk-text-lead">遲到成員</span>
         <button v-if="canModify" class="uk-button uk-button-default uk-button-small"
@@ -61,7 +61,7 @@
             </span>
             <div v-if="canModify" uk-drop="mode: click; offset: 5; pos: bottom-center"
                  class="time-setter">
-              <div class="uk-card uk-card-body uk-card-default uk-card-small time-set-card">
+              <div class="uk-card uk-card-body uk-card-default uk-card-small deep-shadow">
                 <div class="uk-align-right button-edit-submit" >
                   <a href="#" class="uk-button uk-button-primary uk-button-small"
                      @click="addLate(member.user_id, temp_time, null)">確定</a>
@@ -84,7 +84,7 @@
       </div>
     </div>
 
-    <div class="uk-width-1-2@s">
+    <div class="uk-width-1-2@s uk-margin-medium-bottom">
       <div class="uk-width-1-1 section-title">
         <span class="uk-text-large uk-text-lead">早退成員</span>
         <button v-if="canModify" class="uk-button uk-button-default uk-button-small"
@@ -106,7 +106,7 @@
                 </span>
                 <div v-if="canModify" uk-drop="mode: click; offset: 5; pos: bottom-center"
                      class="time-setter">
-                  <div class="uk-card uk-card-body uk-card-default uk-card-small time-set-card">
+                  <div class="uk-card uk-card-body uk-card-default uk-card-small deep-shadow">
                     <div class="uk-align-right button-edit-submit" >
                       <a href="#" class="uk-button uk-button-primary uk-button-small"
                          @click="addLeaveEarly(member.user_id, temp_time, null)">確定</a>
@@ -143,7 +143,6 @@
 
 <style lang="scss" scoped>
 .section-title {
-  margin-top: 40px;
   margin-bottom: 5px;
 }
 .uk-icon-button {
@@ -170,10 +169,6 @@
 }
 .time-setter {
   width: 200px;
-}
-.time-set-card {
-  -webkit-box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
 }
 .edit-icon {
   margin-left: 5px;

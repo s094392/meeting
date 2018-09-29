@@ -18,7 +18,9 @@
     <label class="uk-form-label" for="form-horizontal-text">會議組別</label>
     <div class="uk-form-controls">
       <multiselect class="multi-select" v-model="meeting.group" placeholder="選擇會議組別..."
-      :class="{'form-danger': !meeting.group && triedPost}" :options="groupOptions" ></multiselect>
+      :class="{'form-danger': !meeting.group && triedPost}" :options="groupOptions" >
+        <span slot="noResult">查無資料</span>
+      </multiselect>
     </div>
     </div>
 
@@ -33,13 +35,19 @@
     </div>
 
     <div class="uk-margin">
-    <label class="uk-form-label" for="form-horizontal-text">參與人員</label>
+    <label class="uk-form-label" for="form-horizontal-text">
+      參與人員
+      <a href="#" class="uk-icon-link" uk-icon="icon: trash; ratio: 0.8"
+      @click="meeting.attendees=[]"></a>
+    </label>
     <div class="uk-form-controls">
       <Multiselect class="multi-select" v-model="meeting.attendees" @input="attendeeSelected"
             placeholder="選擇參與人員..." :options="attendeeOptions"
             :hideSelected="true" :multiple="true" :closeOnSelect="false"
             :trackBy="'user_id'" :label="'username'"
-            :class="{'form-danger': meeting.attendees.length == 0 && triedPost}"></MultiSelect>
+            :class="{'form-danger': meeting.attendees.length == 0 && triedPost}">
+        <span slot="noResult">查無資料</span>
+      </MultiSelect>
     </div>
     </div>
 
@@ -70,9 +78,9 @@
 </style>
 
 <script>
-import Multiselect from 'vue-multiselect';
 import FlatPickr from 'vue-flatpickr-component';
 import moment from 'moment';
+import Multiselect from './MultiSelect';
 
 export default {
   data() {

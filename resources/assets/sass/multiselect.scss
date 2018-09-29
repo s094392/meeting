@@ -1,0 +1,19 @@
+@import "~vue-multiselect/dist/vue-multiselect.min.css";
+
+.multiselect__option--highlight, .multiselect__tag,
+.multiselect__option--highlight::after {
+    background: $global-primary-background;
+}
+.multiselect__option--selected.multiselect__option--highlight,
+.multiselect__option--selected.multiselect__option--highlight::after {
+background: $global-danger-background;
+}
+.multiselect__tag-icon {
+color: #999;
+}
+.multiselect__tag-icon:hover {
+background: $global-link-hover-color;
+}
+.multiselect__tag-icon::after {
+color: #fff
+}

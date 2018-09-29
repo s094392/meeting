@@ -5,8 +5,15 @@
       <span v-if="meeting.owner === user.user_id">
         <button v-if="meeting.status === $meetingStatus.Init" @click="startMeeting"
                 class="uk-button uk-button-default uk-button-primary">開始</button>
-        <button v-if="meeting.status === $meetingStatus.Init" @click="$emit('delete')"
-        class="uk-button uk-button-default">取消</button>
+        <button v-if="meeting.status === $meetingStatus.Init"
+                class="uk-button uk-button-default">取消</button>
+        <div uk-drop="mode: click; offset: 5; pos: bottom-center">
+          <div class="uk-card uk-card-body uk-card-default uk-card-small deep-shadow">
+            <span>確定取消會議？</span>
+            <button class="uk-button uk-button-danger uk-button-small"
+                    @click="cancelMeeting">確定</button>
+          </div>
+        </div>
         <button v-if="meeting.status === $meetingStatus.Start" type="button" @click="endMeeting"
         class="uk-button uk-button-default uk-button-primary">結束</button>
         <button v-if="meeting.status === $meetingStatus.End" type="button" @click="completeRecord"
@@ -103,6 +110,9 @@
   width: 100%;
   overflow: auto;
 }
+.uk-drop {
+  width: auto;
+}
 </style>
 
 <script>
@@ -145,19 +155,15 @@ export default {
     },
     changeLate(clear) {
       if (!this.reason && !clear) return;
-      this.put(
-        {
-          late_reason: this.reason,
-        },
-      );
+      this.put({
+        late_reason: this.reason,
+      });
     },
     changeLeaveEarly(clear) {
       if (!this.reason && !clear) return;
-      this.put(
-        {
-          leave_early_reason: this.reason,
-        },
-      );
+      this.put({
+        leave_early_reason: this.reason,
+      });
     },
     changeAbsentReason(reason) {
       this.put({
@@ -172,6 +178,9 @@ export default {
         .then((response) => {
           this.$emit('completeRecord', response.data);
         });
+    },
+    cancelMeeting() {
+      axios.delete(`/api/meeting/${this.meeting.id}`).then(() => this.$emit('cancelMeeting'));
     },
   },
 };

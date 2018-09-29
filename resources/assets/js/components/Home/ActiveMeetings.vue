@@ -9,7 +9,7 @@
     </div>
     <ActiveMeetingCard v-for="meeting in meetings"
                        :key="meeting.id" :meeting="meeting"
-                       @delete="deleteMeeting" />
+                       @cancelMeeting="fetchMeetings" />
   </div>
 </template>
 
@@ -39,11 +39,6 @@ export default {
         .then((response) => {
           this.meetings = response.data;
         });
-    },
-    deleteMeeting(id) {
-      axios.delete(`/api/meeting/${id}`).then(() => {
-        this.fetchMeetings();
-      });
     },
   },
 };
