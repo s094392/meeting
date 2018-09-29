@@ -7,7 +7,7 @@
                 class="uk-button uk-button-default uk-button-primary">開始</button>
         <button v-if="meeting.status === $meetingStatus.Init"
                 class="uk-button uk-button-default">取消</button>
-        <div uk-drop="mode: click; offset: 5; pos: bottom-center">
+        <div class="confirm-drop" uk-drop="mode: click; offset: 5; pos: bottom-center">
           <div class="uk-card uk-card-body uk-card-default uk-card-small deep-shadow">
             <span>確定取消會議？</span>
             <button class="uk-button uk-button-danger uk-button-small"
@@ -110,7 +110,7 @@
   width: 100%;
   overflow: auto;
 }
-.uk-drop {
+.confirm-drop {
   width: auto;
 }
 </style>

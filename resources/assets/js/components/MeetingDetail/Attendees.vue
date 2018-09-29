@@ -55,10 +55,10 @@
             <td class="td-id">
           <tr>{{ member.username }}</tr>
           <tr class="monospace">
-            <span>{{ removeSecond(member.arrive_time) }}</span><span
-                  class="cursor-pointer edit-icon" v-if="canModify"
-                  uk-icon="icon: pencil; ratio: 0.7" @click="setTempTime(member.arrive_time)">
-            </span>
+            <span>{{ removeSecond(member.arrive_time) }}</span><a href="#"
+                  v-if="canModify" @click="setTempTime(member.arrive_time)"
+                  uk-icon="icon: pencil; ratio: 0.7" class="edit-time-button">
+            </a>
             <div v-if="canModify" uk-drop="mode: click; offset: 5; pos: bottom-center"
                  class="time-setter">
               <div class="uk-card uk-card-body uk-card-default uk-card-small deep-shadow">
@@ -100,10 +100,10 @@
             <td class="td-id">
               <tr>{{ member.username }}</tr>
               <tr class="monospace">
-                <span>{{ removeSecond(member.leave_time) }}</span><span
-                      class="cursor-pointer edit-icon" v-if="canModify"
-                      uk-icon="icon: pencil; ratio: 0.7" @click="setTempTime(member.leave_time)">
-                </span>
+                <span>{{ removeSecond(member.leave_time) }}</span><a href="#"
+                      v-if="canModify" @click="setTempTime(member.leave_time)"
+                      uk-icon="icon: pencil; ratio: 0.7" class="edit-time-button">
+                </a>
                 <div v-if="canModify" uk-drop="mode: click; offset: 5; pos: bottom-center"
                      class="time-setter">
                   <div class="uk-card uk-card-body uk-card-default uk-card-small deep-shadow">
@@ -170,7 +170,7 @@
 .time-setter {
   width: 200px;
 }
-.edit-icon {
+.edit-time-button {
   margin-left: 5px;
 }
 </style>
