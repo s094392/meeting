@@ -3,10 +3,12 @@ import { Doughnut } from 'vue-chartjs';
 
 export default {
   extends: Doughnut,
-  props: ['labels', 'data'],
+  props: ['timePerGroup'],
   mounted() {
+    let pairs = _.toPairs(this.timePerGroup);
+    pairs = _.sortBy(pairs, el => el[0]);
     this.renderChart({
-      labels: this.labels,
+      labels: _.map(pairs, el => el[0]),
       datasets: [
         {
           backgroundColor: [
@@ -31,7 +33,7 @@ export default {
             '#000075',
             '#808080',
           ],
-          data: this.data,
+          data: _.map(pairs, el => el[1]),
         },
       ],
     });

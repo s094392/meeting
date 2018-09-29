@@ -27,8 +27,8 @@
           </ul>
 
         </div>
-        <Doughnut class="uk-width-1-2@s" :labels="Object.keys(timePerGroup)"
-                  :data="Object.values(timePerGroup)" v-if="!loading">
+        <Doughnut class="uk-width-1-2@s" :timePerGroup="timePerGroup"
+                  v-if="!loading">
         </Doughnut>
       </div>
       <div class="uk-margin-top" v-if="!loading">
