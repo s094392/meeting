@@ -1,14 +1,19 @@
 <template>
-<div v-if="loaded">
-  <TopNav />
-  <div class="uk-padding">
-    <div uk-grid>
-      <div class="uk-width-1-5@m"><LeftNav/></div>
-      <div class="uk-width-4-5@m">
-        <router-view></router-view>
+<div>
+  <div class="progress" v-if="loading || !init">
+    <div class="indeterminate"></div>
+  </div>
+  <template v-if="init">
+    <TopNav />
+    <div class="uk-padding">
+      <div uk-grid>
+        <div class="uk-width-1-5@m"><LeftNav/></div>
+        <div class="uk-width-4-5@m">
+          <router-view></router-view>
+        </div>
       </div>
     </div>
-  </div>
+  </template>
 </div>
 </template>
 
@@ -22,8 +27,10 @@
 
 
 <script>
+import { mapState } from 'vuex';
 import LeftNav from './components/Shared/LeftNav';
 import TopNav from './components/Shared/TopNav';
+
 
 export default {
   name: 'App',
@@ -31,9 +38,10 @@ export default {
     LeftNav,
     TopNav,
   },
+  computed: mapState(['loading']),
   data() {
     return {
-      loaded: false,
+      init: false,
     };
   },
   created() {
@@ -43,6 +51,7 @@ export default {
     initUser() {
       this.$store.dispatch('initUser').then(() => {
         this.loaded = true;
+        this.init = true;
       });
     },
   },

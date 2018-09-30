@@ -76,7 +76,6 @@ import MeetingTable from '../Shared/MeetingTable';
 
 export default {
   created() {
-    this.fetchMeetings();
     this.fetchTas();
   },
   components: {
@@ -96,15 +95,29 @@ export default {
       return this.$route.query;
     },
     page() {
-      return parseInt(this.$route.params.page, 10);
+      return parseInt(this.$route.query.page, 10);
     },
   },
-  watch: {
-    query() {
-      this.fetchMeetings();
-    },
+  beforeRouteEnter(to, from, next) {
+    const params = to.query;
+    if (!params.page) params.page = 1;
+    axios.get('/api/meeting', { params }).then((response) => {
+      next(vm => vm.setData(response.data));
+    });
+  },
+  beforeRouteUpdate(to, from, next) {
+    const params = to.query;
+    if (!params.page) params.page = 1;
+    axios.get('/api/meeting', { params }).then((response) => {
+      this.setData(response.data);
+      next();
+    });
   },
   methods: {
+    setData(data) {
+      this.lastPage = parseInt(data.last_page, 10);
+      this.meetings = data.data;
+    },
     pageRange() {
       let start = this.page - 3;
       let end = this.page + 3;
@@ -117,17 +130,6 @@ export default {
         end = this.lastPage;
       }
       return _.range(Math.max(1, start), end + 1);
-    },
-    fetchMeetings() {
-      axios.get('/api/meeting', {
-        params: {
-          page: this.page,
-          ...this.query,
-        },
-      }).then((response) => {
-        this.lastPage = parseInt(response.data.last_page, 10);
-        this.meetings = response.data.data;
-      });
     },
     fetchTas() {
       axios

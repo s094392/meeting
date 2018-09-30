@@ -1,7 +1,11 @@
 <template>
   <div>
     <h4>已結束的會議</h4>
-    <InactiveMeetingCard v-for="meeting in meetings" :key="meeting.id" :meeting="meeting"/>
+    <span v-if="meetings === null">載入中...</span>
+    <span v-else-if="meetings.length === 0">無資料</span>
+    <template v-else>
+      <InactiveMeetingCard v-for="meeting in meetings" :key="meeting.id" :meeting="meeting"/>
+    </template>
     <div class="uk-text-right uk-margin-left">
       <router-link :to="{ name: 'list', params: { page: 1 } }">顯示更多</router-link>
     </div>
@@ -20,7 +24,7 @@ export default {
   },
   data() {
     return {
-      meetings: [],
+      meetings: null,
     };
   },
   methods: {

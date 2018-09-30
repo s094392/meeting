@@ -5,11 +5,18 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     user: {},
+    loading: true,
   },
   /* eslint-disable no-param-reassign */
   mutations: {
     setUser(state, user) {
       state.user = user;
+    },
+    startLoad(state) {
+      state.loading = true;
+    },
+    endLoad(state) {
+      state.loading = false;
     },
   },
   actions: {

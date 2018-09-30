@@ -7,6 +7,7 @@ import MeetingDetail from './components/MeetingDetail/Root';
 import Profile from './components/Profile/Root';
 import MeetingEditor from './components/Shared/MeetingEditor';
 import BATH_PATH from './base_path';
+import store from './store';
 
 Vue.use(VueRouter);
 
@@ -21,7 +22,7 @@ const router = new VueRouter({
       meta: { title: '首頁' },
     },
     {
-      path: '/list/:page',
+      path: '/list',
       name: 'list',
       component: MeetingList,
       meta: { title: '會議列表' },
@@ -45,8 +46,14 @@ const router = new VueRouter({
       component: MeetingEditor,
     },
     {
-      path: '/profile',
+      path: '/profile/:year/:month',
       name: 'profile',
+      meta: { title: '個人報表' },
+      component: Profile,
+    },
+    {
+      path: '/profile',
+      name: 'profileThisMonth',
       meta: { title: '個人報表' },
       component: Profile,
     },
@@ -61,12 +68,16 @@ const router = new VueRouter({
   },
 });
 
+
 router.beforeEach((to, from, next) => {
-  // dont update title when switching tab in detail page
+  store.commit('startLoad');
   next();
+  // dont update title when switching tab in detail page
   if (!(to.name === 'detail' && from.name === 'detail')) {
     document.title = `${to.meta.title} - Meeting`;
   }
 });
+
+router.afterEach(() => store.commit('endLoad'));
 
 export default router;

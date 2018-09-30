@@ -7,9 +7,11 @@
       </div>
 
       <div class="uk-margin">
-        <Multiselect v-model="localQuery.group" :options="groupOptions" placeholder="任何會議類別">
+        <Multiselect v-model="localQuery.group" :options="groupOptions"
+          v-if="groupOptions" placeholder="任何會議類別">
           <span slot="noResult">查無資料</span>
         </MultiSelect>
+        <span v-else class="uk-input input-loading">載入會議類別中...</span>
       </div>
 
       <div class="uk-margin">
@@ -19,9 +21,11 @@
 
       <div class="uk-margin">
         <Multiselect v-model="owner" :label="'username'" :trackBy="'user_id'"
-                     :options="ownerOptions" placeholder="任何發起人">
+                     :options="ownerOptions" placeholder="任何發起人"
+                     v-if="ownerOptions">
           <span slot="noResult">查無資料</span>
         </MultiSelect>
+        <span v-else class="uk-input input-loading">載入發起人資料中...</span>
       </div>
 
       <div class="uk-margin">
@@ -43,8 +47,8 @@
 </template>
 
 <style lang="scss" scoped>
-.multiselect {
-  color: inherit;
+.input-loading {
+  color: #999;
 }
 </style>
 
@@ -62,7 +66,7 @@ export default {
       }
     },
     owner() {
-      if (this.owner.user_id) this.localQuery.owner = this.owner.user_id;
+      if (this.owner && this.owner.user_id) this.localQuery.owner = this.owner.user_id;
     },
   },
   data() {

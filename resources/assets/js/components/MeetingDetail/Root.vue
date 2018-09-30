@@ -26,8 +26,8 @@
         <div v-show="view == 'properties'">
           <Properties :meeting="meeting"/>
           <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe"
-                          @startMeeting="startMeeting" @endMeeting="endMeeting"
-                          @completeRecord="completeRecord" @cancelMeeting="$router.replace('/')"/>
+                          @startMeeting="updateMeeting" @endMeeting="updateMeeting"
+                          @completeRecord="updateMeeting" @cancelMeeting="$router.replace('/')"/>
         </div>
         <Attendees v-show="view == 'attendees'"
                   :meeting="meeting" :attendees="meeting.attendees"
@@ -61,8 +61,10 @@ import Record from './Record';
 import MeetingControl from '../Shared/MeetingControl';
 
 export default {
-  created() {
-    this.init();
+  beforeRouteEnter(to, from, next) {
+    axios.get(`/api/meeting/${to.params.id}`).then((response) => {
+      next(vm => vm.setData(response.data));
+    });
   },
   computed: {
     me: {
@@ -95,11 +97,9 @@ export default {
     MeetingControl,
   },
   methods: {
-    init() {
-      axios.get(`/api/meeting/${this.id}`).then((response) => {
-        this.meeting = response.data;
-        document.title = `${this.meeting.title} - Meeting`;
-      });
+    setData(data) {
+      this.meeting = data;
+      document.title = `${this.meeting.title} - Meeting`;
     },
     updateMe(me) {
       this.me = me;
@@ -110,13 +110,7 @@ export default {
       );
       this.$set(this.meeting.attendees, index, modifiedAttendee);
     },
-    startMeeting(meeting) {
-      this.meeting = meeting;
-    },
-    endMeeting(meeting) {
-      this.meeting = meeting;
-    },
-    completeRecord(meeting) {
+    updateMeeting(meeting) {
       this.meeting = meeting;
     },
   },

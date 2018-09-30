@@ -108,8 +108,13 @@ export default {
   },
   created() {
     this.fetchTAs();
-    if (this.editMode) {
-      this.fetchMeeting();
+  },
+  beforeRouteEnter(to, from, next) {
+    if (to.name === 'create') next();
+    else {
+      axios.get(`/api/meeting/${to.params.id}`).then((response) => {
+        next(vm => vm.setData(response.data));
+      });
     }
   },
   methods: {
@@ -128,10 +133,8 @@ export default {
         this.attendeeOptions = _.uniqBy(this.attendeeOptions, 'user_id');
       });
     },
-    fetchMeeting() {
-      axios.get(`/api/meeting/${this.$route.params.id}`).then((response) => {
-        this.meeting = response.data;
-      });
+    setData(data) {
+      this.meeting = data;
     },
     attendeeSelected(selectedOption) {
       const selected = _.last(selectedOption);
