@@ -8,7 +8,7 @@ export default {
     let pairs = _.toPairs(this.timePerGroup);
     pairs = _.sortBy(pairs, el => el[0]);
     this.renderChart({
-      labels: _.map(pairs, el => el[0]),
+      labels: pairs.map(el => el[0]),
       datasets: [
         {
           backgroundColor: [
@@ -33,7 +33,7 @@ export default {
             '#000075',
             '#808080',
           ],
-          data: _.map(pairs, el => el[1]),
+          data: pairs.map(el => el[1]),
         },
       ],
     });

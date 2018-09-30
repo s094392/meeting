@@ -97,7 +97,7 @@ export default {
         enableTime: true,
         disable: [{
           from: '0000-00-00',
-          to: moment().format('YYYY-MM-DD'),
+          to: moment().subtract(1, 'day').format('YYYY-MM-DD'),
         }],
       },
     };

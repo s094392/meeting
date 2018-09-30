@@ -38,7 +38,7 @@
       </div>
 
       <button class="uk-button uk-button-primary uk-modal-close"
-        @click="$router.push({name: 'list', params: { page: 1 } , query: localQuery})">搜尋</button>
+        @click="$router.push({name: 'list', query: localQuery})">搜尋</button>
       <button class="uk-button uk-button-danger"
               @click="clear">清空</button>
     </fieldset>
@@ -81,15 +81,16 @@ export default {
   },
   created() {
     this.localQuery = Object.assign({}, this.query);
+    this.localQuery.page = 1;
     this.dateRange = `${this.query.startDate} to ${this.query.endDate}`;
     this.owner = this.ownerOptions.find(owner => owner.user_id === this.localQuery.owner);
   },
   methods: {
     clear() {
       this.dateRange = '';
-      this.owner = Object.assign({});
-      this.localQuery = Object.assign({});
-      this.$router.push({ name: 'list', params: { page: 1 } });
+      this.owner = {};
+      this.localQuery = {};
+      this.$router.push({ name: 'list' });
     },
   },
   components: {

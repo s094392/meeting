@@ -7,7 +7,7 @@
       <InactiveMeetingCard v-for="meeting in meetings" :key="meeting.id" :meeting="meeting"/>
     </template>
     <div class="uk-text-right uk-margin-left">
-      <router-link :to="{ name: 'list', params: { page: 1 } }">顯示更多</router-link>
+      <router-link :to="{ name: 'list' }">顯示更多</router-link>
     </div>
   </div>
 </template>
