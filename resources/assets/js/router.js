@@ -36,6 +36,16 @@ const router = new VueRouter({
       meta: { title: '會議資料' },
     },
     {
+      path: '/detail/:id',
+      redirect: to => ({
+        name: 'detail',
+        params: {
+          id: to.params.id,
+          view: 'properties',
+        },
+      }),
+    },
+    {
       path: '/create',
       name: 'create',
       component: MeetingEditor,
