@@ -64,6 +64,10 @@ export default {
   beforeRouteEnter(to, from, next) {
     axios.get(`/api/meeting/${to.params.id}`).then((response) => {
       next(vm => vm.setData(response.data));
+    }).catch((error) => {
+      if (error.response.status === 404) {
+        next(vm => vm.redirect404());
+      }
     });
   },
   computed: {
@@ -100,6 +104,9 @@ export default {
     setData(data) {
       this.meeting = data;
       document.title = `${this.meeting.title} - Meeting`;
+    },
+    redirect404() {
+      this.$router.replace('/404');
     },
     updateMe(me) {
       this.me = me;

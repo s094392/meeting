@@ -7,6 +7,7 @@ import MeetingList from './components/MeetingList/Root';
 import MeetingDetail from './components/MeetingDetail/Root';
 import Profile from './components/Profile/Root';
 import MeetingEditor from './components/Shared/MeetingEditor';
+import PageNotFound from './components/Shared/PageNotFound';
 import BATH_PATH from './base_path';
 import store from './store';
 
@@ -63,6 +64,12 @@ const router = new VueRouter({
           month: moment().get('month') + 1,
         },
       },
+    },
+    {
+      path: '*',
+      name: '404',
+      meta: { title: '404' },
+      component: PageNotFound,
     },
   ],
   scrollBehavior(to, from, savedPosition) {
