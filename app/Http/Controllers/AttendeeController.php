@@ -69,8 +69,9 @@ class AttendeeController extends Controller
      * @param  string $user_id
      * @return \Illuminate\Http\Response
      */
-    public function show(Attendee $attendee)
+    public function show($meeting_id, $user_id)
     {
+        $attendee = Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first();
         return $attendee;
     }
 

@@ -153,13 +153,15 @@ export default {
         && !!this.meeting.description
         && !!this.meeting.group
         && !!this.meeting.scheduled_time
-        && !!this.meeting.attendees
+        && this.meeting.attendees.length > 0
       ) {
+        this.$store.commit('startLoad');
         axios({
           method: this.editMode ? 'put' : 'post',
           url: this.editMode ? `/api/meeting/${this.$route.params.id}` : '/api/meeting',
           data: this.meeting,
         }).then((response) => {
+          this.$store.commit('endLoad');
           this.$router.push({
             name: 'detail',
             params: { id: response.data.id, view: 'properties' },

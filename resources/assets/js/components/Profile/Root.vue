@@ -12,26 +12,25 @@
             <select class="uk-select" v-model="month">
               <option v-for="month in 12" :key="month" :value="month">{{month}}</option>
             </select>
-            <button @click="fetchMeetings" class="uk-button uk-button-primary" :disabled="loading">
+            <button @click="$router.push( {name: 'profile', params: {year, month}})"
+                    class="uk-button uk-button-primary">
               查詢
             </button>
           </div>
-          <ul class="uk-list uk-list-bullet" v-if="!loading">
-            <li><span class="uk-text-bold meeting-hours">開了{{ totalTime }}小時的會議</span></li>
-            <li>應該參加：{{ shouldAttend }}次</li>
-            <li>舉辦：{{ own }}次</li>
-            <li>請假：{{ absentWithReason }}次</li>
-            <li>翹咪：{{ absentWithoutReason }}次</li>
-            <li>遲到：{{ late }}次</li>
-            <li>早退：{{ leaveEarly }}次</li>
+          <ul class="uk-list uk-list-bullet" v-if="stats">
+            <li><span class="uk-text-bold meeting-hours">開了{{ stats.totalTime }}小時的會議</span></li>
+            <li>應該參加：{{ stats.shouldAttend }}次</li>
+            <li>舉辦：{{ stats.own }}次</li>
+            <li>請假：{{ stats.absentWithReason }}次</li>
+            <li>翹咪：{{ stats.absentWithoutReason }}次</li>
+            <li>遲到：{{ stats.late }}次</li>
+            <li>早退：{{ stats.leaveEarly }}次</li>
           </ul>
-
         </div>
-        <Doughnut class="uk-width-1-2@s" :timePerGroup="timePerGroup"
-                  v-if="!loading">
+        <Doughnut class="uk-width-1-2@s" :timePerGroup="stats.timePerGroup" v-if="stats">
         </Doughnut>
       </div>
-      <div class="uk-margin-top" v-if="!loading">
+      <div class="uk-margin-top">
         <MeetingTable :meetings="meetings"></MeetingTable>
       </div>
     </div>
@@ -54,6 +53,98 @@ import { mapState } from 'vuex';
 import moment from 'moment';
 import Doughnut from './Doughnut';
 import MeetingTable from '../Shared/MeetingTable';
+import MeetingEnum from '../../MeetingEnum';
+import store from '../../store';
+
+const fetchAndCalc = (to, from, next, self) => {
+  const startDate = moment().set({
+    year: to.params.year,
+    month: to.params.month - 1,
+    date: 1,
+  });
+  const meetings = [];
+  const stats = {
+    shouldAttend: 0,
+    absentWithReason: 0,
+    absentWithoutReason: 0,
+    late: 0,
+    totalTime: 0,
+    leaveEarly: 0,
+    own: 0,
+    timePerGroup: {},
+  };
+
+  axios.get('/api/meeting', {
+    params: {
+      startDate: startDate.format('YYYY-MM-DD'),
+      endDate: startDate.add(1, 'month').subtract(1, 'day').format('YYYY-MM-DD'),
+      status: [
+        MeetingEnum.meetingStatus.End,
+        MeetingEnum.meetingStatus.RecordComplete,
+        MeetingEnum.meetingStatus.Archive,
+      ],
+      attendees: true,
+    },
+  }).then((response) => {
+    response.data.forEach((meeting) => {
+      const me = meeting.attendees.find(attendee => attendee.user_id === store.state.user.user_id);
+      if (me || meeting.owner === this.user.user_id) {
+        meetings.push(meeting);
+
+        let endTime = moment(meeting.end_time);
+        const startTime = moment(meeting.start_time);
+
+        if (me) {
+          stats.shouldAttend += 1;
+          if (me.status === MeetingEnum.attendeeStatus.Absent) {
+            if (me.absent_reason) stats.absentWithReason += 1;
+            else stats.absentWithoutReason += 1;
+            endTime = startTime;
+          }
+
+          if (me.status === MeetingEnum.attendeeStatus.LateOrLeaveEarly && me.arrive_time) {
+            stats.late += 1;
+            const arriveTime = moment(me.arrive_time, 'HH:mm:ss');
+            startTime.set({
+              hour: arriveTime.get('hour'),
+              minute: arriveTime.get('minute'),
+              second: arriveTime.get('second'),
+            });
+          }
+          if (me.status === MeetingEnum.attendeeStatus.LateOrLeaveEarly && me.leave_time) {
+            stats.leaveEarly += 1;
+            const leaveTime = moment(me.leave_time, 'HH:mm:ss');
+            startTime.set({
+              hour: leaveTime.get('hour'),
+              minute: leaveTime.get('minute'),
+              second: leaveTime.get('second'),
+            });
+          }
+
+          const meetingTime = (endTime - startTime) / 3600000;
+          stats.totalTime += meetingTime;
+          if (meeting.group in stats.timePerGroup) {
+            stats.timePerGroup[meeting.group] += meetingTime;
+          } else {
+            stats.timePerGroup[meeting.group] = meetingTime;
+          }
+        }
+        if (meeting.owner === store.state.user.user_id) stats.own += 1;
+      }
+    });
+    Object.keys(stats.timePerGroup).forEach((el) => {
+      stats.timePerGroup[el] = Math.round(stats.timePerGroup[el] * 100) / 100;
+    });
+    stats.totalTime = Math.round(stats.totalTime * 100) / 100;
+    if (self) {
+      self.setData(meetings, stats);
+      next();
+    } else {
+      next(vm => vm.setData(meetings, stats));
+    }
+  });
+};
+
 
 export default {
   computed: mapState(['user']),
@@ -64,127 +155,29 @@ export default {
   data() {
     return {
       meetings: [],
-      timePerGroup: {},
-      shouldAttend: 0,
-      own: 0,
-      absentWithReason: 0,
-      absentWithoutReason: 0,
-      late: 0,
-      leaveEarly: 0,
-      loading: false,
-      totalTime: 0,
+      yearList: [],
       year: 0,
       month: 0,
-      yearList: [],
+      stats: null,
     };
   },
+  beforeRouteEnter(to, from, next) {
+    fetchAndCalc(to, from, next, null);
+  },
+  beforeRouteUpdate(to, from, next) {
+    fetchAndCalc(to, from, next, this);
+  },
   created() {
-    const now = moment();
-    this.year = now.year();
-    this.yearList = _.range(this.year - 10, this.year + 1);
-    this.month = now.month() + 1;
-    this.fetchMeetings();
+    this.year = this.$route.params.year;
+    this.month = this.$route.params.month;
+    this.yearList = _.range(moment().get('year') - 10, moment().get('year') + 1);
   },
   methods: {
-    toMeeting(meetingId) {
-      this.$router.push({
-        name: 'detail',
-        params: { id: meetingId, view: 'properties' },
-      });
+    setData(meetings, stats) {
+      this.stats = Object.assign({}, stats);
+      this.meetings = Object.assign({}, meetings);
     },
-    clearVariables() {
-      this.meetings = [];
-      this.timePerGroup = {};
-      this.shouldAttend = 0;
-      this.own = 0;
-      this.absentWithReason = 0;
-      this.absentWithoutReason = 0;
-      this.late = 0;
-      this.leaveEarly = 0;
-      this.totalTime = 0;
-    },
-    fetchMeetings() {
-      if (this.loading) return;
-      this.loading = true;
-      this.clearVariables();
-      const startDate = moment().set({
-        year: this.year,
-        month: this.month - 1,
-        date: 1,
-      });
-      axios
-        .get('/api/meeting', {
-          params: {
-            startDate: startDate.format('YYYY-MM-DD'),
-            endDate: startDate.add(1, 'month').subtract(1, 'day').format('YYYY-MM-DD'),
-            status: [this.$meetingStatus.End, this.$meetingStatus.RecordComplete,
-              this.$meetingStatus.Archive],
-          },
-        })
-        .then((response) => {
-          const promises = [];
-          response.data.forEach((meeting) => {
-            promises.push(axios
-              .get(
-                `/api/attendee/meeting_id/${meeting.id}/user_id/${this.user.user_id}`,
-              )
-              .then((response2) => {
-                const me = response2.data;
-                if (me || meeting.owner === this.user.user_id) {
-                  this.meetings.push(meeting);
 
-                  let endTime = moment(meeting.end_time);
-                  const startTime = moment(meeting.start_time);
-
-                  if (me) {
-                    this.shouldAttend += 1;
-                    if (me.status === this.$attendeeStatus.Absent) {
-                      if (me.absent_reason) this.absentWithReason += 1;
-                      else this.absentWithoutReason += 1;
-                      endTime = startTime;
-                    }
-                    if (me.status === this.$attendeeStatus.LateOrLeaveEarly
-                        && me.arrive_time) {
-                      this.late += 1;
-                      const arriveTime = moment(me.arrive_time, 'HH:mm:ss');
-                      startTime.set({
-                        hour: arriveTime.get('hour'),
-                        minute: arriveTime.get('minute'),
-                        second: arriveTime.get('second'),
-                      });
-                    }
-                    if (me.status === this.$attendeeStatus.LateOrLeaveEarly
-                        && me.leave_time) {
-                      this.leaveEarly += 1;
-                      const leaveTime = moment(me.leave_time, 'HH:mm:ss');
-                      startTime.set({
-                        hour: leaveTime.get('hour'),
-                        minute: leaveTime.get('minute'),
-                        second: leaveTime.get('second'),
-                      });
-                    }
-
-                    const meetingTime = (endTime - startTime) / 3600000;
-                    this.totalTime += meetingTime;
-                    if (meeting.group in this.timePerGroup) {
-                      this.timePerGroup[meeting.group] += meetingTime;
-                    } else {
-                      this.timePerGroup[meeting.group] = meetingTime;
-                    }
-                  }
-                  if (meeting.owner === this.user.user_id) this.own += 1;
-                }
-              }));
-          });
-          axios.all(promises).then(() => {
-            Object.keys(this.timePerGroup).forEach((el) => {
-              this.timePerGroup[el] = Math.round(this.timePerGroup[el] * 100) / 100;
-            });
-            this.totalTime = Math.round(this.totalTime * 100) / 100;
-            this.loading = false;
-          });
-        });
-    },
   },
 };
 </script>

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import moment from 'moment';
 import VueRouter from 'vue-router';
 
 import Home from './components/Home/Root';
@@ -53,9 +54,15 @@ const router = new VueRouter({
     },
     {
       path: '/profile',
-      name: 'profileThisMonth',
+      name: 'profileRedirect',
       meta: { title: '個人報表' },
-      component: Profile,
+      redirect: {
+        name: 'profile',
+        params: {
+          year: moment().get('year'),
+          month: moment().get('month') + 1,
+        },
+      },
     },
   ],
   scrollBehavior(to, from, savedPosition) {
