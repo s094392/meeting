@@ -18,7 +18,7 @@
         <label class="uk-form-label" for="form-stacked-text" v-if="type === 'late'">抵達時間</label>
         <label class="uk-form-label" for="form-stacked-text" v-else>離開時間</label>
         <div class="uk-form-controls">
-            <FlatPickr v-model="time" :config="flatPickrConfig"></FlatPickr>
+            <FlatPickr v-model="dateTime" class="uk-input" :config="flatPickrConfig"></FlatPickr>
         </div>
     </div>
 
@@ -38,19 +38,12 @@
 </div>
 </template>
 
-<style lang="scss" scoped>
-.flatpickr-input {
-  display: none;
-}
-</style>
-
-
 <script>
 import FlatPickr from 'vue-flatpickr-component';
 import Multiselect from '../Shared/MultiSelect';
 
 export default {
-  props: ['attendees', 'type', 'time'],
+  props: ['attendees', 'type', 'dateTime'],
   components: {
     Multiselect,
     FlatPickr,
@@ -59,8 +52,6 @@ export default {
     return {
       flatPickrConfig: {
         enableTime: true,
-        noCalendar: true,
-        inline: true,
       },
       attendeeValue: null,
       reason: '',
@@ -68,11 +59,11 @@ export default {
   },
   methods: {
     selected() {
-      if (!!this.time && !!this.attendeeValue) {
+      if (!!this.dateTime && !!this.attendeeValue) {
         this.$emit(
           'selected',
           this.attendeeValue.user_id,
-          this.time,
+          this.dateTime,
           this.reason,
         );
       }

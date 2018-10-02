@@ -74,7 +74,7 @@ const fetchAndCalc = (to, from, next, self) => {
     timePerGroup: {},
   };
 
-  axios.get('/api/meeting', {
+  axios.get('/api/meetings', {
     params: {
       startDate: startDate.format('YYYY-MM-DD'),
       endDate: startDate.add(1, 'month').subtract(1, 'day').format('YYYY-MM-DD'),
@@ -86,9 +86,11 @@ const fetchAndCalc = (to, from, next, self) => {
       attendees: true,
     },
   }).then((response) => {
-    response.data.forEach((meeting) => {
-      const me = meeting.attendees.find(attendee => attendee.user_id === store.state.user.user_id);
-      if (me || meeting.owner === this.user.user_id) {
+    response.data.data.forEach((meeting) => {
+      const me = meeting.attendees.find(
+        attendee => attendee.user_id === store.state.user.user_id,
+      );
+      if (me || meeting.owner_id === this.user.user_id) {
         meetings.push(meeting);
 
         let endTime = moment(meeting.end_time);
@@ -129,7 +131,7 @@ const fetchAndCalc = (to, from, next, self) => {
             stats.timePerGroup[meeting.group] = meetingTime;
           }
         }
-        if (meeting.owner === store.state.user.user_id) stats.own += 1;
+        if (meeting.owner_id === store.state.user.user_id) stats.own += 1;
       }
     });
     Object.keys(stats.timePerGroup).forEach((el) => {

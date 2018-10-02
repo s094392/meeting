@@ -28,7 +28,7 @@
       <label class="uk-form-label" for="form-horizontal-text">預計開會時間</label>
       <div class="uk-form-controls">
         <FlatPickr v-model="meeting.scheduled_time" :config="flatPickrConfig"
-        class="flatpickr-input" placeholder="選擇開會時間..."
+        class="uk-input" placeholder="選擇開會時間..."
         :class="{'form-danger': !meeting.scheduled_time && triedPost}" >
         </FlatPickr>
       </div>
@@ -112,14 +112,14 @@ export default {
   beforeRouteEnter(to, from, next) {
     if (to.name === 'create') next();
     else {
-      axios.get(`/api/meeting/${to.params.id}`).then((response) => {
+      axios.get(`/api/meetings/${to.params.id}`).then((response) => {
         next(vm => vm.setData(response.data));
       });
     }
   },
   methods: {
     fetchTAs() {
-      axios.get('/api/tas/grouped').then((response) => {
+      axios.get('/api/tas').then((response) => {
         this.groupedTas = response.data;
         this.groupOptions = Object.keys(this.groupedTas);
         this.groupOptions.forEach(group => this.attendeeOptions.push({
@@ -127,10 +127,7 @@ export default {
           user_id: group,
           type: 'group',
         }));
-        Object.values(this.groupedTas).forEach((tas) => {
-          this.attendeeOptions = this.attendeeOptions.concat(tas);
-        });
-        this.attendeeOptions = _.uniqBy(this.attendeeOptions, 'user_id');
+        this.attendeeOptions = this.attendeeOptions.concat(response.data['cs-ta']);
       });
     },
     setData(data) {
@@ -158,7 +155,7 @@ export default {
         this.$store.commit('startLoad');
         axios({
           method: this.editMode ? 'put' : 'post',
-          url: this.editMode ? `/api/meeting/${this.$route.params.id}` : '/api/meeting',
+          url: this.editMode ? `/api/meetings/${this.$route.params.id}` : '/api/meetings',
           data: this.meeting,
         }).then((response) => {
           this.$store.commit('endLoad');

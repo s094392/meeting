@@ -55,7 +55,7 @@
             <td class="td-id">
           <tr>{{ member.username }}</tr>
           <tr class="monospace">
-            <span>{{ removeSecond(member.arrive_time) }}</span><a href="#"
+            <span>{{ onlyTime(member.arrive_time) }}</span><a href="#"
                   v-if="canModify" @click="setTempTime(member.arrive_time)"
                   uk-icon="icon: pencil; ratio: 0.7" class="edit-time-button">
             </a>
@@ -67,8 +67,8 @@
                      @click="addLate(member.user_id, temp_time, null)">確定</a>
                 </div>
                 <label>抵達時間</label>
-                <input type="time" class="uk-input" v-model="temp_time"
-                       pattern="[0-23]{2}:[0-59]{2}" placeholder="HH:mm">
+                <FlatPickr v-model="tempDateTime" class="uk-input"
+                           :config="flatPickrConfig"></FlatPickr>
               </div>
             </div>
           </tr>
@@ -100,8 +100,9 @@
             <td class="td-id">
               <tr>{{ member.username }}</tr>
               <tr class="monospace">
-                <span>{{ removeSecond(member.leave_time) }}</span><a href="#"
+                <span>{{ onlyTime(member.leave_time) }}</span><a href="#"
                       v-if="canModify" @click="setTempTime(member.leave_time)"
+                      uk-toggle="target: #my-id" type="button"
                       uk-icon="icon: pencil; ratio: 0.7" class="edit-time-button">
                 </a>
                 <div v-if="canModify" uk-drop="mode: click; offset: 5; pos: bottom-center"
@@ -112,8 +113,8 @@
                          @click="addLeaveEarly(member.user_id, temp_time, null)">確定</a>
                     </div>
                     <label>離開時間</label>
-                    <input type="time" class="uk-input" v-model="temp_time"
-                           pattern="[0-23]{2}:[0-59]{2}" placeholder="HH:mm">
+                    <FlatPickr v-model="tempDateTime" class="uk-input"
+                               :config="flatPickrConfig"></FlatPickr>
                   </div>
                 </div>
               </tr>
@@ -131,11 +132,12 @@
   </div>
 
   <div id="add-late" uk-modal>
-    <AttendeeAdder :attendees="attendees" :time="temp_time" :type="'late'" @selected="addLate"/>
+    <AttendeeAdder :attendees="attendees" :dateTime="tempDateTime"
+                   :type="'late'" @selected="addLate"/>
   </div>
 
   <div id="add-leave-early" uk-modal>
-    <AttendeeAdder :attendees="attendees" :time="temp_time"
+    <AttendeeAdder :attendees="attendees" :dateTime="tempDateTime"
                    :type="'leaveEarly'" @selected="addLeaveEarly"/>
   </div>
 </div>
@@ -168,7 +170,7 @@
   margin-left: 0;
 }
 .time-setter {
-  width: 200px;
+  width: 250px;
 }
 .edit-time-button {
   margin-left: 5px;
@@ -178,6 +180,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import FlatPickr from 'vue-flatpickr-component';
 import moment from 'moment';
 import AttendeeAdder from './AttendeeAdder';
 
@@ -185,13 +188,14 @@ export default {
   props: ['meeting', 'attendees'],
   components: {
     AttendeeAdder,
+    FlatPickr,
   },
   computed: {
     canModify() {
       return (
         this.meeting.status <= this.$meetingStatus.End
         && this.meeting.status !== this.$meetingStatus.Init
-        && this.meeting.owner === this.user.user_id
+        && this.meeting.owner_id === this.user.user_id
       );
     },
     present() {
@@ -218,18 +222,21 @@ export default {
   },
   data() {
     return {
-      temp_time: '',
+      tempDateTime: '',
+      flatPickrConfig: {
+        enableTime: true,
+      },
     };
   },
   methods: {
-    setTempTime(time) {
-      this.temp_time = time ? this.removeSecond(time) : moment().format('HH:mm');
+    setTempTime(dateTime) {
+      this.tempDateTime = (dateTime ? moment(dateTime) : moment()).format('YYYY-MM-DD HH:mm-ss');
     },
     updateAttendee(userId, data) {
       if (!this.canModify) return;
       axios
         .put(
-          `/api/attendee/meeting_id/${this.meeting.id}/user_id/${userId}`,
+          `/api/attendees/meeting_id/${this.meeting.id}/user_id/${userId}`,
           data,
         )
         .then((response) => {
@@ -271,9 +278,9 @@ export default {
         leave_early_reason: null,
       });
     },
-    removeSecond(s) {
+    onlyTime(s) {
       if (!s) return '--:--';
-      return s.slice(0, -3);
+      return moment(s).format('HH:mm');
     },
   },
 };

@@ -7,7 +7,7 @@ use App\Meeting;
 use App\Attendee;
 use Illuminate\Http\Request;
 
-class AttendeeController extends Controller
+class AttendeesController extends Controller
 {
     /**
      * Send an e-mail reminder to the user.
@@ -16,18 +16,18 @@ class AttendeeController extends Controller
      */
     public function sendMeetingCreated(Attendee $attendee)
     {
-        $meeting = Meeting::where("id", $attendee->meeting_id)->first();
-        $taMap = app('App\Http\Controllers\TAsController')->map();
-        $user = $taMap[$attendee->user_id];
-        $meeting->owner = $taMap[$meeting->owner];
-        $url = url('/') . '/detail/' . $meeting->id . '/properties';
-        Mail::send('emails.create', ['meeting' => $meeting, 'url' => $url], function ($m) use ($meeting, $user) {
-            $m->sender('mllee@cs.nctu.edu.tw');
-            $m->to($user . "@cs.nctu.edu.tw", "help");
-            $m->subject(
-                '[Meeting] [新開會通知] '.$meeting->title.' 會議將在 '.$meeting->scheduled_time.' 舉行'
-            );
-        });
+        // $meeting = Meeting::where("id", $attendee->meeting_id)->first();
+        // $taMap = app('App\Http\Controllers\TAsController')->map();
+        // $user = $taMap[$attendee->user_id];
+        // $meeting->owner = $taMap[$meeting->owner];
+        // $url = url('/') . '/detail/' . $meeting->id . '/properties';
+        // Mail::send('emails.create', ['meeting' => $meeting, 'url' => $url], function ($m) use ($meeting, $user) {
+        //     $m->sender('mllee@cs.nctu.edu.tw');
+        //     $m->to($user . "@cs.nctu.edu.tw", "help");
+        //     $m->subject(
+        //         '[Meeting] [新開會通知] '.$meeting->title.' 會議將在 '.$meeting->scheduled_time.' 舉行'
+        //     );
+        // });
     }
 
     /**
@@ -38,11 +38,7 @@ class AttendeeController extends Controller
      */
     public function index($meeting_id)
     {
-        $attendees = Attendee::where('meeting_id', $meeting_id)->get();
-        $taMap = app('App\Http\Controllers\TAsController')->map();
-        foreach ($attendees as $val) {
-            $val['username'] = $taMap[$val['user_id']];
-        }
+        $attendees = Attendee::where('meeting_id', $meeting_id)->with('user')->get();
         return $attendees;
     }
 
@@ -71,7 +67,8 @@ class AttendeeController extends Controller
      */
     public function show($meeting_id, $user_id)
     {
-        $attendee = Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first();
+        $attendee = Attendee::where('meeting_id', $meeting_id)->with('user')
+                    ->where('user_id', $user_id)->first();
         return $attendee;
     }
 
@@ -86,9 +83,8 @@ class AttendeeController extends Controller
     public function update(Request $request, $meeting_id, $user_id)
     {
         Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first()->update($request->all());
-        $attendee =  Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first();
-        $taMap = app('App\Http\Controllers\TAsController')->map();
-        $attendee["username"] = $taMap[$attendee["user_id"]];
+        $attendee =  Attendee::where('meeting_id', $meeting_id)->with('user')
+                    ->where('user_id', $user_id)->first();
         return $attendee;
     }
 

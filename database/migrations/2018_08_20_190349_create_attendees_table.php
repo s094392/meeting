@@ -15,14 +15,14 @@ class CreateAttendeesTable extends Migration
     {
         Schema::create('attendees', function (Blueprint $table) {
             $table->integer('meeting_id');
-            $table->string('user_id');
+            $table->integer('user_id');
             $table->smallInteger('status')->default(1);
             $table->string('absent_reason')->nullable();
             
-            $table->time('arrive_time')->nullable();
+            $table->datetime('arrive_time')->nullable();
             $table->string('late_reason')->nullable();
 
-            $table->time('leave_time')->nullable();
+            $table->datetime('leave_time')->nullable();
             $table->string('leave_early_reason')->nullable();
 
             $table->timestamps();

@@ -13,7 +13,7 @@ class TAsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function grouped()
+    public function __invoke()
     {
         $server_url = env("CSSSO_SERVER", null);
         $http = new GuzzleHttp\Client();
@@ -28,26 +28,5 @@ class TAsController extends Controller
             }
         }
         return $response;
-    }
-
-    public function list()
-    {
-        $groupedTas = $this->grouped();
-        $tas = [];
-        foreach ($groupedTas as $val) {
-            $tas = array_merge($tas, $val);
-        }
-        $tas = array_values(array_unique($tas, SORT_REGULAR));
-        return $tas;
-    }
-
-    public function map()
-    {
-        $tas = $this->list();
-        $taMap = [];
-        foreach ($tas as $val) {
-            $taMap[$val["user_id"]] = $val["username"];
-        }
-        return $taMap;
     }
 }

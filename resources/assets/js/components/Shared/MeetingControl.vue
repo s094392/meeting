@@ -1,8 +1,8 @@
 <template>
-<div v-if="me && meeting.status <= $meetingStatus.End">
+<div v-if="me && isOwnerOrAttendee && meeting.status <= $meetingStatus.End">
   <div class="buttons uk-display-inline-block">
     <div >
-      <span v-if="meeting.owner === user.user_id">
+      <span v-if="meeting.owner_id === user.user_id">
         <button v-if="meeting.status === $meetingStatus.Init" @click="startMeeting"
                 class="uk-button uk-button-default uk-button-primary">開始</button>
         <button v-if="meeting.status === $meetingStatus.Init"
@@ -22,7 +22,7 @@
                      class="uk-button uk-button-default">編輯</router-link>
       </span>
       <span v-if="meeting.status === $meetingStatus.Init && isAttendee">
-        <button class="uk-button uk-button-default"
+        <button class="uk-button uk-button-default uk-button-primary"
                 v-if="!me.absent_reason" type="button">請假</button>
           <div uk-dropdown="mode: click;" v-if="!me.absent_reason">
             <ul class="uk-nav uk-dropdown-nav">
@@ -121,7 +121,10 @@ import { mapState } from 'vuex';
 export default {
   computed: {
     isAttendee() {
-      return !_.isEmpty(this.me) && this.meeting.owner !== this.user.user_id;
+      return !_.isEmpty(this.me) && this.meeting.owner_id !== this.user.user_id;
+    },
+    isOwnerOrAttendee() {
+      return !_.isEmpty(this.me);
     },
     ...mapState(['user']),
   },
@@ -133,19 +136,19 @@ export default {
   },
   methods: {
     startMeeting() {
-      axios.post(`/api/meeting/start/${this.meeting.id}`).then((response) => {
+      axios.post(`/api/meetings/start/${this.meeting.id}`).then((response) => {
         this.$emit('startMeeting', response.data);
       });
     },
     endMeeting() {
-      axios.post(`/api/meeting/end/${this.meeting.id}`).then((response) => {
+      axios.post(`/api/meetings/end/${this.meeting.id}`).then((response) => {
         this.$emit('endMeeting', response.data);
       });
     },
     put(data) {
       axios
         .put(
-          `/api/attendee/meeting_id/${this.meeting.id}/`
+          `/api/attendees/meeting_id/${this.meeting.id}/`
           + `user_id/${this.user.user_id}`, data,
         )
         .then((response) => {
@@ -172,7 +175,7 @@ export default {
     },
     completeRecord() {
       axios
-        .put(`/api/meeting/${this.meeting.id}`, {
+        .put(`/api/meetings/${this.meeting.id}`, {
           status: this.$meetingStatus.RecordComplete,
         })
         .then((response) => {
@@ -180,7 +183,7 @@ export default {
         });
     },
     cancelMeeting() {
-      axios.delete(`/api/meeting/${this.meeting.id}`).then(() => this.$emit('cancelMeeting'));
+      axios.delete(`/api/meetings/${this.meeting.id}`).then(() => this.$emit('cancelMeeting'));
     },
   },
 };

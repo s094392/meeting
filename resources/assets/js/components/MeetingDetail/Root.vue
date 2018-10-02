@@ -62,7 +62,7 @@ import MeetingControl from '../Shared/MeetingControl';
 
 export default {
   beforeRouteEnter(to, from, next) {
-    axios.get(`/api/meeting/${to.params.id}`).then((response) => {
+    axios.get(`/api/meetings/${to.params.id}`).then((response) => {
       next(vm => vm.setData(response.data));
     }).catch((error) => {
       if (error.response.status === 404) {

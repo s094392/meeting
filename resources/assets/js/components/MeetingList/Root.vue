@@ -101,14 +101,14 @@ export default {
   beforeRouteEnter(to, from, next) {
     const params = to.query;
     if (!params.page) params.page = 1;
-    axios.get('/api/meeting', { params }).then((response) => {
+    axios.get('/api/meetings', { params }).then((response) => {
       next(vm => vm.setData(response.data));
     });
   },
   beforeRouteUpdate(to, from, next) {
     const params = to.query;
     if (!params.page) params.page = 1;
-    axios.get('/api/meeting', { params }).then((response) => {
+    axios.get('/api/meetings', { params }).then((response) => {
       this.setData(response.data);
       next();
     });
@@ -136,11 +136,11 @@ export default {
     },
     fetchTas() {
       axios
-        .get('api/tas/list')
-        .then((response) => { this.ownerOptions = response.data; });
-      axios
-        .get('api/tas/grouped')
-        .then((response) => { this.groupOptions = Object.keys(response.data); });
+        .get('api/tas')
+        .then((response) => {
+          this.groupOptions = Object.keys(response.data);
+          this.ownerOptions = response.data['cs-ta'];
+        });
     },
   },
 };

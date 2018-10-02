@@ -11,6 +11,7 @@ export default new Vuex.Store({
   mutations: {
     setUser(state, user) {
       state.user = user;
+      state.user.user_id = parseInt(state.user.user_id, 10);
     },
     startLoad(state) {
       state.loading = true;

@@ -4,7 +4,7 @@
     <div>
       <router-link :to="{name:'detail', params: {id: meeting.id, view: 'properties'}}"
                    class="uk-card-title">{{ meeting.title }}</router-link>
-      <span v-if="me"  class="uk-label uk-align-right">你的會議</span>
+      <span v-if="isOwnerOrAttendee"  class="uk-label uk-align-right">你的會議</span>
     </div>
     <p>
       <span class="uk-margin-small-right" uk-icon="user" />{{ meeting.owner_name }}<br>
@@ -25,7 +25,12 @@ import { mapState } from 'vuex';
 import MeetingControl from '../Shared/MeetingControl';
 
 export default {
-  computed: mapState(['user']),
+  computed: {
+    isOwnerOrAttendee() {
+      return !_.isEmpty(this.me);
+    },
+    ...mapState(['user']),
+  },
   props: ['meeting'],
   components: {
     MeetingControl,
@@ -42,7 +47,7 @@ export default {
     fetchUser() {
       axios
         .get(
-          `/api/attendee/meeting_id/${this.meeting.id}/`
+          `/api/attendees/meeting_id/${this.meeting.id}/`
           + `user_id/${this.user.user_id}`,
         )
         .then((response) => {

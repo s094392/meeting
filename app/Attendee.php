@@ -12,6 +12,19 @@ class Attendee extends Model
     protected $primaryKey = ['user_id', 'meeting_id'];
     public $incrementing = false;
 
+    protected $hidden = ['user'];
+    protected $appends = ['username'];
+
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'user_id', 'id');
+    }
+
+    public function getUsernameAttribute()
+    {
+        return $this->user->username;
+    }
+
     public function getRouteKey()
     {
         return array($this->meeting_id, $this->user_id);

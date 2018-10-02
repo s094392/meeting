@@ -32,7 +32,7 @@ export default {
     canModify() {
       return (
         this.meeting.status <= this.$meetingStatus.End
-        && this.meeting.owner === this.user.user_id
+        && this.meeting.owner_id === this.user.user_id
       );
     },
     ...mapState(['user']),
@@ -66,7 +66,7 @@ export default {
     },
     saveRecord() {
       if (this.edit) {
-        axios.put(`/api/meeting/${this.meeting.id}`, {
+        axios.put(`/api/meetings/${this.meeting.id}`, {
           record: this.meeting.record,
         });
       }

@@ -7,12 +7,8 @@ const meetingStatus = Object.freeze({
 });
 
 const meetingStatusText = Object.freeze([
-  '',
-  '新會議',
-  '進行中',
-  '等待發起人確認',
-  '會議記錄完成',
-  '已報帳封存',
+  '', '未開始', '進行中', '未提交報帳',
+  '等待報帳', '已報帳封存', '已取消',
 ]);
 
 const attendeeStatus = Object.freeze({

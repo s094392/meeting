@@ -42,13 +42,13 @@ export default {
     };
   },
   beforeRouteEnter(to, from, next) {
-    axios.get('/api/meeting', {
+    axios.get('/api/meetings', {
       params: {
         status: [MeetingEnum.meetingStatus.Init,
           MeetingEnum.meetingStatus.Start],
       },
     }).then((response) => {
-      next(vm => vm.setData(response.data));
+      next(vm => vm.setData(response.data.data));
     });
   },
   methods: {

@@ -21,9 +21,10 @@ class CreateMeetingsTable extends Migration
             $table->dateTime('scheduled_time');
             $table->dateTime('start_time')->nullable();
             $table->dateTime('end_time')->nullable();
-            $table->string('owner');
+            $table->integer('owner_id');
             $table->text('record')->nullable();
             $table->smallInteger('status')->default(1);
+            $table->boolean('request_money')->default(true);
             $table->timestamps();
         });
     }

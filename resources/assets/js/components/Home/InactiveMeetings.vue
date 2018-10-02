@@ -30,7 +30,7 @@ export default {
   methods: {
     fetchMeetings() {
       axios
-        .get('/api/meeting', {
+        .get('/api/meetings', {
           params: {
             limit: 5,
             status: [
@@ -41,7 +41,7 @@ export default {
           },
         })
         .then((response) => {
-          this.meetings = response.data;
+          this.meetings = response.data.data;
         });
     },
   },
