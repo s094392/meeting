@@ -58,7 +58,11 @@
       :class="{'form-danger': !meeting.description && triedPost}"></textarea>
       </div>
     </div>
+
     <div class="uk-margin uk-align-right">
+      <span class="uk-margin-right"  uk-tooltip="若取消勾選擇則本次咪挺不計薪">
+        <input class="uk-checkbox"  v-model="meeting.request_money" type="checkbox"> 報帳
+      </span>
     <button @click="postMeeting" class="uk-button uk-button-primary">送出</button>
     </div>
     </form>
@@ -88,6 +92,7 @@ export default {
       editMode: !!this.$route.params.id,
       meeting: {
         attendees: [],
+        request_money: true,
       },
       groupedTas: {},
       triedPost: false,

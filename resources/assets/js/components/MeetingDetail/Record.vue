@@ -5,8 +5,8 @@
     <button class="uk-button uk-button-primary uk-align-right edit-button"
             v-if="canModify && edit" @click="saveClicked">完成</button>
   <VueMarkdown v-if="!edit" :toc-anchor-link="false" :toc="true"
-               toc-id="toc" :source="meeting.record" />
-  <markdownEditor v-if="edit" v-model="meeting.record" :configs="configs"
+               toc-id="toc" :source="record" />
+  <markdownEditor v-if="edit" v-model="record" :configs="configs"
                    ref="markdownEditor"></markdownEditor>
 </div>
 </template>
@@ -34,6 +34,9 @@ export default {
         this.meeting.status <= this.$meetingStatus.End
         && this.meeting.owner_id === this.user.user_id
       );
+    },
+    record() {
+      return this.meeting.record ? this.meeting.record : '';
     },
     ...mapState(['user']),
   },

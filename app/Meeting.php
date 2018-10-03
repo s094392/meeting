@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Meeting extends Model
 {
     protected $fillable = ['title', 'description', 'group', 'scheduled_time',
-                        'owner_id', 'record', 'status'];
+                        'owner_id', 'record', 'status', 'request_money'];
 
     protected $appends = ['owner_name'];
     protected $hidden = ['owner'];

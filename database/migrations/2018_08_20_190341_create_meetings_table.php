@@ -23,7 +23,7 @@ class CreateMeetingsTable extends Migration
             $table->dateTime('end_time')->nullable();
             $table->integer('owner_id');
             $table->text('record')->nullable();
-            $table->smallInteger('status')->default(1);
+            $table->tinyInteger('status')->default(1);
             $table->boolean('request_money')->default(true);
             $table->timestamps();
         });

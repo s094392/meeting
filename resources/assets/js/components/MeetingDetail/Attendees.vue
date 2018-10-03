@@ -1,7 +1,7 @@
 <template>
 <div class="uk-margin-bottom">
   <div class="uk-margin-medium-bottom uk-width-1-1" v-if="meeting.status >= $meetingStatus.Start">
-    <div class="uk-text-large uk-text-lead section-title">已到成員</div>
+    <div class=" section-title">已到成員</div>
     <span v-for="member in present" :key="member.user_id"
       @click="changePresent(member.user_id, false)" class="name-tag"
       :class="{clickable: canModify}">
@@ -11,7 +11,7 @@
   <div v-if="absent.length + absentWithReason.length || canModify" uk-grid>
     <div class="uk-width-1-2@s uk-margin-medium-bottom">
     <div class="uk-width-1-1 section-title">
-      <span class="uk-text-large uk-text-lead">
+      <span>
         <span v-if="meeting.status >= $meetingStatus.Start">未到成員</span>
         <span v-else>參與成員</span>
       </span>
@@ -23,7 +23,7 @@
     </div>
       <div class="uk-width-1-2@s uk-margin-medium-bottom">
       <div class="section-title">
-        <span class="uk-text-large uk-text-lead">請假成員</span>
+        <span>請假成員</span>
       </div>
       <div class="uk-overflow-auto">
         <table class="uk-table uk-table-responsive uk-table-divider uk-table-small">
@@ -41,9 +41,9 @@
   <div v-if="late.length + leaveEarly.length || canModify"  uk-grid>
     <div class="uk-width-1-2@s uk-margin-medium-bottom">
       <div class="uk-width-1-1 section-title">
-        <span class="uk-text-large uk-text-lead">遲到成員</span>
+        <span>遲到成員</span>
         <button v-if="canModify" class="uk-button uk-button-default uk-button-small"
-                @click="setTempTime()" type="button" uk-toggle="target: #add-late">
+                @click="showLateModal(null)" type="button">
           <span uk-icon="plus"></span>
           新增
         </button>
@@ -53,31 +53,20 @@
           <tbody>
           <tr v-for="member in late" v-bind:key="'late-'+member.user_id">
             <td class="td-id">
-          <tr>{{ member.username }}</tr>
-          <tr class="monospace">
-            <span>{{ onlyTime(member.arrive_time) }}</span><a href="#"
-                  v-if="canModify" @click="setTempTime(member.arrive_time)"
-                  uk-icon="icon: pencil; ratio: 0.7" class="edit-time-button">
-            </a>
-            <div v-if="canModify" uk-drop="mode: click; offset: 5; pos: bottom-center"
-                 class="time-setter">
-              <div class="uk-card uk-card-body uk-card-default uk-card-small deep-shadow">
-                <div class="uk-align-right button-edit-submit" >
-                  <a href="#" class="uk-button uk-button-primary uk-button-small"
-                     @click="addLate(member.user_id, temp_time, null)">確定</a>
-                </div>
-                <label>抵達時間</label>
-                <FlatPickr v-model="tempDateTime" class="uk-input"
-                           :config="flatPickrConfig"></FlatPickr>
-              </div>
-            </div>
-          </tr>
-          </td>
-          <td class="td-reason pre-wrap">{{ member.late_reason }}</td>
-          <td v-if="canModify">
-            <span class="uk-icon-button" uk-icon="icon: close; ratio: 0.7"
-                  @click="removeLate(member.user_id)"></span>
-          </td>
+              <tr>{{ member.username }}</tr>
+              <tr class="monospace">
+                <span :uk-tooltip="`title: ${member.arrive_time}; pos: bottom-left`">
+                  {{ onlyTime(member.arrive_time) }}
+                </span>
+              </tr>
+            </td>
+            <td class="td-reason pre-wrap">{{ member.late_reason }}</td>
+            <td v-if="canModify" class="uk-table-shrink">
+              <a href='#' uk-icon="icon: close; ratio: 0.9"
+                @click="removeLate(member.user_id)"></a>
+              <a href='#' uk-icon="icon: pencil; ratio: 0.9"
+                @click="showLateModal(member)"></a>
+            </td>
           </tr>
           </tbody>
         </table>
@@ -86,9 +75,9 @@
 
     <div class="uk-width-1-2@s uk-margin-medium-bottom">
       <div class="uk-width-1-1 section-title">
-        <span class="uk-text-large uk-text-lead">早退成員</span>
+        <span>早退成員</span>
         <button v-if="canModify" class="uk-button uk-button-default uk-button-small"
-                @click="setTempTime()" type="button" uk-toggle="target: #add-leave-early">
+                @click="showLeaveEarlyModal(null)" type="button">
           <span uk-icon="plus"></span>
           新增
         </button>
@@ -100,29 +89,17 @@
             <td class="td-id">
               <tr>{{ member.username }}</tr>
               <tr class="monospace">
-                <span>{{ onlyTime(member.leave_time) }}</span><a href="#"
-                      v-if="canModify" @click="setTempTime(member.leave_time)"
-                      uk-toggle="target: #my-id" type="button"
-                      uk-icon="icon: pencil; ratio: 0.7" class="edit-time-button">
-                </a>
-                <div v-if="canModify" uk-drop="mode: click; offset: 5; pos: bottom-center"
-                     class="time-setter">
-                  <div class="uk-card uk-card-body uk-card-default uk-card-small deep-shadow">
-                    <div class="uk-align-right button-edit-submit" >
-                      <a href="#" class="uk-button uk-button-primary uk-button-small"
-                         @click="addLeaveEarly(member.user_id, temp_time, null)">確定</a>
-                    </div>
-                    <label>離開時間</label>
-                    <FlatPickr v-model="tempDateTime" class="uk-input"
-                               :config="flatPickrConfig"></FlatPickr>
-                  </div>
-                </div>
+                <span :uk-tooltip="`title: ${member.leave_time}; pos: bottom-left`">
+                  {{ onlyTime(member.leave_time) }}
+                </span>
               </tr>
             </td>
             <td class="td-reason pre-wrap">{{ member.leave_early_reason }}</td>
-            <td v-if="canModify">
-              <span class="uk-icon-button" uk-icon="icon: close; ratio: 0.7"
-                @click="removeLeaveEarly(member.user_id)"></span>
+            <td v-if="canModify" class="uk-table-shrink">
+              <a href='#' uk-icon="icon: close; ratio: 0.9"
+                @click="removeLeaveEarly(member.user_id)"></a>
+              <a href='#' uk-icon="icon: pencil; ratio: 0.9"
+                @click="showLeaveEarlyModal(member)"></a>
             </td>
           </tr>
           </tbody>
@@ -130,15 +107,16 @@
       </div>
     </div>
   </div>
-
-  <div id="add-late" uk-modal>
-    <AttendeeAdder :attendees="attendees" :dateTime="tempDateTime"
-                   :type="'late'" @selected="addLate"/>
+  <div ref="late-modal" uk-modal>
+    <AttendeeEditor :attendeesOption="attendees" :attendee='editingAttendee'
+                    :meeting='meeting' :type="'late'" :mode="attendeeEditorMode"
+                    @selected="addLate"/>
   </div>
 
-  <div id="add-leave-early" uk-modal>
-    <AttendeeAdder :attendees="attendees" :dateTime="tempDateTime"
-                   :type="'leaveEarly'" @selected="addLeaveEarly"/>
+  <div ref="leave-early-modal" uk-modal>
+    <AttendeeEditor :attendeesOption="attendees" :attendee='editingAttendee'
+                    :meeting='meeting' :type="'leaveEarly'" :mode="attendeeEditorMode"
+                    @selected="addLeaveEarly"/>
   </div>
 </div>
 </template>
@@ -146,18 +124,7 @@
 <style lang="scss" scoped>
 .section-title {
   margin-bottom: 5px;
-}
-.uk-icon-button {
-  width: 21px;
-  height: 21px;
-  cursor: pointer;
-  float: right;
-  margin-bottom: 3px;
-  background: #fff;
-}
-.uk-icon-button:hover {
-  background: #ddd;
-  transition: all 0.3s ease-in-out;
+  font-size: 1.3rem;
 }
 .td-id {
   width: 100px;
@@ -165,30 +132,18 @@
 .td-reason {
   word-break: break-word;
 }
-.button-edit-submit {
-  margin-bottom: 5px;
-  margin-left: 0;
-}
-.time-setter {
-  width: 250px;
-}
-.edit-time-button {
-  margin-left: 5px;
-}
 </style>
 
 
 <script>
 import { mapState } from 'vuex';
-import FlatPickr from 'vue-flatpickr-component';
 import moment from 'moment';
-import AttendeeAdder from './AttendeeAdder';
+import AttendeeEditor from './AttendeeEditor';
 
 export default {
   props: ['meeting', 'attendees'],
   components: {
-    AttendeeAdder,
-    FlatPickr,
+    AttendeeEditor,
   },
   computed: {
     canModify() {
@@ -222,15 +177,23 @@ export default {
   },
   data() {
     return {
-      tempDateTime: '',
+      editingAttendee: null,
+      attendeeEditorMode: 'new',
       flatPickrConfig: {
         enableTime: true,
       },
     };
   },
   methods: {
-    setTempTime(dateTime) {
-      this.tempDateTime = (dateTime ? moment(dateTime) : moment()).format('YYYY-MM-DD HH:mm-ss');
+    showLeaveEarlyModal(attendee) {
+      this.editingAttendee = Object.assign({}, attendee);
+      this.attendeeEditorMode = attendee ? 'edit' : 'new';
+      UIkit.modal(this.$refs['leave-early-modal']).show();
+    },
+    showLateModal(attendee) {
+      this.editingAttendee = Object.assign({}, attendee);
+      this.attendeeEditorMode = attendee ? 'edit' : 'new';
+      UIkit.modal(this.$refs['late-modal']).show();
     },
     updateAttendee(userId, data) {
       if (!this.canModify) return;

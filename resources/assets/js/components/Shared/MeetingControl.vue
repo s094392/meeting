@@ -117,6 +117,7 @@
 
 <script>
 import { mapState } from 'vuex';
+import moment from 'moment';
 
 export default {
   computed: {
@@ -174,13 +175,32 @@ export default {
       });
     },
     completeRecord() {
-      axios
-        .put(`/api/meetings/${this.meeting.id}`, {
-          status: this.$meetingStatus.RecordComplete,
-        })
-        .then((response) => {
-          this.$emit('completeRecord', response.data);
-        });
+      const meetingStart = moment(this.meeting.start_time);
+      const meetingEnd = moment(this.meeting.end_time);
+      let bad = [];
+      this.meeting.attendees.forEach((attendee) => {
+        if (attendee.arrive_time
+            && !moment(attendee.arrive_time).isBetween(meetingStart, meetingEnd)) {
+          bad.push(attendee.username);
+        }
+        if (attendee.leave_time
+            && !moment(attendee.leave_time).isBetween(meetingStart, meetingEnd)) {
+          bad.push(attendee.username);
+        }
+      });
+      if (bad) {
+        bad = _.uniq(bad);
+        const alertString = `以下人員的資料有誤<br>${bad.toString()}<br>請檢查該成員的遲到/早退時間是否介於會議的開始/結束時間`;
+        UIkit.modal.alert(alertString);
+      } else {
+        axios
+          .put(`/api/meetings/${this.meeting.id}`, {
+            status: this.$meetingStatus.RecordComplete,
+          })
+          .then((response) => {
+            this.$emit('completeRecord', response.data);
+          });
+      }
     },
     cancelMeeting() {
       axios.delete(`/api/meetings/${this.meeting.id}`).then(() => this.$emit('cancelMeeting'));

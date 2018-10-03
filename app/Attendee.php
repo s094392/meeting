@@ -22,7 +22,10 @@ class Attendee extends Model
 
     public function getUsernameAttribute()
     {
-        return $this->user->username;
+        if ($this->user) {
+            return $this->user->username;
+        }
+        return ;
     }
 
     public function getRouteKey()

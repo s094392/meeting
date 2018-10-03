@@ -30,6 +30,11 @@
       <td>{{ this.$meetingStatusText[meeting.status] }}</td>
     </tr>
     <tr>
+      <th>是否報帳:</th>
+      <td v-if="meeting.request_money">是</td>
+      <td v-else>否</td>
+    </tr>
+    <tr>
       <th>會議說明:</th>
       <td class="pre-wrap">{{ meeting.description }}</td>
     </tr>
