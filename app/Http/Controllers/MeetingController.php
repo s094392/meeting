@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use View\UserController;
 
-class MeetingsController extends Controller
+class MeetingController extends Controller
 {
 
     /**
@@ -40,48 +40,9 @@ class MeetingsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $status =  Input::get('status');
-        $limit =  Input::get('limit');
-        $group =  Input::get('group');
-        $owner =  Input::get('owner');
-        $title =  Input::get('title');
-        $startDate =  Input::get('startDate');
-        $endDate =  Input::get('endDate');
-        $sortBy =  Input::get('sortBy');
-        $desc = Input::get('desc');
-        $attendees = Input::get('attendees');
-
-        $meetings = Meeting::when($status, function ($query, $status) {
-            if (is_array($status)) {
-                $query->whereIn('status', $status);
-            } else {
-                $query->where('status', $status);
-            }
-        })->when($owner, function ($query, $owner) {
-            return $query->where('owner', $owner);
-        })->when($group, function ($query, $group) {
-            return $query->where('group', $group);
-        })->when($title, function ($query, $title) {
-            return $query->where('title', 'like', '%'.$title.'%');
-        })->when($startDate, function ($query, $startDate) {
-            return $query->where('scheduled_time', '>=', $startDate);
-        })->when($endDate, function ($query, $endDate) {
-            return $query->where('scheduled_time', '<=', $endDate);
-        })->when($limit, function ($query, $limit) {
-            return $query->take($limit);
-        })->when($sortBy, function ($query, $sortBy) use ($desc) {
-            return $query->when($desc, function ($query, $desc) use ($sortBy) {
-                return $query->orderBy($sortBy, 'desc');
-            }, function ($query) use ($sortBy) {
-                return $query->orderBy($sortBy);
-            });
-        }, function ($query) {
-            return $query->orderBy('scheduled_time', 'desc');
-        })->with('owner')->when($attendees, function ($query, $attendees) {
-            return $query->with('attendees');
-        })->paginate(10);
+        $meetings = Meeting::where(Meeting::filter($request->all()))->with('owner')->paginate(10);
         $meetings->data = $meetings->makeHidden('record');
         return $meetings;
     }

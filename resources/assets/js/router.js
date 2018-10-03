@@ -92,14 +92,25 @@ const router = new VueRouter({
   },
 });
 
+function checkIfInit() {
+  return new Promise((resolve) => {
+    if (_.isEmpty(store.state.user.user_id)) {
+      store.dispatch('initUser').then(() => resolve());
+    } else {
+      resolve();
+    }
+  });
+}
 
 router.beforeEach((to, from, next) => {
   store.commit('startLoad');
-  next();
-  // dont update title when switching tab in detail page
-  if (!(to.name === 'detail' && from.name === 'detail')) {
-    document.title = `${to.meta.title} - Meeting`;
-  }
+  checkIfInit().then(() => {
+    next();
+    // dont update title when switching tab in detail page
+    if (!(to.name === 'detail' && from.name === 'detail')) {
+      document.title = `${to.meta.title} - Meeting`;
+    }
+  });
 });
 
 router.afterEach(() => store.commit('endLoad'));

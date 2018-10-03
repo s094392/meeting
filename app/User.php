@@ -9,13 +9,13 @@ class User extends Authenticatable
 {
     public $incrementing = false;
     
-    public function attendee()
+    public function attendees()
     {
-        return $this->hasMany('App\attendee');
+        return $this->hasMany('App\Attendee', 'user_id', 'id');
     }
 
     public function meetings()
     {
-        return $this->hasMany('App\Meeting');
+        return $this->hasManyThrough('App\Meeting', 'App\Attendee', 'user_id', 'id', 'id', 'meeting_id');
     }
 }

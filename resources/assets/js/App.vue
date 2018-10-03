@@ -1,19 +1,17 @@
 <template>
 <div>
-  <div class="progress" v-if="loading || !init">
+  <div class="progress" v-show="loading">
     <div class="indeterminate"></div>
   </div>
-  <template v-if="init">
-    <TopNav />
-    <div class="uk-padding">
-      <div uk-grid>
-        <div class="uk-width-1-5@m"><LeftNav/></div>
-        <div class="uk-width-4-5@m">
-          <router-view></router-view>
-        </div>
+  <TopNav />
+  <div class="uk-padding">
+    <div uk-grid>
+      <div class="uk-width-1-5@m"><LeftNav/></div>
+      <div class="uk-width-4-5@m">
+        <router-view></router-view>
       </div>
     </div>
-  </template>
+  </div>
 </div>
 </template>
 
@@ -39,21 +37,5 @@ export default {
     TopNav,
   },
   computed: mapState(['loading']),
-  data() {
-    return {
-      init: false,
-    };
-  },
-  created() {
-    this.initUser();
-  },
-  methods: {
-    initUser() {
-      this.$store.dispatch('initUser').then(() => {
-        this.loaded = true;
-        this.init = true;
-      });
-    },
-  },
 };
 </script>

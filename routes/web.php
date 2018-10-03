@@ -14,14 +14,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
 Route::prefix('api/')->middleware('auth:api')->group(function () {
-    Route::post('meetings/start/{meeting_id}', 'MeetingsController@start');
-    Route::post('meetings/end/{meeting_id}', 'MeetingsController@end');
+    Route::post('meetings/start/{meeting_id}', 'MeetingController@start');
+    Route::post('meetings/end/{meeting_id}', 'MeetingController@end');
 
-    Route::apiResource('meetings', 'MeetingsController');
-    
-    Route::apiResource('attendees/meeting_id.user_id', 'AttendeesController')->except([
-        'create', 'edit'
+    Route::apiResource('meetings', 'MeetingController');
+
+    Route::apiResource('users', 'UserController')->only([
+        'show'
     ]);
+    
+    Route::apiResource('attendees/meeting_id.user_id', 'AttendeeController');
     
     Route::get('tas', 'TAsController');
     

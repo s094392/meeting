@@ -7,7 +7,7 @@ use App\Meeting;
 use App\Attendee;
 use Illuminate\Http\Request;
 
-class AttendeesController extends Controller
+class AttendeeController extends Controller
 {
     /**
      * Send an e-mail reminder to the user.

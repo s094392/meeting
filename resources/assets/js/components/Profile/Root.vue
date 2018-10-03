@@ -20,7 +20,6 @@
           <ul class="uk-list uk-list-bullet" v-if="stats">
             <li><span class="uk-text-bold meeting-hours">開了{{ stats.totalTime }}小時的會議</span></li>
             <li>應該參加：{{ stats.shouldAttend }}次</li>
-            <li>舉辦：{{ stats.own }}次</li>
             <li>請假：{{ stats.absentWithReason }}次</li>
             <li>翹咪：{{ stats.absentWithoutReason }}次</li>
             <li>遲到：{{ stats.late }}次</li>
@@ -70,11 +69,10 @@ const fetchAndCalc = (to, from, next, self) => {
     late: 0,
     totalTime: 0,
     leaveEarly: 0,
-    own: 0,
     timePerGroup: {},
   };
 
-  axios.get('/api/meetings', {
+  axios.get(`/api/users/${store.state.user.user_id}`, {
     params: {
       startDate: startDate.format('YYYY-MM-DD'),
       endDate: startDate.add(1, 'month').subtract(1, 'day').format('YYYY-MM-DD'),
@@ -86,52 +84,47 @@ const fetchAndCalc = (to, from, next, self) => {
       attendees: true,
     },
   }).then((response) => {
-    response.data.data.forEach((meeting) => {
+    response.data.meetings.forEach((meeting) => {
       const me = meeting.attendees.find(
         attendee => attendee.user_id === store.state.user.user_id,
       );
-      if (me || meeting.owner_id === this.user.user_id) {
-        meetings.push(meeting);
+      meetings.push(meeting);
 
-        let endTime = moment(meeting.end_time);
-        const startTime = moment(meeting.start_time);
+      let endTime = moment(meeting.end_time);
+      const startTime = moment(meeting.start_time);
 
-        if (me) {
-          stats.shouldAttend += 1;
-          if (me.status === MeetingEnum.attendeeStatus.Absent) {
-            if (me.absent_reason) stats.absentWithReason += 1;
-            else stats.absentWithoutReason += 1;
-            endTime = startTime;
-          }
+      stats.shouldAttend += 1;
+      if (me.status === MeetingEnum.attendeeStatus.Absent) {
+        if (me.absent_reason) stats.absentWithReason += 1;
+        else stats.absentWithoutReason += 1;
+        endTime = startTime;
+      }
 
-          if (me.status === MeetingEnum.attendeeStatus.LateOrLeaveEarly && me.arrive_time) {
-            stats.late += 1;
-            const arriveTime = moment(me.arrive_time, 'HH:mm:ss');
-            startTime.set({
-              hour: arriveTime.get('hour'),
-              minute: arriveTime.get('minute'),
-              second: arriveTime.get('second'),
-            });
-          }
-          if (me.status === MeetingEnum.attendeeStatus.LateOrLeaveEarly && me.leave_time) {
-            stats.leaveEarly += 1;
-            const leaveTime = moment(me.leave_time, 'HH:mm:ss');
-            startTime.set({
-              hour: leaveTime.get('hour'),
-              minute: leaveTime.get('minute'),
-              second: leaveTime.get('second'),
-            });
-          }
+      if (me.status === MeetingEnum.attendeeStatus.LateOrLeaveEarly && me.arrive_time) {
+        stats.late += 1;
+        const arriveTime = moment(me.arrive_time, 'HH:mm:ss');
+        startTime.set({
+          hour: arriveTime.get('hour'),
+          minute: arriveTime.get('minute'),
+          second: arriveTime.get('second'),
+        });
+      }
+      if (me.status === MeetingEnum.attendeeStatus.LateOrLeaveEarly && me.leave_time) {
+        stats.leaveEarly += 1;
+        const leaveTime = moment(me.leave_time, 'HH:mm:ss');
+        startTime.set({
+          hour: leaveTime.get('hour'),
+          minute: leaveTime.get('minute'),
+          second: leaveTime.get('second'),
+        });
+      }
 
-          const meetingTime = (endTime - startTime) / 3600000;
-          stats.totalTime += meetingTime;
-          if (meeting.group in stats.timePerGroup) {
-            stats.timePerGroup[meeting.group] += meetingTime;
-          } else {
-            stats.timePerGroup[meeting.group] = meetingTime;
-          }
-        }
-        if (meeting.owner_id === store.state.user.user_id) stats.own += 1;
+      const meetingTime = (endTime - startTime) / 3600000;
+      stats.totalTime += meetingTime;
+      if (meeting.group in stats.timePerGroup) {
+        stats.timePerGroup[meeting.group] += meetingTime;
+      } else {
+        stats.timePerGroup[meeting.group] = meetingTime;
       }
     });
     Object.keys(stats.timePerGroup).forEach((el) => {
