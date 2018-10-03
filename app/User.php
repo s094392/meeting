@@ -8,7 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     public $incrementing = false;
-    
+    protected $fillable = ['id', 'username'];
+
     public function attendees()
     {
         return $this->hasMany('App\Attendee', 'user_id', 'id');
