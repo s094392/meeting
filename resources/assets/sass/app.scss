@@ -103,9 +103,9 @@
 
 .page-title {
   @extend .uk-h2;
+  display: inline-block;
   @media only screen and (max-width: 640px) {
     & {
-      display: inline-block;
       margin-bottom: 10px;
       margin-left: 10px;
     }
