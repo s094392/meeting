@@ -26,7 +26,7 @@
         <span>請假成員</span>
       </div>
       <div class="uk-overflow-auto">
-        <table class="uk-table uk-table-responsive uk-table-divider uk-table-small">
+        <table class="uk-table uk-table-divider uk-table-small">
           <tbody>
             <tr v-for="member in absentWithReason" v-bind:key="'off-'+member.user_id">
               <td class="td-id">{{ member.username }}</td>
