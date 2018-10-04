@@ -94,7 +94,7 @@ const router = new VueRouter({
 
 function checkIfInit() {
   return new Promise((resolve) => {
-    if (_.isEmpty(store.state.user.user_id)) {
+    if (_.isEmpty(store.state.user)) {
       store.dispatch('initUser').then(() => resolve());
     } else {
       resolve();
