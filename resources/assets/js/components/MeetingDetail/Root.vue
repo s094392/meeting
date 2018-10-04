@@ -7,17 +7,17 @@
       <ul uk-tab>
         <li :class="{'uk-active': view == 'properties'}" @click="view = 'properties'">
           <router-link :to="{name:'detail', params: {id: id, view: 'properties'}}" replace="">
-            <span class="uk-text-large">會議資料</span>
+            <span class="uk-text-large"><span class="uk-visible@s">會議</span>資料</span>
           </router-link>
         </li>
         <li :class="{'uk-active': view == 'attendees'}" @click="view = 'attendees'">
           <router-link :to="{name:'detail', params: {id: id, view: 'attendees'}}" replace="">
-            <span class="uk-text-large">參與人員</span>
+            <span class="uk-text-large"><span class="uk-visible@s">參與</span>人員</span>
           </router-link >
         </li>
         <li :class="{'uk-active': view == 'record'}" @click="view = 'record'">
           <router-link :to="{name:'detail', params: {id: id, view: 'record'}}" replace="">
-            <span class="uk-text-large">會議內容</span>
+            <span class="uk-text-large"><span class="uk-visible@s">會議</span>紀錄</span>
           </router-link >
         </li>
       </ul>
@@ -49,6 +49,11 @@
 #toc {
   max-height: 85vh;
   overflow: auto;
+}
+@media only screen and (max-width: 640px) {
+  .uk-card-small.uk-card-body {
+    padding: 15px;
+  }
 }
 </style>
 

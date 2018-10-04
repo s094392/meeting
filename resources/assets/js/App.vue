@@ -18,7 +18,7 @@
 <style lang="scss" scoped>
 @media only screen and (max-width: 640px) {
   .uk-padding {
-    padding-top: 15px;
+    padding: 15px;
   }
 }
 </style>
