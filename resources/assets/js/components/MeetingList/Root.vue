@@ -11,11 +11,11 @@
       <li v-if="page !== 1">
         <router-link :to="{ name: 'list', query: queryChangePage(1) }">
           <span class="uk-icon">
-            <svg width="7" height="12"
+            <svg class="svg-fix" width="7" height="12"
               viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
               <polyline fill="none" stroke="#000" stroke-width="1" points="6 1 1 6 6 11">
               </polyline>
-            </svg><svg width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+            </svg><svg class="svg-fix" width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
               <polyline fill="none" stroke="#000" stroke-width="1" points="6 1 1 6 6 11">
             </polyline>
             </svg>
@@ -24,7 +24,13 @@
       </li>
       <li v-if="page !== 1">
         <router-link :to="{ name: 'list', query: queryChangePage(page - 1) }">
-          <span uk-pagination-previous></span>
+          <span class="uk-icon">
+            <svg class="svg-fix" width="7" height="12"
+              viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+              <polyline fill="none" stroke="#000" stroke-width="1" points="6 1 1 6 6 11">
+              </polyline>
+            </svg>
+          </span>
         </router-link>
       </li>
       <template v-for="idx in pageRange()">
@@ -34,17 +40,22 @@
       </template>
       <li v-if="page !== lastPage">
         <router-link :to="{ name: 'list', query: queryChangePage(page + 1) }">
-          <span  uk-pagination-next></span>
+          <span class="uk-icon">
+            <svg class="svg-fix" width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+              <polyline fill="none" stroke="#000" stroke-width="1" points="1 1 6 6 1 11">
+              </polyline>
+            </svg>
+          </span>
         </router-link>
       </li>
       <li v-if="page !== lastPage">
         <router-link :to="{ name: 'list', query: queryChangePage(lastPage) }">
           <span class="uk-icon">
-            <svg width="7" height="12"
+            <svg class="svg-fix" width="7" height="12"
               viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
               <polyline fill="none" stroke="#000" stroke-width="1" points="1 1 6 6 1 11">
               </polyline>
-            </svg><svg width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+            </svg><svg class="svg-fix" width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
               <polyline fill="none" stroke="#000" stroke-width="1" points="1 1 6 6 1 11">
             </polyline>
             </svg>
@@ -75,7 +86,7 @@
 
 <style lang="scss" scoped>
 .svg-fix {
-  padding-bottom: 2px;
+  padding-bottom: 3px;
 }
 </style>
 
