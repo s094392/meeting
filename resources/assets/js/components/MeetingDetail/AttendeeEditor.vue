@@ -39,8 +39,8 @@
         </div>
     </div>
 
-    <div class="uk-margin">
-      <button class="uk-button uk-modal-close">取消</button>
+    <div class="uk-margin uk-align-right">
+      <button class="uk-button uk-button-default uk-modal-close">取消</button>
       <button class="uk-button uk-button-primary uk-modal-close" @click="selected">送出</button>
     </div>
   </form>
