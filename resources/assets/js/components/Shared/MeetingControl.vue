@@ -125,7 +125,7 @@ export default {
       return !_.isEmpty(this.me) && this.meeting.owner_id !== this.user.user_id;
     },
     isOwnerOrAttendee() {
-      return !_.isEmpty(this.me);
+      return !_.isEmpty(this.me) || this.meeting.owner_id === this.user.user_id;
     },
     ...mapState(['user']),
   },

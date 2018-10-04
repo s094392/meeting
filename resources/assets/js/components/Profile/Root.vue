@@ -1,7 +1,7 @@
 <template>
 <div uk-grid>
   <div class="uk-width-3-4@l">
-    <h2>個人報表</h2>
+    <span class="page-title">個人報表</span>
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
       <div uk-grid >
          <div class="uk-width-1-2@s">

@@ -3,7 +3,7 @@
   <div class="uk-width-3-4@l">
     <div>
       <div>
-        <h2 class="uk-display-inline">近期會議</h2>
+        <span class="page-title">近期會議</span>
         <router-link :to="{name:'create'}"
                    class="uk-button uk-button-primary uk-align-right">
           新增會議

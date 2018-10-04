@@ -1,7 +1,7 @@
 <template>
 <div uk-grid v-if="meeting">
   <div class="uk-width-3-4@l">
-    <h2>{{ meeting.title }}</h2>
+    <span class="page-title">{{ meeting.title }}</span>
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
 
       <ul uk-tab>

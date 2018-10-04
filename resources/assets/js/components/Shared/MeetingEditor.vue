@@ -1,8 +1,8 @@
 <template>
 <div uk-grid>
   <div class="uk-width-3-4@l">
-  <h2 v-if="editMode">編輯會議</h2>
-  <h2 v-else>新增會議</h2>
+  <span class="page-title" v-if="editMode">編輯會議</span>
+  <span class="page-title" v-else>新增會議</span>
   <div class="uk-card uk-card-default uk-card-body uk-card-small">
     <form v-on:submit.prevent class="uk-form-horizontal uk-margin-large">
 

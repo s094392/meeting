@@ -1,7 +1,7 @@
 <template>
 <div uk-grid>
   <div class="uk-width-3-4@l">
-    <h2 class="uk-display-inline">所有會議</h2>
+    <span class="page-title">所有會議</span>
     <button class="uk-button uk-button-primary uk-align-right uk-hidden@l"
             uk-toggle="target: #meeting-filter">篩選器</button>
     <div class="uk-card uk-card-default uk-overflow-auto uk-width-1-1 uk-margin-top">
@@ -11,15 +11,20 @@
       <li v-if="page !== 1">
         <router-link :to="{ name: 'list', query: queryChangePage(1) }">
           <span class="uk-icon">
-            <svg class="svg-fix" width="7" height="12"
+            <svg width="7" height="12"
               viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
               <polyline fill="none" stroke="#000" stroke-width="1" points="6 1 1 6 6 11">
               </polyline>
-            </svg><svg class="svg-fix" width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+            </svg><svg width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
               <polyline fill="none" stroke="#000" stroke-width="1" points="6 1 1 6 6 11">
             </polyline>
             </svg>
           </span>
+        </router-link>
+      </li>
+      <li v-if="page !== 1">
+        <router-link :to="{ name: 'list', query: queryChangePage(page - 1) }">
+          <span uk-pagination-previous></span>
         </router-link>
       </li>
       <template v-for="idx in pageRange()">
@@ -28,13 +33,18 @@
         </li>
       </template>
       <li v-if="page !== lastPage">
+        <router-link :to="{ name: 'list', query: queryChangePage(page + 1) }">
+          <span  uk-pagination-next></span>
+        </router-link>
+      </li>
+      <li v-if="page !== lastPage">
         <router-link :to="{ name: 'list', query: queryChangePage(lastPage) }">
           <span class="uk-icon">
-            <svg class="svg-fix" width="7" height="12"
+            <svg width="7" height="12"
               viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
               <polyline fill="none" stroke="#000" stroke-width="1" points="1 1 6 6 1 11">
               </polyline>
-            </svg><svg class="svg-fix" width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
+            </svg><svg width="7" height="12" viewBox="0 0 7 12" xmlns="http://www.w3.org/2000/svg">
               <polyline fill="none" stroke="#000" stroke-width="1" points="1 1 6 6 1 11">
             </polyline>
             </svg>
