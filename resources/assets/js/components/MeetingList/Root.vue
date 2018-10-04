@@ -88,6 +88,15 @@
 .svg-fix {
   padding-bottom: 3px;
 }
+.uk-pagination {
+  * {
+    padding-left: 0;
+  }
+  a {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
 </style>
 
 
