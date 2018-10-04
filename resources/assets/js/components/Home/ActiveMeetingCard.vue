@@ -11,13 +11,20 @@
       <span class="uk-margin-small-right" uk-icon="tag" />{{ meeting.group }}<br>
       <span class="uk-margin-small-right" uk-icon="clock" />{{ meeting.scheduled_time }}
     </p>
-    <p>{{ meeting.description }}<br></p>
+    <p class="pre-wrap description">{{ meeting.description }}</p>
     <MeetingControl :meeting="meeting" :me="me"
       @updateMe="updateMe" @cancelMeeting="$emit('cancelMeeting');"
       @startMeeting="startMeeting" @endMeeting="endMeeting"/>
   </div>
 </div>
 </template>
+
+<style lang="scss" scoped>
+.description {
+  max-height: 100px;
+  overflow: hidden;
+}
+</style>
 
 
 <script>

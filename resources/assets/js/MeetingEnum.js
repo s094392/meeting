@@ -4,6 +4,7 @@ const meetingStatus = Object.freeze({
   End: 3,
   RecordComplete: 4,
   Archive: 5,
+  Cancel: 6,
 });
 
 const meetingStatusText = Object.freeze([

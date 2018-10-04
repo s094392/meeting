@@ -15,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        //
+        return User::all();
     }
 
     /**
@@ -37,7 +37,7 @@ class UserController extends Controller
      */
     public function show(User $user, Request $request)
     {
-        return $user->load(['meetings' => Meeting::filter($request->all())]);
+        return $user->load(['meetings' => Meeting::condition($request->all())]);
     }
 
     /**

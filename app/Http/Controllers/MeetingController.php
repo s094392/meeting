@@ -42,7 +42,11 @@ class MeetingController extends Controller
      */
     public function index(Request $request)
     {
-        $meetings = Meeting::where(Meeting::filter($request->all()))->with('owner')->paginate(10);
+        $per_page = Input::get('per_page');
+        if (!$per_page) {
+            $per_page = 10;
+        }
+        $meetings = Meeting::tap(Meeting::condition($request->all()))->with('owner')->paginate($per_page);
         $meetings->data = $meetings->makeHidden('record');
         return $meetings;
     }

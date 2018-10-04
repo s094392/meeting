@@ -32,11 +32,12 @@ export default {
       axios
         .get('/api/meetings', {
           params: {
-            limit: 5,
+            per_page: 5,
             status: [
               this.$meetingStatus.End,
               this.$meetingStatus.RecordComplete,
               this.$meetingStatus.Archive,
+              this.$meetingStatus.Cancel,
             ],
           },
         })

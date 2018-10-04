@@ -8,7 +8,7 @@
 
       <div class="uk-margin">
         <Multiselect v-model="localQuery.group" :options="groupOptions"
-          v-if="groupOptions" placeholder="任何會議類別">
+          v-if="!objectEmpty(groupOptions)" placeholder="任何會議類別">
           <span slot="noResult">查無資料</span>
         </MultiSelect>
         <span v-else class="uk-input input-loading">載入會議類別中...</span>
@@ -20,9 +20,9 @@
 
 
       <div class="uk-margin">
-        <Multiselect v-model="owner" :label="'username'" :trackBy="'user_id'"
+        <Multiselect v-model="owner" :label="'username'" :trackBy="'id'"
                      :options="ownerOptions" placeholder="任何發起人"
-                     v-if="ownerOptions">
+                     v-if="!objectEmpty(ownerOptions)">
           <span slot="noResult">查無資料</span>
         </MultiSelect>
         <span v-else class="uk-input input-loading">載入發起人資料中...</span>
@@ -66,7 +66,12 @@ export default {
       }
     },
     owner() {
-      if (this.owner && this.owner.user_id) this.localQuery.owner = this.owner.user_id;
+      if (this.owner && this.owner.id) this.localQuery.owner_id = this.owner.id;
+    },
+    ownerOptions() {
+      this.owner = this.ownerOptions.find(
+        owner => owner.id === parseInt(this.localQuery.owner_id, 10),
+      );
     },
   },
   data() {
@@ -83,7 +88,9 @@ export default {
     this.localQuery = Object.assign({}, this.query);
     this.localQuery.page = 1;
     this.dateRange = `${this.query.startDate} to ${this.query.endDate}`;
-    this.owner = this.ownerOptions.find(owner => owner.user_id === this.localQuery.owner);
+    this.owner = this.ownerOptions.find(
+      owner => owner.id === parseInt(this.localQuery.owner_id, 10),
+    );
   },
   methods: {
     clear() {
@@ -91,6 +98,9 @@ export default {
       this.owner = {};
       this.localQuery = {};
       this.$router.push({ name: 'list' });
+    },
+    objectEmpty(o) {
+      return _.isEmpty(o);
     },
   },
   components: {

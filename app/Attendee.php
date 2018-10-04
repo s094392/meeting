@@ -24,8 +24,9 @@ class Attendee extends Model
     {
         if ($this->user) {
             return $this->user->username;
+        } else {
+            return $this->user_id;
         }
-        return ;
     }
 
     public function getRouteKey()

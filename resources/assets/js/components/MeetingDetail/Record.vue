@@ -1,12 +1,14 @@
 <template>
-<div>
+<div class="uk-overflow-auto">
     <button class="uk-button uk-button-primary uk-align-right edit-button"
             v-if="canModify && !edit" @click="edit = true">編輯</button>
     <button class="uk-button uk-button-primary uk-align-right edit-button"
             v-if="canModify && edit" @click="saveClicked">完成</button>
-  <VueMarkdown v-if="!edit" :toc-anchor-link="false" :toc="true"
-               toc-id="toc" :source="record" />
-  <markdownEditor v-if="edit" v-model="record" :configs="configs"
+  <div class="meeting-record">
+    <VueMarkdown v-if="!edit && mounted" :toc-anchor-link="false" :toc="true"
+                 toc-id="toc" :source="meeting.record"/>
+  </div>
+  <markdownEditor v-if="edit" v-model="meeting.record" :configs="configs"
                    ref="markdownEditor"></markdownEditor>
 </div>
 </template>
@@ -35,10 +37,10 @@ export default {
         && this.meeting.owner_id === this.user.user_id
       );
     },
-    record() {
-      return this.meeting.record ? this.meeting.record : '';
-    },
     ...mapState(['user']),
+  },
+  mounted() {
+    this.mounted = true;
   },
   data() {
     return {
@@ -47,6 +49,7 @@ export default {
       configs: {
         spellChecker: false,
       },
+      mounted: false,
     };
   },
   components: {

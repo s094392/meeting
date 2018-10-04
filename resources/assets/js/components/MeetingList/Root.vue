@@ -135,12 +135,12 @@ export default {
       return _.range(Math.max(1, start), end + 1);
     },
     fetchTas() {
-      axios
-        .get('api/tas')
-        .then((response) => {
-          this.groupOptions = Object.keys(response.data);
-          this.ownerOptions = response.data['cs-ta'];
-        });
+      axios.get('api/tas').then((response) => {
+        this.groupOptions = Object.keys(response.data);
+      });
+      axios.get('api/users').then((response) => {
+        this.ownerOptions = response.data;
+      });
     },
   },
 };

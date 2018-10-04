@@ -20,7 +20,7 @@ Route::prefix('api/')->middleware('auth:api')->group(function () {
     Route::apiResource('meetings', 'MeetingController');
 
     Route::apiResource('users', 'UserController')->only([
-        'show'
+        'show', 'index'
     ]);
     
     Route::apiResource('attendees/meeting_id.user_id', 'AttendeeController');
