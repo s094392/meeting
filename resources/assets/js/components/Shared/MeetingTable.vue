@@ -17,14 +17,21 @@
     <td>{{ meeting.id }}</td>
     <td >{{ meeting.group }}</td>
     <td >{{ meeting.title }}</td>
-    <td class="uk-visible@m">{{ removeSecond(meeting.start_time) }}</td>
-    <td class="uk-visible@m">{{ removeSecond(meeting.end_time) }}</td>
+    <td class="uk-visible@m nowrap">{{ removeSecond(meeting.start_time) }}</td>
+    <td class="uk-visible@m nowrap">{{ removeSecond(meeting.end_time) }}</td>
     <td class="uk-visible@m">{{ meeting.owner_name }}</td>
-    <td>{{ $meetingStatusText[meeting.status] }}</td>
+    <td class="nowrap">{{ $meetingStatusText[meeting.status] }}</td>
     </tr>
   </tbody>
 </table>
 </template>
+
+<style lang="scss" scoped>
+.nowrap {
+  white-space: nowrap;
+}
+</style>
+
 
 <script>
 export default {
