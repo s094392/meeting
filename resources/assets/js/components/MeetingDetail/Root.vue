@@ -32,7 +32,7 @@
         <Attendees v-show="view == 'attendees'"
                   :meeting="meeting" :attendees="meeting.attendees"
                   @updateAttendee="updateAttendee"/>
-        <Record v-show="view == 'record'" :meeting="meeting"/>
+        <Record v-show="view == 'record'" :meeting="meeting" :view="view"/>
       </span>
     </div>
   </div>
@@ -47,8 +47,14 @@
 
 <style lang="scss">
 #toc {
-  max-height: 85vh;
+  max-height: 90vh;
   overflow: auto;
+  padding: 20px 10px;
+}
+.markdownIt-TOC {
+  ul {
+    padding-left: 15px;
+  }
 }
 @media only screen and (max-width: 640px) {
   .uk-card-small.uk-card-body {

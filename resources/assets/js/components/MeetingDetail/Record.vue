@@ -4,9 +4,7 @@
             v-if="canModify && !edit" @click="edit = true">編輯</button>
     <button class="uk-button uk-button-primary uk-align-right edit-button"
             v-if="canModify && edit" @click="saveClicked">完成</button>
-  <div class="meeting-record">
-    <VueMarkdown v-if="!edit && mounted" :toc-anchor-link="false" :toc="true"
-                 toc-id="toc" :source="meeting.record"/>
+  <div class="meeting-record" v-if="!edit" v-html="renderedHTML">
   </div>
   <markdownEditor v-if="edit" v-model="meeting.record" :configs="configs"
                    ref="markdownEditor"></markdownEditor>
@@ -24,12 +22,13 @@
 
 
 <script>
-import VueMarkdown from 'vue-markdown';
-import markdownEditor from 'vue-simplemde/src/markdown-editor';
+import markdownIt from 'markdown-it';
 import { mapState } from 'vuex';
+import markdownEditor from 'vue-simplemde/src/markdown-editor';
+import markdownItTocAndAnchor from 'markdown-it-toc-and-anchor';
 
 export default {
-  props: ['meeting'],
+  props: ['view', 'meeting'],
   computed: {
     canModify() {
       return (
@@ -37,27 +36,52 @@ export default {
         && this.meeting.owner_id === this.user.user_id
       );
     },
+    meetingRecord() {
+      return this.meeting.record;
+    },
     ...mapState(['user']),
   },
-  mounted() {
-    this.mounted = true;
+  watch: {
+    meetingRecord() {
+      this.renderedHTML = this.md.render(this.meeting.record);
+      const preview = document.getElementsByClassName('editor-preview-active-side')[0];
+      if (preview) preview.innerHTML = this.renderedHTML;
+    },
+    view() {
+      if (this.view !== 'record' && this.edit) {
+        this.saveClicked();
+      }
+    },
   },
   data() {
+    const self = this;
     return {
       edit: false,
-      recordTimer: '',
+      recordTimer: setInterval(this.saveRecord, 30000),
+      renderedHTML: '',
+      md: markdownIt({
+        html: true,
+        linkify: true,
+        typographer: true,
+      }).use(markdownItTocAndAnchor, {
+        tocCallback(tocMarkdown, tocArray, tocHtml) {
+          document.getElementById('toc').innerHTML = tocHtml;
+        },
+        anchorLink: false,
+      }),
       configs: {
         spellChecker: false,
+        previewRender() {
+          return self.renderedHTML;
+        },
       },
-      mounted: false,
     };
   },
   components: {
-    VueMarkdown,
     markdownEditor,
   },
-  created() {
-    this.recordTimer = setInterval(this.saveRecord, 30000);
+  mounted() {
+    this.renderedHTML = this.md.render(this.meeting.record);
   },
   beforeDestroy() {
     clearInterval(this.recordTimer);

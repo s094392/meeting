@@ -77,7 +77,6 @@ const fetchAndCalc = (to, from, next, self) => {
       startDate: startDate.format('YYYY-MM-DD'),
       endDate: startDate.add(1, 'month').subtract(1, 'day').format('YYYY-MM-DD'),
       status: [
-        MeetingEnum.meetingStatus.End,
         MeetingEnum.meetingStatus.RecordComplete,
         MeetingEnum.meetingStatus.Archive,
       ],
