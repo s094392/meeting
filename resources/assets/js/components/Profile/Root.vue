@@ -56,9 +56,11 @@ import MeetingEnum from '../../MeetingEnum';
 import store from '../../store';
 
 const fetchAndCalc = (to, from, next, self) => {
+  const year = to.params.year ? to.params.year : moment().get('year');
+  const month = to.params.month ? to.params.month : moment().get('month') + 1;
   const startDate = moment().set({
-    year: to.params.year,
-    month: to.params.month - 1,
+    year,
+    month,
     date: 1,
   });
   const meetings = [];
@@ -131,10 +133,10 @@ const fetchAndCalc = (to, from, next, self) => {
     });
     stats.totalTime = Math.round(stats.totalTime * 100) / 100;
     if (self) {
-      self.setData(meetings, stats);
+      self.setData(year, month, meetings, stats);
       next();
     } else {
-      next(vm => vm.setData(meetings, stats));
+      next(vm => vm.setData(year, month, meetings, stats));
     }
   });
 };
@@ -162,12 +164,12 @@ export default {
     fetchAndCalc(to, from, next, this);
   },
   created() {
-    this.year = this.$route.params.year;
-    this.month = this.$route.params.month;
     this.yearList = _.range(moment().get('year') - 10, moment().get('year') + 1);
   },
   methods: {
-    setData(meetings, stats) {
+    setData(year, month, meetings, stats) {
+      this.year = year;
+      this.month = month;
       this.stats = Object.assign({}, stats);
       this.meetings = Object.assign({}, meetings);
     },

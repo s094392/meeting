@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import moment from 'moment';
 import VueRouter from 'vue-router';
 
 import Home from './components/Home/Root';
@@ -58,22 +57,10 @@ const router = new VueRouter({
       component: MeetingEditor,
     },
     {
-      path: '/profile/:year/:month',
+      path: '/profile/:year?/:month?',
       name: 'profile',
       meta: { title: '個人報表' },
       component: Profile,
-    },
-    {
-      path: '/profile',
-      name: 'profileRedirect',
-      meta: { title: '個人報表' },
-      redirect: {
-        name: 'profile',
-        params: {
-          year: moment().get('year'),
-          month: moment().get('month') + 1,
-        },
-      },
     },
     {
       path: '*',
@@ -85,7 +72,8 @@ const router = new VueRouter({
   scrollBehavior(to, from, savedPosition) {
     if (to.hash) {
       return { selector: to.hash };
-    } if (savedPosition) {
+    }
+    if (savedPosition) {
       return savedPosition;
     }
     return { x: 0, y: 0 };

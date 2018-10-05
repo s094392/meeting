@@ -127,7 +127,7 @@ export default {
     isOwnerOrAttendee() {
       return !_.isEmpty(this.me) || this.meeting.owner_id === this.user.user_id;
     },
-    ...mapState(['user']),
+    ...mapState(['user', 'editRecord']),
   },
   props: ['meeting', 'me', 'id'],
   data() {
@@ -175,6 +175,10 @@ export default {
       });
     },
     completeRecord() {
+      if (this.editRecord) {
+        UIkit.modal.alert('會議紀錄尚未儲存<br>請儲存後重試');
+        return;
+      }
       const meetingStart = moment(this.meeting.start_time);
       const meetingEnd = moment(this.meeting.end_time);
       let bad = [];

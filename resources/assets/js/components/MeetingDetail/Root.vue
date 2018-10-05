@@ -5,17 +5,17 @@
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
 
       <ul uk-tab>
-        <li :class="{'uk-active': view == 'properties'}" @click="view = 'properties'">
+        <li :class="{'uk-active': view === 'properties'}" @click="view = 'properties'">
           <router-link :to="{name:'detail', params: {id: id, view: 'properties'}}" replace="">
             <span class="uk-text-large"><span class="uk-visible@s">會議</span>資料</span>
           </router-link>
         </li>
-        <li :class="{'uk-active': view == 'attendees'}" @click="view = 'attendees'">
+        <li :class="{'uk-active': view === 'attendees'}" @click="view = 'attendees'">
           <router-link :to="{name:'detail', params: {id: id, view: 'attendees'}}" replace="">
             <span class="uk-text-large"><span class="uk-visible@s">參與</span>人員</span>
           </router-link >
         </li>
-        <li :class="{'uk-active': view == 'record'}" @click="view = 'record'">
+        <li :class="{'uk-active': view === 'record'}" @click="view = 'record'">
           <router-link :to="{name:'detail', params: {id: id, view: 'record'}}" replace="">
             <span class="uk-text-large"><span class="uk-visible@s">會議</span>紀錄</span>
           </router-link >
@@ -23,21 +23,21 @@
       </ul>
 
       <span>
-        <div v-show="view == 'properties'">
+        <div v-show="view === 'properties'">
           <Properties :meeting="meeting"/>
           <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe"
                           @startMeeting="updateMeeting" @endMeeting="updateMeeting"
                           @completeRecord="updateMeeting" @cancelMeeting="$router.replace('/')"/>
         </div>
-        <Attendees v-show="view == 'attendees'"
+        <Attendees v-show="view === 'attendees'"
                   :meeting="meeting" :attendees="meeting.attendees"
                   @updateAttendee="updateAttendee"/>
-        <Record v-show="view == 'record'" :meeting="meeting" :view="view"/>
+        <Record v-show="view === 'record'" :meeting="meeting"/>
       </span>
     </div>
   </div>
 
-  <div class="uk-visible@l uk-width-1-4@l" :class="{'visibility-hidden': view != 'record'}">
+  <div class="uk-visible@l uk-width-1-4@l" :class="{'visibility-hidden': view !== 'record'}">
     <h4>目錄</h4>
     <div class="uk-card uk-card-small uk-card-default uk-card-body"
          uk-sticky="offset:40;" id="toc"></div>
