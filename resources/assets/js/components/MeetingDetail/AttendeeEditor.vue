@@ -50,8 +50,8 @@
 <script>
 import FlatPickr from 'vue-flatpickr-component';
 import moment from 'moment';
+import isEmpty from 'lodash/isEmpty';
 import Multiselect from '../Shared/MultiSelect';
-
 
 export default {
   props: {
@@ -107,7 +107,7 @@ export default {
   },
   methods: {
     selected() {
-      if (!!this.date && !!this.time && !_.isEmpty(this.attendeeValue)) {
+      if (!!this.date && !!this.time && isEmpty(this.attendeeValue)) {
         const time = moment(this.time, 'HH:mm');
         const date = moment(this.date);
         this.$emit(

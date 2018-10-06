@@ -1,5 +1,5 @@
 <template>
-  <div class="markdown-editor">
+  <div class="markdown-editor" @keydown.prevent.ctrl.83="saveRecord">
     <button class="uk-button uk-button-primary uk-align-right edit-button"
             @click="finishEdit">完成</button>
     <textarea ref="textarea"></textarea>
@@ -23,7 +23,7 @@
 </template>
 
 <style lang="scss" scoped>
-@import "~easymde/dist/easymde.min.css";
+
 .edit-button {
   margin: 5px 5px 0 0;
   z-index: 5;
@@ -32,7 +32,9 @@
 </style>
 
 <style>
-  @import "https://use.fontawesome.com/releases/v5.3.1/css/all.css";
+  @import "/css/easymde.min.css";
+  @import "/css/fontawesome.min.css";
+  @import "/css/solid.min.css";
 </style>
 
 <script>
@@ -68,6 +70,25 @@ export default {
         element: this.$refs.textarea,
         initialValue: self.value,
         spellChecker: false,
+        toolbar: ['bold', 'italic', 'strikethrough', 'heading', '|', 'code',
+          'quote', 'unordered-list', 'ordered-list', '|', 'link', 'image', 'table',
+          '|', 'preview', 'side-by-side', 'fullscreen', '|', 'undo',
+          {
+            name: 'redo',
+            action: EasyMDE.redo,
+            className: 'fa fa-redo',
+            noDisable: true,
+            title: 'Redo',
+          },
+          {
+            name: 'save',
+            action() {
+              self.saveRecord();
+            },
+            className: 'fa fa-save',
+            title: 'Save',
+          },
+        ],
         previewRender() {
           return self.renderedHTML;
         },

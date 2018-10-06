@@ -1,6 +1,16 @@
 {
+    "/js/doughnut.js": "/js/doughnut.js",
+    "/js/mde.js": "/js/mde.js",
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
     "/js/vendor.js": "/js/vendor.js",
-    "/js/manifest.js": "/js/manifest.js"
+    "/js/manifest.js": "/js/manifest.js",
+    "/css/easymde.min.css": "/css/easymde.min.css",
+    "/css/solid.min.css": "/css/solid.min.css",
+    "/css/fontawesome.min.css": "/css/fontawesome.min.css",
+    "/webfonts/fa-solid-900.eot": "/webfonts/fa-solid-900.eot",
+    "/webfonts/fa-solid-900.svg": "/webfonts/fa-solid-900.svg",
+    "/webfonts/fa-solid-900.ttf": "/webfonts/fa-solid-900.ttf",
+    "/webfonts/fa-solid-900.woff": "/webfonts/fa-solid-900.woff",
+    "/webfonts/fa-solid-900.woff2": "/webfonts/fa-solid-900.woff2"
 }

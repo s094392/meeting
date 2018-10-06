@@ -1,0 +1,28 @@
+{
+  "parserOptions": {
+    "parser": "babel-eslint",
+    "ecmaVersion": 2017,
+    "sourceType": "module"
+  },
+  "rules": {
+    "strict": 1
+  },
+  "extends": [
+    "airbnb-base",
+    "plugin:vue/essential"
+  ],
+  "globals": {
+    "axios": false,
+    "UIkit": false
+  },
+  "settings": {
+    "import/resolver": {
+      "node": {
+        "extensions": [
+          ".js",
+          ".vue"
+        ]
+      }
+    }
+  }
+}

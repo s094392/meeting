@@ -118,14 +118,16 @@
 <script>
 import { mapState } from 'vuex';
 import moment from 'moment';
+import isEmpty from 'lodash/isEmpty';
+import uniq from 'lodash/uniq';
 
 export default {
   computed: {
     isAttendee() {
-      return !_.isEmpty(this.me) && this.meeting.owner_id !== this.user.user_id;
+      return !isEmpty(this.me) && this.meeting.owner_id !== this.user.user_id;
     },
     isOwnerOrAttendee() {
-      return !_.isEmpty(this.me) || this.meeting.owner_id === this.user.user_id;
+      return !isEmpty(this.me) || this.meeting.owner_id === this.user.user_id;
     },
     ...mapState(['user', 'editRecord']),
   },
@@ -193,7 +195,7 @@ export default {
         }
       });
       if (bad) {
-        bad = _.uniq(bad);
+        bad = uniq(bad);
         const alertString = `以下人員的資料有誤<br>${bad.toString()}<br>請檢查該成員的遲到/早退時間是否介於會議的開始/結束時間`;
         UIkit.modal.alert(alertString);
       } else {

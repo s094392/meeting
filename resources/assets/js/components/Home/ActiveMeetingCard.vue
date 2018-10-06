@@ -29,12 +29,13 @@
 
 <script>
 import { mapState } from 'vuex';
+import isEmpty from 'lodash/isEmpty';
 import MeetingControl from '../Shared/MeetingControl';
 
 export default {
   computed: {
     isOwnerOrAttendee() {
-      return !_.isEmpty(this.me);
+      return !isEmpty(this.me);
     },
     ...mapState(['user']),
   },

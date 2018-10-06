@@ -138,6 +138,7 @@
 <script>
 import { mapState } from 'vuex';
 import moment from 'moment';
+import orderBy from 'lodash/orderBy';
 import AttendeeEditor from './AttendeeEditor';
 
 export default {
@@ -164,12 +165,12 @@ export default {
           && attendee.status === this.$attendeeStatus.Absent);
     },
     leaveEarly() {
-      return _.orderBy(this.attendees.filter(
+      return orderBy(this.attendees.filter(
         attendee => attendee.leave_early_reason || attendee.leave_time,
       ), 'leave_time', 'desc');
     },
     late() {
-      return _.orderBy(this.attendees.filter(
+      return orderBy(this.attendees.filter(
         attendee => attendee.late_reason || attendee.arrive_time,
       ), 'arrive_time', 'desc');
     },

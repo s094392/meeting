@@ -1,11 +1,12 @@
 <template>
 <div class="uk-overflow-auto">
     <button class="uk-button uk-button-primary uk-align-right edit-button"
-            v-if="canModify && !edit" @click="edit = true">編輯</button>
+            v-if="canModify && !edit" @click="startEdit">編輯</button>
   <div class="meeting-record" v-if="!edit" v-html="renderedHTML">
   </div>
-  <RecordEditor v-if="edit" v-model="meeting.record" :renderedHTML="renderedHTML"
-                :meeting="meeting" @finish="edit = false"></RecordEditor>
+  <component v-if="edit" :is="recordEditor" v-model="meeting.record"
+            :renderedHTML="renderedHTML" :meeting="meeting" @finish="edit = false">
+  </component>
 </div>
 </template>
 
@@ -22,10 +23,19 @@
 import markdownIt from 'markdown-it';
 import { mapState } from 'vuex';
 import markdownItTocAndAnchor from 'markdown-it-toc-and-anchor';
-import RecordEditor from './RecordEditor';
 
 export default {
   props: ['meeting'],
+  methods: {
+    startEdit() {
+      this.$store.commit('startLoad');
+      import('./RecordEditor' /* webpackChunkName: "js/mde" */).then((mde) => {
+        this.edit = true;
+        this.recordEditor = mde;
+        this.$store.commit('endLoad');
+      });
+    },
+  },
   computed: {
     canModify() {
       return (
@@ -36,7 +46,7 @@ export default {
     meetingRecord() {
       return this.meeting.record;
     },
-    ...mapState(['user']),
+    ...mapState(['user', 'loading']),
   },
   watch: {
     meetingRecord() {
@@ -48,6 +58,7 @@ export default {
     return {
       edit: false,
       renderedHTML: '',
+      recordEditor: null,
       md: markdownIt({
         html: true,
         linkify: true,
@@ -60,14 +71,8 @@ export default {
       }),
     };
   },
-  components: {
-    RecordEditor,
-  },
   mounted() {
     this.renderedHTML = this.md.render(this.meeting.record);
-  },
-  methods: {
-
   },
 };
 </script>

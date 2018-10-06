@@ -101,6 +101,7 @@
 
 
 <script>
+import range from 'lodash/range';
 import MeetingFilter from './MeetingFilter';
 import MeetingTable from '../Shared/MeetingTable';
 
@@ -162,7 +163,7 @@ export default {
         start -= Math.abs(end - this.lastPage);
         end = this.lastPage;
       }
-      return _.range(Math.max(1, start), end + 1);
+      return range(Math.max(1, start), end + 1);
     },
     fetchTas() {
       axios.get('api/tas').then((response) => {

@@ -8,7 +8,7 @@
 
       <div class="uk-margin">
         <Multiselect v-model="localQuery.group" :options="groupOptions"
-          v-if="!objectEmpty(groupOptions)" placeholder="任何會議類別">
+          v-if="!isEmpty(groupOptions)" placeholder="任何會議類別">
           <span slot="noResult">查無資料</span>
         </MultiSelect>
         <span v-else class="uk-input input-loading">載入會議類別中...</span>
@@ -22,7 +22,7 @@
       <div class="uk-margin">
         <Multiselect v-model="owner" :label="'username'" :trackBy="'id'"
                      :options="ownerOptions" placeholder="任何發起人"
-                     v-if="!objectEmpty(ownerOptions)">
+                     v-if="!isEmpty(ownerOptions)">
           <span slot="noResult">查無資料</span>
         </MultiSelect>
         <span v-else class="uk-input input-loading">載入發起人資料中...</span>
@@ -55,6 +55,7 @@
 
 <script>
 import FlatPickr from 'vue-flatpickr-component';
+import isEmpty from 'lodash/isEmpty';
 import Multiselect from '../Shared/MultiSelect';
 
 export default {
@@ -99,8 +100,8 @@ export default {
       this.localQuery = {};
       this.$router.push({ name: 'list' });
     },
-    objectEmpty(o) {
-      return _.isEmpty(o);
+    isEmpty(obj) {
+      return isEmpty(obj);
     },
   },
   components: {

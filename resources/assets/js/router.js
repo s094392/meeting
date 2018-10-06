@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import isEmpty from 'lodash/isEmpty';
 
 import Home from './components/Home/Root';
 import MeetingList from './components/MeetingList/Root';
@@ -82,7 +83,7 @@ const router = new VueRouter({
 
 function checkIfInit() {
   return new Promise((resolve) => {
-    if (_.isEmpty(store.state.user)) {
+    if (isEmpty(store.state.user)) {
       store.dispatch('initUser').then(() => resolve());
     } else {
       resolve();

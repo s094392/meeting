@@ -1,5 +1,7 @@
 <script>
 import { Doughnut } from 'vue-chartjs';
+import toPairs from 'lodash/toPairs';
+import sortBy from 'lodash/sortBy';
 
 export default {
   extends: Doughnut,
@@ -14,8 +16,8 @@ export default {
   },
   methods: {
     updateChart() {
-      let pairs = _.toPairs(this.timePerGroup);
-      pairs = _.sortBy(pairs, el => el[0]);
+      let pairs = toPairs(this.timePerGroup);
+      pairs = sortBy(pairs, el => el[0]);
       this.renderChart({
         labels: pairs.map(el => el[0]),
         datasets: [

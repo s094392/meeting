@@ -84,6 +84,8 @@
 <script>
 import FlatPickr from 'vue-flatpickr-component';
 import moment from 'moment';
+import last from 'lodash/last';
+import uniqBy from 'lodash/uniqBy';
 import Multiselect from './MultiSelect';
 
 export default {
@@ -139,13 +141,13 @@ export default {
       this.meeting = data;
     },
     attendeeSelected(selectedOption) {
-      const selected = _.last(selectedOption);
+      const selected = last(selectedOption);
       if (selected.type === 'group') {
         this.meeting.attendees.pop();
         this.meeting.attendees = this.meeting.attendees.concat(
           this.groupedTas[selected.username],
         );
-        this.meeting.attendees = _.uniqBy(this.meeting.attendees, 'user_id');
+        this.meeting.attendees = uniqBy(this.meeting.attendees, 'user_id');
       }
     },
     postMeeting() {

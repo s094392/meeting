@@ -50,17 +50,18 @@
 <script>
 import { mapState } from 'vuex';
 import moment from 'moment';
-import Doughnut from './Doughnut';
+import range from 'lodash/range';
 import MeetingTable from '../Shared/MeetingTable';
 import MeetingEnum from '../../MeetingEnum';
 import store from '../../store';
+
 
 const fetchAndCalc = (to, from, next, self) => {
   const year = to.params.year ? to.params.year : moment().get('year');
   const month = to.params.month ? to.params.month : moment().get('month') + 1;
   const startDate = moment().set({
     year,
-    month,
+    month: month - 1,
     date: 1,
   });
   const meetings = [];
@@ -145,7 +146,7 @@ const fetchAndCalc = (to, from, next, self) => {
 export default {
   computed: mapState(['user']),
   components: {
-    Doughnut,
+    Doughnut: () => import('./Doughnut' /* webpackChunkName: "js/doughnut" */),
     MeetingTable,
   },
   data() {
@@ -164,7 +165,7 @@ export default {
     fetchAndCalc(to, from, next, this);
   },
   created() {
-    this.yearList = _.range(moment().get('year') - 10, moment().get('year') + 1);
+    this.yearList = range(moment().get('year') - 10, moment().get('year') + 1);
   },
   methods: {
     setData(year, month, meetings, stats) {
