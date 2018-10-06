@@ -4380,6 +4380,11 @@ lodash.isarray@^3.0.0:
   resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-3.0.4.tgz#79e4eb88c36a8122af86f844aa9bcd851b5fbb55"
   integrity sha1-eeTriMNqgSKvhvhEqpvNhRtfu1U=
 
+lodash.kebabcase@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/lodash.kebabcase/-/lodash.kebabcase-4.1.1.tgz#8489b1cb0d29ff88195cceca448ff6d6cc295c36"
+  integrity sha1-hImxyw0p/4gZXM7KRI/21swpXDY=
+
 lodash.keys@^3.0.0:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/lodash.keys/-/lodash.keys-3.1.2.tgz#4dbc0472b156be50a0b286855d1bd0b0c656098a"
@@ -4483,9 +4488,10 @@ map-visit@^1.0.0:
 
 markdown-it-toc-and-anchor@Summon528/markdown-it-toc-and-anchor:
   version "4.1.2"
-  resolved "https://codeload.github.com/Summon528/markdown-it-toc-and-anchor/tar.gz/d49843bfb7c74a91ee9ac3182e7c015771086ae1"
+  resolved "https://codeload.github.com/Summon528/markdown-it-toc-and-anchor/tar.gz/1cdeab41e860fcecde875297f0b2341b888cf8cb"
   dependencies:
     clone "^2.1.0"
+    lodash.kebabcase "^4.1.1"
 
 markdown-it@^8.4.2:
   version "8.4.2"
@@ -7427,10 +7433,10 @@ vue-loader@^13.7.1:
     vue-style-loader "^3.0.0"
     vue-template-es2015-compiler "^1.6.0"
 
-vue-multiselect@2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/vue-multiselect/-/vue-multiselect-2.0.3.tgz#bec58f84586022f82c2a3169be1b869f6d9715fc"
-  integrity sha1-vsWPhFhgIvgsKjFpvhuGn22XFfw=
+vue-multiselect@2.1.3:
+  version "2.1.3"
+  resolved "https://registry.yarnpkg.com/vue-multiselect/-/vue-multiselect-2.1.3.tgz#5454731086d8c431b527051a56910a8babe090af"
+  integrity sha512-ANLvoLEZv5uzissmh2WSHTn8DGhqsKi6zVtctpf1wnGK6vmZBktQZzeuHGxH7KpIb+4A6BlXmq0RR08jtQ67tg==
 
 vue-router@^3.0.1:
   version "3.0.1"

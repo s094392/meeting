@@ -1,5 +1,5 @@
 <template>
-  <div class="markdown-editor" @keydown.prevent.ctrl.83="saveRecord">
+  <div class="markdown-editor" @keydown.ctrl.83.prevent="saveRecord">
     <button class="uk-button uk-button-primary uk-align-right edit-button"
             @click="finishEdit">完成</button>
     <textarea ref="textarea"></textarea>
