@@ -6,7 +6,6 @@ export default new Vuex.Store({
   state: {
     user: {},
     loading: true,
-    editRecord: false,
   },
   /* eslint-disable no-param-reassign */
   mutations: {
@@ -19,12 +18,6 @@ export default new Vuex.Store({
     },
     endLoad(state) {
       state.loading = false;
-    },
-    startEditRecord(state) {
-      state.editRecord = true;
-    },
-    endEditRecord(state) {
-      state.editRecord = false;
     },
   },
   actions: {

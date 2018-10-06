@@ -129,9 +129,9 @@ export default {
     isOwnerOrAttendee() {
       return !isEmpty(this.me) || this.meeting.owner_id === this.user.user_id;
     },
-    ...mapState(['user', 'editRecord']),
+    ...mapState(['user']),
   },
-  props: ['meeting', 'me', 'id'],
+  props: ['meeting', 'me', 'id', 'editingRecord'],
   data() {
     return {
       reason: '',
@@ -139,11 +139,13 @@ export default {
   },
   methods: {
     startMeeting() {
+      if (this.isEditingRecord()) return;
       axios.post(`/api/meetings/start/${this.meeting.id}`).then((response) => {
         this.$emit('startMeeting', response.data);
       });
     },
     endMeeting() {
+      if (this.isEditingRecord()) return;
       axios.post(`/api/meetings/end/${this.meeting.id}`).then((response) => {
         this.$emit('endMeeting', response.data);
       });
@@ -176,11 +178,15 @@ export default {
         absent_reason: reason,
       });
     },
-    completeRecord() {
-      if (this.editRecord) {
+    isEditingRecord() {
+      if (this.editingRecord) {
         UIkit.modal.alert('會議紀錄尚未儲存<br>請儲存後重試');
-        return;
+        return true;
       }
+      return false;
+    },
+    completeRecord() {
+      if (this.isEditingRecord()) return;
       const meetingStart = moment(this.meeting.start_time);
       const meetingEnd = moment(this.meeting.end_time);
       let bad = [];
@@ -194,7 +200,7 @@ export default {
           bad.push(attendee.username);
         }
       });
-      if (bad) {
+      if (bad.length > 0) {
         bad = uniq(bad);
         const alertString = `以下人員的資料有誤<br>${bad.toString()}<br>請檢查該成員的遲到/早退時間是否介於會議的開始/結束時間`;
         UIkit.modal.alert(alertString);

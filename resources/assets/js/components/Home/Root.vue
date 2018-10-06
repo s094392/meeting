@@ -46,7 +46,7 @@ export default {
       params: {
         status: [
           MeetingEnum.meetingStatus.Init,
-          MeetingEnum.meetingStatus.Start
+          MeetingEnum.meetingStatus.Start,
         ],
       },
     }).then((response) => {
@@ -62,13 +62,13 @@ export default {
         params: {
           status: [
             MeetingEnum.meetingStatus.Init,
-            MeetingEnum.meetingStatus.Start
+            MeetingEnum.meetingStatus.Start,
           ],
         },
       }).then((response) => {
         this.activeMeetings = Array.from(response.data.data);
       });
-    }
+    },
   },
 };
 </script>

@@ -5,17 +5,17 @@
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
 
       <ul uk-tab>
-        <li :class="{'uk-active': view === 'properties'}" @click="view = 'properties'">
+        <li :class="{'uk-active': view === 'properties'}">
           <router-link :to="{name:'detail', params: {id: id, view: 'properties'}}" replace="">
             <span class="uk-text-large"><span class="uk-visible@s">會議</span>資料</span>
           </router-link>
         </li>
-        <li :class="{'uk-active': view === 'attendees'}" @click="view = 'attendees'">
+        <li :class="{'uk-active': view === 'attendees'}">
           <router-link :to="{name:'detail', params: {id: id, view: 'attendees'}}" replace="">
             <span class="uk-text-large"><span class="uk-visible@s">參與</span>人員</span>
           </router-link >
         </li>
-        <li :class="{'uk-active': view === 'record'}" @click="view = 'record'">
+        <li :class="{'uk-active': view === 'record'}">
           <router-link :to="{name:'detail', params: {id: id, view: 'record'}}" replace="">
             <span class="uk-text-large"><span class="uk-visible@s">會議</span>紀錄</span>
           </router-link >
@@ -26,13 +26,15 @@
         <div v-show="view === 'properties'">
           <Properties :meeting="meeting"/>
           <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe"
+                          :editingRecord="editingRecord" @cancelMeeting="$router.replace('/')"
                           @startMeeting="updateMeeting" @endMeeting="updateMeeting"
-                          @completeRecord="updateMeeting" @cancelMeeting="$router.replace('/')"/>
+                          @completeRecord="updateMeeting" />
         </div>
         <Attendees v-show="view === 'attendees'"
                   :meeting="meeting" :attendees="meeting.attendees"
                   @updateAttendee="updateAttendee"/>
-        <Record v-show="view === 'record'" :meeting="meeting"/>
+        <Record v-show="view === 'record'" :meeting="meeting" :editingRecord="editingRecord"
+                @startEdit="editingRecord = true" @endEdit="editingRecord = false"/>
       </span>
     </div>
   </div>
@@ -81,6 +83,18 @@ export default {
       }
     });
   },
+  beforeRouteLeave(to, from, next) {
+    if (this.editingRecord) {
+      UIkit.modal.confirm('會議紀錄尚未儲存，是否確定要離開？').then(() => {
+        localStorage.removeItem(`${this.meeting.id}_record`);
+        next();
+      }, () => {
+        this.$router.push({ name: 'detail', params: { id: this.id, view: 'record' } });
+      });
+    } else {
+      next();
+    }
+  },
   computed: {
     me: {
       get() {
@@ -96,13 +110,18 @@ export default {
         this.$set(this.meeting.attendees, index, me);
       },
     },
+    view() {
+      return this.$route.params.view;
+    },
+    id() {
+      return this.$route.params.id;
+    },
     ...mapState(['user']),
   },
   data() {
     return {
-      id: this.$route.params.id,
-      view: this.$route.params.view,
-      meeting: undefined,
+      meeting: null,
+      editingRecord: false,
     };
   },
   components: {

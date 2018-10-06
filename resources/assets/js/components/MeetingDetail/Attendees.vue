@@ -251,7 +251,7 @@ export default {
     showReason(r) {
       if (!r) return '未填寫原因';
       return r;
-    }
+    },
   },
 };
 </script>

@@ -12,16 +12,9 @@ const mix = require('laravel-mix');
  */
 
 mix.js('resources/assets/js/app.js', 'public/js')
-  .extract(['vue', 'uikit', 'axios', 'vue-router',
-    'vuex', 'markdown-it', 'uikit/dist/js/uikit-icons', 'moment', 'vue-multiselect', 'flatpickr'])
+  .extract(['vue', 'uikit', 'uikit/dist/js/uikit-icons', 'axios', 'vue-router', 'mavon-editor',
+    'vuex', 'moment', 'vue-multiselect', 'flatpickr'])
   .sass('resources/assets/sass/app.scss', 'public/css');
-
-mix.copy('node_modules/easymde/dist/easymde.min.css', 'public/css/easymde.min.css');
-
-mix.copy('node_modules/@fortawesome/fontawesome-free/css/solid.min.css', 'public/css/solid.min.css');
-mix.copy('node_modules/@fortawesome/fontawesome-free/css/fontawesome.min.css', 'public/css/fontawesome.min.css');
-mix.copy('node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-*', 'public/webfonts');
-
 
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const webpack = require('webpack');
