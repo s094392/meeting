@@ -15,7 +15,7 @@
         </div>
         <template v-else>
           <ActiveMeetingCard v-for="meeting in activeMeetings"
-                          :key="meeting.id" :meeting="meeting"/>
+                          :key="meeting.id" :meeting="meeting" @cancelMeeting="fetchMeetings"/>
         </template>
       </template>
     </div>
@@ -44,8 +44,10 @@ export default {
   beforeRouteEnter(to, from, next) {
     axios.get('/api/meetings', {
       params: {
-        status: [MeetingEnum.meetingStatus.Init,
-          MeetingEnum.meetingStatus.Start],
+        status: [
+          MeetingEnum.meetingStatus.Init,
+          MeetingEnum.meetingStatus.Start
+        ],
       },
     }).then((response) => {
       next(vm => vm.setData(response.data.data));
@@ -55,6 +57,18 @@ export default {
     setData(data) {
       this.activeMeetings = data;
     },
+    fetchMeetings() {
+      axios.get('/api/meetings', {
+        params: {
+          status: [
+            MeetingEnum.meetingStatus.Init,
+            MeetingEnum.meetingStatus.Start
+          ],
+        },
+      }).then((response) => {
+        this.activeMeetings = Array.from(response.data.data);
+      });
+    }
   },
 };
 </script>

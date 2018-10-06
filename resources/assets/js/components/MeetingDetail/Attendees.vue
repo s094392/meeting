@@ -30,7 +30,7 @@
           <tbody>
             <tr v-for="member in absentWithReason" v-bind:key="'off-'+member.user_id">
               <td class="td-id">{{ member.username }}</td>
-              <td class="uk-table-expand">{{ member.absent_reason }}</td>
+              <td class="uk-table-expand">{{ member.absent_reason | showReason }}</td>
             </tr>
           </tbody>
         </table>
@@ -56,11 +56,11 @@
               <tr>{{ member.username }}</tr>
               <tr class="monospace">
                 <span :uk-tooltip="`title: ${member.arrive_time}; pos: bottom-left`">
-                  {{ onlyTime(member.arrive_time) }}
+                  {{ member.arrive_time | onlyTime }}
                 </span>
               </tr>
             </td>
-            <td class="td-reason pre-wrap">{{ member.late_reason }}</td>
+            <td class="td-reason pre-wrap">{{ member.late_reason | showReason }}</td>
             <td v-if="canModify" class="uk-table-shrink">
               <a href='#' uk-icon="icon: close; ratio: 0.9"
                 @click="removeLate(member.user_id)"></a>
@@ -90,7 +90,7 @@
               <tr>{{ member.username }}</tr>
               <tr class="monospace">
                 <span :uk-tooltip="`title: ${member.leave_time}; pos: bottom-left`">
-                  {{ onlyTime(member.leave_time) }}
+                  {{ member.leave_time | onlyTime }}
                 </span>
               </tr>
             </td>
@@ -242,10 +242,16 @@ export default {
         leave_early_reason: null,
       });
     },
+  },
+  filters: {
     onlyTime(s) {
       if (!s) return '--:--';
       return moment(s).format('HH:mm');
     },
+    showReason(r) {
+      if (!r) return '未填寫原因';
+      return r;
+    }
   },
 };
 </script>

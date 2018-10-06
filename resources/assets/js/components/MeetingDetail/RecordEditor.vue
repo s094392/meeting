@@ -95,6 +95,7 @@ export default {
       });
       this.easymde.codemirror.on('change', () => {
         this.$emit('input', this.easymde.value());
+        localStorage.setItem(`${this.meeting.id}_record`, this.easymde.value());
       });
     },
     saveRecord() {

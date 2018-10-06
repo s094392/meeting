@@ -17,8 +17,8 @@
     <td>{{ meeting.id }}</td>
     <td >{{ meeting.group }}</td>
     <td >{{ meeting.title }}</td>
-    <td class="uk-visible@m nowrap">{{ removeSecond(meeting.start_time) }}</td>
-    <td class="uk-visible@m nowrap">{{ removeSecond(meeting.end_time) }}</td>
+    <td class="uk-visible@m nowrap">{{ meeting.start_time | noSecond }}</td>
+    <td class="uk-visible@m nowrap">{{ meeting.end_time | noSecond }}</td>
     <td class="uk-visible@m">{{ meeting.owner_name }}</td>
     <td class="nowrap">{{ $meetingStatusText[meeting.status] }}</td>
     </tr>
@@ -43,7 +43,9 @@ export default {
         params: { id: meetingId, view: 'properties' },
       });
     },
-    removeSecond(s) {
+  },
+  filters: {
+    noSecond(s) {
       if (!s) return s;
       return s.slice(0, -3);
     },

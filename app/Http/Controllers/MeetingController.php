@@ -111,8 +111,8 @@ class MeetingController extends Controller
         */
     public function destroy(Meeting $meeting)
     {
-        $meeting->delete();
-        return response('', 204);
+        $meeting->update(['status' => 6]);
+        return $meeting;
     }
 
     public function start(Meeting $meeting, $meetingId)

@@ -50,7 +50,6 @@ export default {
   },
   watch: {
     meetingRecord() {
-      localStorage.setItem(`${this.meeting.id}_record`, this.meetingRecord);
       this.renderedHTML = this.md.render(this.meeting.record);
     },
   },

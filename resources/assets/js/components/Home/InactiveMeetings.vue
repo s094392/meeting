@@ -37,7 +37,6 @@ export default {
               this.$meetingStatus.End,
               this.$meetingStatus.RecordComplete,
               this.$meetingStatus.Archive,
-              this.$meetingStatus.Cancel,
             ],
           },
         })
