@@ -5,20 +5,20 @@
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
 
       <ul uk-tab>
-        <li :class="{'uk-active': view === 'properties'}">
-          <router-link :to="{name:'detail', params: {id: id, view: 'properties'}}" replace="">
-            <span class="uk-text-large"><span class="uk-visible@s">會議</span>資料</span>
-          </router-link>
+        <li :class="{'uk-active': view === 'properties'}" @click="switchTab('properties')">
+          <a href="#"><span  class="uk-text-large">
+            <span class="uk-visible@s">會議</span>資料
+          </span></a>
         </li>
-        <li :class="{'uk-active': view === 'attendees'}">
-          <router-link :to="{name:'detail', params: {id: id, view: 'attendees'}}" replace="">
-            <span class="uk-text-large"><span class="uk-visible@s">參與</span>人員</span>
-          </router-link >
+        <li :class="{'uk-active': view === 'attendees'}" @click="switchTab('attendees')">
+          <a href="#"><span  class="uk-text-large">
+            <span class="uk-visible@s">參與</span>人員
+          </span></a>
         </li>
-        <li :class="{'uk-active': view === 'record'}">
-          <router-link :to="{name:'detail', params: {id: id, view: 'record'}}" replace="">
-            <span class="uk-text-large"><span class="uk-visible@s">會議</span>紀錄</span>
-          </router-link >
+        <li :class="{'uk-active': view === 'record'}" @click="switchTab('record')">
+          <a href="#"><span  class="uk-text-large">
+            <span class="uk-visible@s">會議</span>紀錄
+          </span></a>
         </li>
       </ul>
 
@@ -131,6 +131,9 @@ export default {
     MeetingControl,
   },
   methods: {
+    switchTab(tab) {
+      this.$router.replace({ name: 'detail', params: { id: this.id, view: tab } });
+    },
     setData(data) {
       this.meeting = data;
       document.title = `${this.meeting.title} - Meeting`;

@@ -3,7 +3,7 @@
     <button class="uk-button uk-button-primary uk-button-small uk-align-right edit-button"
             v-if="canModify && !editingRecord" @click="startEdit">編輯
     </button>
-    <div v-show="!editingRecord" class="markdown-body" v-html="rederedHtml"></div>
+    <div v-show="!editingRecord" class="markdown-body uk-overflow-auto" v-html="rederedHtml"></div>
     <mavonEditor language="en" v-if="editingRecord" :externalLink="false"
                   :autofocus="false" :ishljs="false" :toolbars="toolbars"
                  :boxShadow="false" v-model="meetingRecord" @save="saveRecord"></mavonEditor>
