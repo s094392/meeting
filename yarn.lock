@@ -4465,7 +4465,7 @@ math-random@^1.0.1:
 
 mavon-editor@Summon528/mavonEditor:
   version "2.6.17"
-  resolved "https://codeload.github.com/Summon528/mavonEditor/tar.gz/eee9701b970004756281ddf8408944467ac66c87"
+  resolved "https://codeload.github.com/Summon528/mavonEditor/tar.gz/a3d4cc4c4211baf355725a8e302338c54b69d484"
   dependencies:
     highlight.js "^9.11.0"
     highlight.js-async-webpack "^1.0.4"

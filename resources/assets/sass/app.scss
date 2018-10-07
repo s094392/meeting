@@ -10,6 +10,7 @@
 @import 'multiselect';
 @import 'flatpickr';
 @import 'progress';
+@import 'markdown';
 
 .background {
     position: fixed;
@@ -80,24 +81,6 @@
 
   &.disabled {
     color: #999;
-  }
-}
-
-.meeting-record {
-  h1 {
-    @extend .uk-h2;
-  }
-  h2 {
-    @extend .uk-h3;
-  }
-  h3 {
-    @extend .uk-h4;
-  }
-  h4 {
-    @extend .uk-h5;
-  }
-  h5 {
-    @extend .uk-h6;
   }
 }
 

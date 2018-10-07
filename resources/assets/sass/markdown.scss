@@ -1,0 +1,45 @@
+.markdown-body {
+  color: #555;
+  h1 {
+    font-size: 32px;
+  }
+  h2 {
+    font-size: 24px;
+  }
+  h3 {
+    font-size: 20px;
+  }
+  h4 {
+    font-size: 16px;
+  }
+  h5 {
+    font-size: 14px;
+  }
+  h6 {
+    font-size: 12px;
+  }
+  table {
+    display: block;
+    width: 100%;
+    overflow: auto;
+    border-collapse: collapse;
+    
+    tr {
+      background-color: #fff;
+      border-top: 1px solid #e5e5e5;
+      &:nth-child(2n) {
+        background-color: #f8f8f8;
+      }
+    }
+  }
+  th, td {
+    padding: 6px 13px;
+      border: 1px solid #e5e5e5;
+  }
+  pre {
+    background-color: #f8f8f8;
+    code {
+      background-color: #f8f8f8;
+    }
+  }
+}
