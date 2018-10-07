@@ -1,5 +1,6 @@
 const mix = require('laravel-mix');
 
+const BASE_PATH = '/';
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -11,6 +12,8 @@ const mix = require('laravel-mix');
  |
  */
 
+mix.setResourceRoot(BASE_PATH);
+
 mix.js('resources/assets/js/app.js', 'public/js')
   .extract(['vue', 'uikit', 'uikit/dist/js/uikit-icons', 'axios', 'vue-router', 'mavon-editor',
     'vuex', 'moment', 'vue-multiselect', 'flatpickr'])
@@ -20,6 +23,9 @@ mix.js('resources/assets/js/app.js', 'public/js')
 const webpack = require('webpack');
 
 mix.webpackConfig({
+  output: {
+    publicPath: BASE_PATH,
+  },
   plugins: [
     // new BundleAnalyzerPlugin(),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
