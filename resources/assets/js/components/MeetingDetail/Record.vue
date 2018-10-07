@@ -4,8 +4,8 @@
             v-if="canModify && !editingRecord" @click="startEdit">編輯
     </button>
     <div v-show="!editingRecord" class="markdown-body uk-overflow-auto" v-html="rederedHtml"></div>
-    <mavonEditor language="en" v-if="editingRecord" :externalLink="false"
-                  :autofocus="false" :ishljs="false" :toolbars="toolbars"
+    <mavonEditor language="en" v-if="editingRecord" :externalLink="false" defaultOpen="edit"
+                  :autofocus="false" :ishljs="false" :toolbars="toolbars" :subfield="false"
                  :boxShadow="false" v-model="meetingRecord" @save="saveRecord"></mavonEditor>
     <button class="uk-button uk-button-primary uk-align-right edit-button uk-margin-top"
             v-if="editingRecord" @click="endEdit">完成
@@ -74,7 +74,9 @@ export default {
         bold: true,
         italic: true,
         header: true,
+        underline: true,
         strikethrough: true,
+        mark: true,
         superscript: true,
         subscript: true,
         quote: true,
@@ -88,7 +90,11 @@ export default {
         htmlcode: true,
         undo: true,
         redo: true,
+        trash: true,
         save: true,
+        alignleft: true,
+        aligncenter: true,
+        alignright: true,
         subfield: true,
         preview: true,
       },
@@ -124,12 +130,12 @@ export default {
     },
   },
   mounted() {
-    const mdi = mavonEditor.getMarkdownIt().set({
+    const self = this;
+    this.rederedHtml = mavonEditor.getMarkdownIt().set({
       tocCallback(tocMarkdown, tocArray, tocHtml) {
-        document.getElementById('toc').innerHTML = tocHtml;
+        self.$emit('updateToc', tocHtml);
       },
-    });
-    this.rederedHtml = mdi.render(this.meetingRecord);
+    }).render(this.meetingRecord);
   },
 };
 </script>

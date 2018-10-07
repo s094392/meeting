@@ -34,21 +34,23 @@
                   :meeting="meeting" :attendees="meeting.attendees"
                   @updateAttendee="updateAttendee"/>
         <Record v-show="view === 'record'" :meeting="meeting" :editingRecord="editingRecord"
-                @startEdit="editingRecord = true" @endEdit="editingRecord = false"/>
+                @startEdit="editingRecord = true" @endEdit="editingRecord = false"
+                @updateToc="updateToc"/>
       </span>
     </div>
   </div>
 
-  <div class="uk-visible@l uk-width-1-4@l" :class="{'visibility-hidden': view !== 'record'}">
+  <div class="uk-visible@l uk-width-1-4@l" v-if="tocHtml && meeting.record"
+       :class="{'visibility-hidden': view !== 'record'}">
     <h4>目錄</h4>
-    <div class="uk-card uk-card-small uk-card-default uk-card-body"
-         uk-sticky="offset:40;" id="toc"></div>
+    <div class="uk-card uk-card-small uk-card-default uk-card-body toc"
+         uk-sticky="offset:40;" v-html="tocHtml"></div>
   </div>
 </div>
 </template>
 
 <style lang="scss">
-#toc {
+.toc {
   max-height: 90vh;
   overflow: auto;
   padding: 20px 10px;
@@ -122,6 +124,7 @@ export default {
     return {
       meeting: null,
       editingRecord: false,
+      tocHtml: '',
     };
   },
   components: {
@@ -133,6 +136,9 @@ export default {
   methods: {
     switchTab(tab) {
       this.$router.replace({ name: 'detail', params: { id: this.id, view: tab } });
+    },
+    updateToc(tocHtml) {
+      this.tocHtml = tocHtml;
     },
     setData(data) {
       this.meeting = data;
