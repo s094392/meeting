@@ -180,7 +180,7 @@ export default {
     },
     isEditingRecord() {
       if (this.editingRecord) {
-        UIkit.modal.alert('會議紀錄尚未儲存<br>請儲存後重試');
+        UIkit.modal.alert('會議紀錄尚未完成<br>請儲存後重試');
         return true;
       }
       return false;

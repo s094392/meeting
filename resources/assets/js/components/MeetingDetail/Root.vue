@@ -85,7 +85,7 @@ export default {
   },
   beforeRouteLeave(to, from, next) {
     if (this.editingRecord) {
-      UIkit.modal.confirm('會議紀錄尚未儲存，是否確定要離開？').then(() => {
+      UIkit.modal.confirm('會議紀錄尚未完成，是否確定要離開？').then(() => {
         localStorage.removeItem(`${this.meeting.id}_record`);
         next();
       }, () => {
