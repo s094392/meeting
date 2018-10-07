@@ -54,7 +54,7 @@
           <tr v-for="member in late" v-bind:key="'late-'+member.user_id">
             <td class="td-id">
               <tr>{{ member.username }}</tr>
-              <tr class="monospace">
+              <tr>
                 <span :uk-tooltip="`title: ${member.arrive_time}; pos: bottom-left`">
                   {{ member.arrive_time | onlyTime }}
                 </span>
@@ -88,7 +88,7 @@
           <tr v-for="member in leaveEarly" v-bind:key="'leave-early-'+member.user_id">
             <td class="td-id">
               <tr>{{ member.username }}</tr>
-              <tr class="monospace">
+              <tr>
                 <span :uk-tooltip="`title: ${member.leave_time}; pos: bottom-left`">
                   {{ member.leave_time | onlyTime }}
                 </span>
