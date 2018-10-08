@@ -25,7 +25,7 @@ install:js:
   tags:
     - builder
   script:
-    - npm install
+    - yarn install
   artifacts:
     when: on_success
     expire_in: 1 week
@@ -58,7 +58,7 @@ build:
     - sed -i -e "s,^\x24APP_URL:.*,\x24APP_URL:'$APP_URL';,g" resources/assets/sass/_variables.scss
     - sed -i -e "s,^const BASE_PATH = .*,const BASE_PATH = '$BASE_PATH';,g" resources/assets/js/base_path.js
     - sed -i -e "s,^const BASE_PATH = .*,const BASE_PATH = '$BASE_PATH';,g" webpack.mix.js
-    - npm run production
+    - yarn production
   artifacts:
     when: on_success
     expire_in: 1 day
