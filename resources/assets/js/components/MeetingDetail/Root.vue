@@ -43,7 +43,7 @@
   <div class="uk-visible@l uk-width-1-4@l" v-if="tocHtml && meeting.record"
        :class="{'visibility-hidden': view !== 'record'}">
     <h4>目錄</h4>
-    <div class="uk-card uk-card-small uk-card-default uk-card-body toc"
+    <div class="uk-card uk-card-small uk-card-default uk-card-body toc markdown-body"
          uk-sticky="offset:40;" v-html="tocHtml"></div>
   </div>
 </div>
