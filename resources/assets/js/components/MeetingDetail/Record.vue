@@ -134,6 +134,7 @@ export default {
     const self = this;
     this.rederedHtml = mavonEditor.getMarkdownIt().set({
       html: false,
+      linkify: true,
       tocCallback(tocMarkdown, tocArray, tocHtml) {
         self.$emit('updateToc', tocHtml);
       },
