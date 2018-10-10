@@ -1,29 +1,31 @@
 <template>
-<div class="uk-margin-left uk-visible@m" uk-sticky="offset: 40;">
-  <div>
-    <div class="uk-margin-bottom">
-      <img :src="$basePath + 'img/meeting.png'" class="logo uk-margin-small-right">
-      <span class="uk-text-large uk-text-bold">Meeting</span>
-    </div>
-    <ul class="uk-nav uk-nav-default uk-nav-primary">
-      <li>
-        <span class="uk-text-large uk-text-lead uk-text-capitalize">
-        {{ user.username }}
-        </span>
-        {{ user.chinese_name }}
+<div class="uk-visible@m">
+  <div class="uk-margin-left" uk-sticky="offset: 40;">
+    <div>
+      <div class="uk-margin-bottom">
+        <img :src="$basePath + 'img/meeting.png'" class="logo uk-margin-small-right">
+        <span class="uk-text-large uk-text-bold">Meeting</span>
+      </div>
+      <ul class="uk-nav uk-nav-default uk-nav-primary">
+        <li>
+          <span class="uk-text-large uk-text-lead uk-text-capitalize">
+          {{ user.username }}
+          </span>
+          {{ user.chinese_name }}
+          </li>
+        <li class="uk-nav-divider"></li>
+        <li>
+          <router-link :to="{ name: '/'}">首頁</router-link>
         </li>
-      <li class="uk-nav-divider"></li>
-      <li>
-        <router-link :to="{ name: '/'}">首頁</router-link>
-      </li>
-      <li>
-        <router-link :to="{ name: 'list', params: { page: 1 } }">會議列表</router-link>
-      </li>
-      <li>
-        <router-link :to="{ name: 'profile' }">個人報表</router-link>
-      </li>
-      <li><a href="#" @click="logout">登出</a></li>
-    </ul>
+        <li>
+          <router-link :to="{ name: 'list', params: { page: 1 } }">會議列表</router-link>
+        </li>
+        <li>
+          <router-link :to="{ name: 'profile' }">個人報表</router-link>
+        </li>
+        <li><a href="#" @click="logout">登出</a></li>
+      </ul>
+    </div>
   </div>
 </div>
 </template>

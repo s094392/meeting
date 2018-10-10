@@ -60,11 +60,14 @@
       </div>
 
       <div class="uk-margin uk-align-right">
-        <span class="uk-margin-right"  uk-tooltip="若取消勾選擇則本次咪挺不計薪">
+        <span class="uk-margin-right uk-margin-small-bottom request-money"
+             uk-tooltip="若取消勾選擇則本次咪挺不計薪">
           <input class="uk-checkbox"  v-model="meeting.request_money" type="checkbox"> 報帳
         </span>
-      <button @click="postMeeting(true)" class="uk-button uk-button-primary">儲存，並寄信通知</button>
-      <button @click="postMeeting(false)" class="uk-button uk-button-primary">
+      <button @click="postMeeting(true)" v-if="editMode"
+              class="uk-button uk-button-primary uk-margin-small-bottom">儲存，並寄信通知</button>
+      <button @click="postMeeting(false)"
+              class="uk-button uk-button-primary uk-margin-small-bottom">
         <span v-if="editMode">僅</span>儲存
       </button>
       </div>
@@ -82,6 +85,12 @@
 .form-danger {
   border: 1px solid #f0506e;
 }
+@media only screen and (max-width: 640px) {
+  .request-money {
+    display: block;
+  }
+}
+
 </style>
 
 <script>
