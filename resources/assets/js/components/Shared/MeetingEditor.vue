@@ -1,72 +1,75 @@
 <template>
 <div uk-grid>
   <div class="uk-width-3-4@l">
-  <span class="page-title" v-if="editMode">編輯會議</span>
-  <span class="page-title" v-else>新增會議</span>
-  <div class="uk-card uk-card-default uk-card-body uk-card-small">
-    <form v-on:submit.prevent class="uk-form-horizontal uk-margin-large">
+    <span class="page-title" v-if="editMode">編輯會議</span>
+    <span class="page-title" v-else>新增會議</span>
+    <div class="uk-card uk-card-default uk-card-body uk-card-small">
+      <form v-on:submit.prevent class="uk-form-horizontal uk-margin-large">
 
-    <div class="uk-margin">
-    <label class="uk-form-label" for="form-horizontal-text">會議名稱</label>
-    <div class="uk-form-controls">
-      <input v-model="meeting.title" class="uk-input"
-      :class="{'form-danger': !meeting.title && triedPost}" type="text" placeholder="輸入會議名稱...">
-    </div>
-    </div>
-
-    <div class="uk-margin">
-    <label class="uk-form-label" for="form-horizontal-text">會議組別</label>
-    <div class="uk-form-controls">
-      <multiselect class="multi-select" v-model="meeting.group" placeholder="選擇會議組別..."
-      :class="{'form-danger': !meeting.group && triedPost}" :options="groupOptions" >
-        <span slot="noResult">查無資料</span>
-      </multiselect>
-    </div>
-    </div>
-
-    <div class="uk-margin" v-if="!editMode">
-      <label class="uk-form-label" for="form-horizontal-text">預計開會時間</label>
+      <div class="uk-margin">
+      <label class="uk-form-label" for="form-horizontal-text">會議名稱</label>
       <div class="uk-form-controls">
-        <FlatPickr v-model="meeting.scheduled_time" :config="flatPickrConfig"
-        class="uk-input" placeholder="選擇開會時間..."
-        :class="{'form-danger': !meeting.scheduled_time && triedPost}" >
-        </FlatPickr>
+        <input v-model="meeting.title" class="uk-input"
+        :class="{'form-danger': !meeting.title && triedPost}" type="text" placeholder="輸入會議名稱...">
       </div>
-    </div>
+      </div>
 
-    <div class="uk-margin">
-    <label class="uk-form-label" for="form-horizontal-text">
-      參與人員
-      <a href="#" class="uk-icon-link" uk-icon="icon: trash; ratio: 0.8"
-      @click="meeting.attendees=[]"></a>
-    </label>
-    <div class="uk-form-controls">
-      <Multiselect class="multi-select" v-model="meeting.attendees" @input="attendeeSelected"
-            placeholder="選擇參與人員..." :options="attendeeOptions"
-            :hideSelected="true" :multiple="true" :closeOnSelect="false"
-            :trackBy="'user_id'" :label="'username'"
-            :class="{'form-danger': meeting.attendees.length == 0 && triedPost}">
-        <span slot="noResult">查無資料</span>
-      </MultiSelect>
-    </div>
-    </div>
-
-    <div class="uk-margin">
-    <label class="uk-form-label" for="form-horizontal-text">會議說明</label>
+      <div class="uk-margin">
+      <label class="uk-form-label" for="form-horizontal-text">會議組別</label>
       <div class="uk-form-controls">
-      <textarea v-model="meeting.description" class="uk-textarea" rows="10" placeholder="會議說明..."
-      :class="{'form-danger': !meeting.description && triedPost}"></textarea>
+        <multiselect class="multi-select" v-model="meeting.group" placeholder="選擇會議組別..."
+        :class="{'form-danger': !meeting.group && triedPost}" :options="groupOptions" >
+          <span slot="noResult">查無資料</span>
+        </multiselect>
       </div>
-    </div>
+      </div>
 
-    <div class="uk-margin uk-align-right">
-      <span class="uk-margin-right"  uk-tooltip="若取消勾選擇則本次咪挺不計薪">
-        <input class="uk-checkbox"  v-model="meeting.request_money" type="checkbox"> 報帳
-      </span>
-    <button @click="postMeeting" class="uk-button uk-button-primary">送出</button>
+      <div class="uk-margin" v-if="!editMode || meeting.status == $meetingStatus.Init">
+        <label class="uk-form-label" for="form-horizontal-text">預計開會時間</label>
+        <div class="uk-form-controls">
+          <FlatPickr v-model="meeting.scheduled_time" :config="flatPickrConfig"
+          class="uk-input" placeholder="選擇開會時間..."
+          :class="{'form-danger': !meeting.scheduled_time && triedPost}" >
+          </FlatPickr>
+        </div>
+      </div>
+
+      <div class="uk-margin">
+      <label class="uk-form-label" for="form-horizontal-text">
+        參與人員
+        <a href="#" class="uk-icon-link" uk-icon="icon: trash; ratio: 0.8"
+        @click="meeting.attendees=[]"></a>
+      </label>
+      <div class="uk-form-controls">
+        <Multiselect class="multi-select" v-model="meeting.attendees" @input="attendeeSelected"
+              placeholder="選擇參與人員..." :options="attendeeOptions"
+              :hideSelected="true" :multiple="true" :closeOnSelect="false"
+              :trackBy="'user_id'" :label="'username'"
+              :class="{'form-danger': meeting.attendees.length == 0 && triedPost}">
+          <span slot="noResult">查無資料</span>
+        </MultiSelect>
+      </div>
+      </div>
+
+      <div class="uk-margin">
+      <label class="uk-form-label" for="form-horizontal-text">會議說明</label>
+        <div class="uk-form-controls">
+        <textarea v-model="meeting.description" class="uk-textarea" rows="10" placeholder="會議說明..."
+        :class="{'form-danger': !meeting.description && triedPost}"></textarea>
+        </div>
+      </div>
+
+      <div class="uk-margin uk-align-right">
+        <span class="uk-margin-right"  uk-tooltip="若取消勾選擇則本次咪挺不計薪">
+          <input class="uk-checkbox"  v-model="meeting.request_money" type="checkbox"> 報帳
+        </span>
+      <button @click="postMeeting(true)" class="uk-button uk-button-primary">儲存，並寄信通知</button>
+      <button @click="postMeeting(false)" class="uk-button uk-button-primary">
+        <span v-if="editMode">僅</span>儲存
+      </button>
+      </div>
+      </form>
     </div>
-    </form>
-  </div>
   </div>
 </div>
 </template>
@@ -150,7 +153,7 @@ export default {
         this.meeting.attendees = uniqBy(this.meeting.attendees, 'user_id');
       }
     },
-    postMeeting() {
+    postMeeting(email = false) {
       this.triedPost = true;
       if (
         !!this.meeting.title
@@ -163,6 +166,7 @@ export default {
         axios({
           method: this.editMode ? 'put' : 'post',
           url: this.editMode ? `/api/meetings/${this.$route.params.id}` : '/api/meetings',
+          params: { email },
           data: this.meeting,
         }).then((response) => {
           this.$store.commit('endLoad');

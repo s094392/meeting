@@ -6,16 +6,14 @@
       <div uk-grid >
          <div class="uk-width-1-2@s">
           <div class="uk-text-large uk-text-lead">
-            <select class="uk-select" v-model="year">
+            <select class="uk-select" v-model="year"
+                    @change="$router.push( {name: 'profile', params: {year, month}})">
               <option v-for="year in yearList" :key="year" :value="year">{{year}}</option>
             </select>
-            <select class="uk-select" v-model="month">
+            <select class="uk-select" v-model="month"
+                    @change="$router.push( {name: 'profile', params: {year, month}})">
               <option v-for="month in 12" :key="month" :value="month">{{month}}</option>
             </select>
-            <button @click="$router.push( {name: 'profile', params: {year, month}})"
-                    class="uk-button uk-button-primary">
-              查詢
-            </button>
           </div>
           <ul class="uk-list uk-list-bullet" v-if="stats">
             <li><span class="uk-text-bold meeting-hours">開了{{ stats.totalTime }}小時的會議</span></li>
