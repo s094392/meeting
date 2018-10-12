@@ -51,6 +51,13 @@ class AttendeeController extends Controller
      */
     public function store(Request $request, $meeting_id)
     {
+        $meeting = Meeting::where('id', $meeting_id)->first();
+        if ($meeting->status == 5) {
+            return response('', 403);
+        }
+        if ($meeting->owner_id != session('user')['user_id']) {
+            return response('', 403);
+        }
         $data = $request->all();
         $data['meeting_id'] = $meeting_id;
         $attendee = Attendee::create($data);
@@ -82,6 +89,13 @@ class AttendeeController extends Controller
      */
     public function update(Request $request, $meeting_id, $user_id)
     {
+        $meeting = Meeting::where('id', $meeting_id)->first();
+        if ($meeting->status == 5) {
+            return response('', 403);
+        }
+        if ($meeting->owner_id != session('user')['user_id'] && $meeting->status != 1) {
+            return response('', 403);
+        }
         Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first()->update($request->all());
         $attendee =  Attendee::where('meeting_id', $meeting_id)->with('user')
                     ->where('user_id', $user_id)->first();
@@ -97,6 +111,12 @@ class AttendeeController extends Controller
      */
     public function destroy($meeting_id, $user_id)
     {
+        if ($meeting->status == 5) {
+            return response('', 403);
+        }
+        if ($meeting->owner_id != session('user')['user_id']) {
+            return response('', 403);
+        }
         $attendee = Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->delete();
         return 204;
     }

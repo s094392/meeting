@@ -13,14 +13,38 @@ use View\UserController;
 
 class MeetingController extends Controller
 {
-
     /**
-     * Send an e-mail reminder to the user.
+     * Send an e-mail reminder to the user when created.
+     *
+     * @param  Meeting  $meeting
+     */
+    public function sendMeetingEmail(Meeting $meeting)
+    {
+        $attendees = $meeting->attendees();
+        $users = array();
+        foreach ($attendees as $val) {
+            $users[] = $taMap[$val['user_id']] . '@cs.nctu.edu.tw';
+        }
+        
+        Mail::send('emails.default', ['meeting' => $meeting], function ($m) use ($meeting, $users) {
+            $m->sender('mllee@cs.nctu.edu.tw');
+            if ($meeting->status==6) {
+                $m->subject('[Meeting] [會議取消通知] "' . $meeting->title);
+            } else {
+                $m->subject('[Meeting] [新開會通知] "' . $meeting->title .
+                '"會議將在' . $meeting->scheduled_time . '舉行');
+            }
+            $m->bcc($users);
+        });
+    }
+    /**
+     * Send an e-mail reminder to the user  when updated.
      *
      * @param  Meeting  $meeting
      */
     private function sendMeetingCreated(Meeting $meeting)
     {
+<<<<<<< HEAD
         $recipients = [];
         foreach ($meeting->attendees as $attendee) {
             array_push($recipients, $attendee->user->username . "@cs.nctu.edu.tw");
@@ -63,6 +87,18 @@ class MeetingController extends Controller
             $m->sender('mllee@cs.nctu.edu.tw');
             $m->subject("[Meeting] [新開會通知] {$meeting->title} 會議將在 {$meeting->scheduled_time} 舉行");
             $m->to($recipients);
+=======
+        $attendees = app('App\Http\Controllers\PrintReportController')();
+        $users = array();
+        foreach ($attendees as $val) {
+            $users[] = $taMap[$val['user_id']] . '@cs.nctu.edu.tw';
+        }
+        $url = url('/') . '/detail/' . $meeting->id . '/properties';
+        Mail::send('emails.update', ['meeting' => $meeting, 'url' => $url], function ($m) use ($meeting, $users) {
+            $m->sender('mllee@cs.nctu.edu.tw');
+            $m->subject('[Meeting] [異動通知] "' . $meeting->title . '" 會議異動');
+            $m->bcc($users);
+>>>>>>> Auth
         });
     }
     /**
@@ -93,7 +129,11 @@ class MeetingController extends Controller
         $data['owner_id'] = session('user')['user_id'];
         $meeting = Meeting::create($data);
         $meeting->attendees()->createMany($request['attendees']);
+<<<<<<< HEAD
         $this->sendMeetingCreated($meeting);
+=======
+        $this->sendMeetingEmail($meeting);
+>>>>>>> Auth
         return $meeting;
     }
 
@@ -117,6 +157,12 @@ class MeetingController extends Controller
         */
     public function update(Request $request, Meeting $meeting)
     {
+        if (session('user')['user_id'] != $meeting->owner_id) {
+            return response('', 403);
+        };
+        if ($meeting->status > $request->status) {
+            return response('', 403);
+        }
         $meeting->update($request->all());
         if (isset($request['attendees'])) {
             foreach ($request['attendees'] as $val) {
@@ -141,12 +187,20 @@ class MeetingController extends Controller
         */
     public function destroy(Meeting $meeting)
     {
+        if (session('user')['user_id'] != $meeting->owner_id) {
+            return response('', 403);
+        };
         $meeting->update(['status' => 6]);
+        $this->sendMeetingEmail($meeting);
         return $meeting;
     }
 
-    public function start(Meeting $meeting, $meetingId)
+    public function start($meetingId)
     {
+        $meeting = Meeting::where("id", $meetingId)->first();
+        if (session('user')['user_id'] != $meeting->owner_id || $meeting->status!= 1) {
+            return response('', 403);
+        };
         $time = Carbon::now();
         Meeting::where("id", $meetingId)->update(['status' => 2, 'start_time' => $time]);
         return Meeting::where("id", $meetingId)->with(['owner', 'attendees.user'])->first();
@@ -154,6 +208,10 @@ class MeetingController extends Controller
 
     public function end($meetingId)
     {
+        $meeting = Meeting::where("id", $meetingId)->first();
+        if (session('user')['user_id'] != $meeting->owner_id  || $meeting->status!= 2) {
+            return response('', 403);
+        };
         $time = Carbon::now();
         Meeting::where("id", $meetingId)->update(['status' => 3, 'end_time' => $time]);
         return Meeting::where("id", $meetingId)->with(['owner', 'attendees.user'])->first();
