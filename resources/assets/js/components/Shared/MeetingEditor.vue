@@ -175,7 +175,7 @@ export default {
         axios({
           method: this.editMode ? 'put' : 'post',
           url: this.editMode ? `/api/meetings/${this.$route.params.id}` : '/api/meetings',
-          params: { email },
+          params: { email: this.editMode ? email : true },
           data: this.meeting,
         }).then((response) => {
           this.$store.commit('endLoad');

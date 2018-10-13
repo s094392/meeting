@@ -48,6 +48,7 @@ export default {
           MeetingEnum.meetingStatus.Init,
           MeetingEnum.meetingStatus.Start,
         ],
+        sortBy: 'scheduled_time',
       },
     }).then((response) => {
       next(vm => vm.setData(response.data.data));
@@ -64,6 +65,7 @@ export default {
             MeetingEnum.meetingStatus.Init,
             MeetingEnum.meetingStatus.Start,
           ],
+          sortBy: 'scheduled_time',
         },
       }).then((response) => {
         this.activeMeetings = Array.from(response.data.data);

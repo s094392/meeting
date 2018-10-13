@@ -37,7 +37,7 @@ class Meeting extends Model
         return function ($query) use ($condition) {
             $status    =  isset($condition['status'])    ? $condition['status']    : null;
             $group     =  isset($condition['group'])     ? $condition['group']     : null;
-            $owner_id     =  isset($condition['owner_id'])     ? $condition['owner_id']     : null;
+            $owner_id  =  isset($condition['owner_id'])  ? $condition['owner_id']  : null;
             $title     =  isset($condition['title'])     ? $condition['title']     : null;
             $startDate =  isset($condition['startDate']) ? $condition['startDate'] : null;
             $endDate   =  isset($condition['endDate'])   ? $condition['endDate']   : null;
@@ -67,7 +67,7 @@ class Meeting extends Model
                 return $query->when($desc, function ($query, $desc) use ($sortBy) {
                     return $query->orderBy($sortBy, 'desc');
                 }, function ($query) use ($sortBy) {
-                    return $query->orderBy($sortBy);
+                    return $query->orderBy($sortBy, 'asc');
                 });
             }, function ($query) {
                 return $query->orderBy('scheduled_time', 'desc');

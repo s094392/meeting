@@ -19,21 +19,51 @@ class MeetingController extends Controller
      *
      * @param  Meeting  $meeting
      */
-    public function sendMeetingUpdated(Meeting $meeting)
+    private function sendMeetingCreated(Meeting $meeting)
     {
-        // $attendees = Attendee::where('meeting_id', $meeting->id)->get();
-        // $taMap = app('App\Http\Controllers\TAsController')->map();
-        // $users = array();
-        // foreach ($attendees as $val) {
-        //     $users[] = $taMap[$val['user_id']] . '@cs.nctu.edu.tw';
-        // }
-        // $url = url('/') . '/detail/' . $meeting->id . '/properties';
-        // $meeting->owner = $taMap[$meeting->owner];
-        // Mail::send('emails.create', ['meeting' => $meeting, 'url' => $url], function ($m) use ($meeting, $users) {
-        //     $m->sender('mllee@cs.nctu.edu.tw');
-        //     $m->subject('[Meeting] [異動通知] "' . $meeting->title . '" 會議異動');
-        //     $m->bcc($users);
-        // });
+        $recipients = [];
+        foreach ($meeting->attendees as $attendee) {
+            array_push($recipients, $attendee->user->username . "@cs.nctu.edu.tw");
+        }
+        $url = env('APP_URL') . "/detail/{$meeting->id}/properties";
+        Mail::send('emails.create', ['meeting' => $meeting, 'url' => $url], function ($m) use ($meeting, $recipients) {
+            $dt_start = Carbon::parse($meeting->scheduled_time)->format('Ymd\THis');
+            $dt_stamp = Carbon::parse($meeting->created_at)->format('Ymd\THis');
+            $description = str_replace("\n", "\n ", $meeting->description);
+            $ics = array(
+                "BEGIN:VCALENDAR",
+                "PRODID:-//NCTU CSCC//Meeting",
+                "VERSION:2.0",
+                "CALSCALE:GREGORIAN",
+                "METHOD:PUBLISH",
+                "BEGIN:VTIMEZONE",
+                "TZID:Asia/Taipei",
+                "X-LIC-LOCATION:Asia/Taipei",
+                "BEGIN:STANDARD",
+                "TZOFFSETFROM:+0800",
+                "TZOFFSETTO:+0800",
+                "TZNAME:CST",
+                "DTSTART:19700101T000000",
+                "END:STANDARD",
+                "END:VTIMEZONE",
+                "BEGIN:VEVENT",
+                "DTSTART:$dt_start",
+                "DTSTAMP:$dt_stamp",
+                "UID:{$meeting->id}",
+                "ORGANIZER;CN={$meeting->owner_name}:mailto:{$meeting->owner_name}@cs.nctu.edu.tw",
+                "DESCRIPTION:$description",
+                "SEQUENCE:0",
+                "STATUS:CONFIRMED",
+                "SUMMARY:{$meeting->title}",
+                "END:VEVENT",
+                "END:VCALENDAR"
+            );
+            $ics = implode("\r\n", $ics);
+            $m->attachData($ics, 'meeting.ics', ['mime' => "application/ics"]);
+            $m->sender('mllee@cs.nctu.edu.tw');
+            $m->subject("[Meeting] [新開會通知] {$meeting->title} 會議將在 {$meeting->scheduled_time} 舉行");
+            $m->to($recipients);
+        });
     }
     /**
      * Display a listing of the resource.
@@ -63,6 +93,7 @@ class MeetingController extends Controller
         $data['owner_id'] = session('user')['user_id'];
         $meeting = Meeting::create($data);
         $meeting->attendees()->createMany($request['attendees']);
+        $this->sendMeetingCreated($meeting);
         return $meeting;
     }
 
@@ -99,7 +130,6 @@ class MeetingController extends Controller
                 };
             }
         }
-        $this->sendMeetingUpdated($meeting);
         return $meeting->load('attendees.user');
     }
 
