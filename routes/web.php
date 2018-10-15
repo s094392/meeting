@@ -41,7 +41,7 @@ Route::post('/logout', function (Request $request) {
     return;
 });
 
-Route::get('/report', 'ReportController@index');
+Route::get('/report', 'ReportController');
 
 Route::get('/{page}', function () {
     return view('vue');

@@ -14,7 +14,7 @@ class ReportController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function __invoke()
     {
         $meetings = Meeting::where('updated_at', '>', Carbon::now()->subWeek())->where('status', 4)->get();
         $report = "";
