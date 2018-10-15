@@ -32,7 +32,6 @@ Route::prefix('api/')->middleware('auth:api')->group(function () {
     });
 });
 
-
 Route::get('/cssso/handle', 'SSOController');
 
 Route::get('/login', 'LoginController')->name('login');
@@ -41,6 +40,8 @@ Route::post('/logout', function (Request $request) {
     $request->session()->flush();
     return;
 });
+
+Route::get('/report', 'ReportController@index');
 
 Route::get('/{page}', function () {
     return view('vue');
