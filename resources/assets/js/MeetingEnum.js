@@ -9,7 +9,7 @@ const meetingStatus = Object.freeze({
 
 const meetingStatusText = Object.freeze([
   '', '未開始', '進行中', '未提交報帳',
-  '等待報帳', '已報帳封存', '已取消',
+  '等待報帳', '已封存', '已取消',
 ]);
 
 const attendeeStatus = Object.freeze({
