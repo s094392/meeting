@@ -183,6 +183,11 @@ export default {
             name: 'detail',
             params: { id: response.data.id, view: 'properties' },
           });
+        }).catch((error) => {
+          this.$store.commit('endLoad');
+          if (error.response.status === 403) {
+            UIkit.modal.alert(error.response.data.message);
+          }
         });
       }
     },
