@@ -20,7 +20,7 @@ class Auth
         !session()->get('user')['groups'] ||
         !in_array("cs-ta", session()->get('user')['groups'])) {
             if ($api) {
-                return response('', 403);
+                return response('', 401);
             }
             session([ 'redirect_url' => $request->path() ]);
             $params = ['expired'=>Input::get("expired")];

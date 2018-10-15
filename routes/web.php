@@ -17,7 +17,7 @@ Route::prefix('api/')->middleware('auth:api')->group(function () {
     Route::post('meetings/start/{meeting_id}', 'MeetingController@start');
     Route::post('meetings/end/{meeting_id}', 'MeetingController@end');
 
-    Route::apiResource('meetings', 'MeetingController')->middleware('meetings', ['except' => ['show']]);
+    Route::apiResource('meetings', 'MeetingController');
 
     Route::apiResource('users', 'UserController')->only([
         'show', 'index'

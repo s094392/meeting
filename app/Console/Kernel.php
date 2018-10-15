@@ -28,24 +28,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function () {
-            $tas = app('App\Http\Controllers\TAsController')->__invoke()['cs-ta'];
-            foreach ($tas as $val) {
-                $user = User::where('id', $val['user_id'])->first();
-                if (!$user) {
-                    continue;
-                }
-                $this_day = Carbon::now()->subDay();
-                $meetings = $user->meetings()->where('meetings.updated_at', '>=', $this_day)->get();
-                if ($meetings->count()) {
-                    Mail::send('emails.update', ['meetings' => $meetings], function ($m) use ($user) {
-                        $m->sender('mllee@cs.nctu.edu.tw');
-                        $m->subject('[Meeting] [本日會議異動]');
-                        $m->to($user->username . "@cs.nctu.edu.tw");
-                    });
-                }
-            }
-        })->daily()->at('12:00');
+        // pass
     }
 
     /**

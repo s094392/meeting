@@ -28,7 +28,7 @@ window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 axios.defaults.baseURL = BASE_PATH;
 
 axios.interceptors.response.use(null, (error) => {
-  if (error.response.status === 403 || error.response.status === 419) {
+  if (error.response.status === 401 || error.response.status === 419) {
     return window.location.assign(`${window.location}?expired=true`);
   }
   return Promise.reject(error);

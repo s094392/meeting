@@ -10,27 +10,6 @@ use Illuminate\Http\Request;
 class AttendeeController extends Controller
 {
     /**
-     * Send an e-mail reminder to the user.
-     *
-     * @param  Attendee  $attendee
-     */
-    public function sendMeetingCreated(Attendee $attendee)
-    {
-        // $meeting = Meeting::where("id", $attendee->meeting_id)->first();
-        // $taMap = app('App\Http\Controllers\TAsController')->map();
-        // $user = $taMap[$attendee->user_id];
-        // $meeting->owner = $taMap[$meeting->owner];
-        // $url = url('/') . '/detail/' . $meeting->id . '/properties';
-        // Mail::send('emails.create', ['meeting' => $meeting, 'url' => $url], function ($m) use ($meeting, $user) {
-        //     $m->sender('mllee@cs.nctu.edu.tw');
-        //     $m->to($user . "@cs.nctu.edu.tw", "help");
-        //     $m->subject(
-        //         '[Meeting] [新開會通知] '.$meeting->title.' 會議將在 '.$meeting->scheduled_time.' 舉行'
-        //     );
-        // });
-    }
-
-    /**
      * Display a listing of the resource.
      *
      * @param  int $meeting_id
@@ -53,10 +32,10 @@ class AttendeeController extends Controller
     {
         $meeting = Meeting::where('id', $meeting_id)->first();
         if ($meeting->status == 5) {
-            return response('', 403);
+            return response(['message' => '你壞'], 403);
         }
         if ($meeting->owner_id != session('user')['user_id']) {
-            return response('', 403);
+            return response(['message' => '你沒權限'], 403);
         }
         $data = $request->all();
         $data['meeting_id'] = $meeting_id;
@@ -91,10 +70,10 @@ class AttendeeController extends Controller
     {
         $meeting = Meeting::where('id', $meeting_id)->first();
         if ($meeting->status == 5) {
-            return response('', 403);
+            return response(['message' => '你壞'], 403);
         }
         if ($meeting->owner_id != session('user')['user_id'] && $meeting->status != 1) {
-            return response('', 403);
+            return response(['message' => '你沒權限'], 403);
         }
         Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->first()->update($request->all());
         $attendee =  Attendee::where('meeting_id', $meeting_id)->with('user')
@@ -112,10 +91,10 @@ class AttendeeController extends Controller
     public function destroy($meeting_id, $user_id)
     {
         if ($meeting->status == 5) {
-            return response('', 403);
+            return response(['message' => '你壞'], 403);
         }
         if ($meeting->owner_id != session('user')['user_id']) {
-            return response('', 403);
+            return response(['message' => '你沒權限'], 403);
         }
         $attendee = Attendee::where('meeting_id', $meeting_id)->where('user_id', $user_id)->delete();
         return 204;
