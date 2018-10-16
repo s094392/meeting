@@ -37,7 +37,9 @@ class UserController extends Controller
      */
     public function show(User $user, Request $request)
     {
-        return $user->load(['meetings' => Meeting::condition($request->all())]);
+        $user->load(['meetings' => Meeting::condition($request->all())]);
+        $user->meetings = $user->meetings->makehidden('record');
+        return $user;
     }
 
     /**

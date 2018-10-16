@@ -6,6 +6,7 @@ import Home from './components/Home/Root';
 import MeetingList from './components/MeetingList/Root';
 import MeetingDetail from './components/MeetingDetail/Root';
 import Profile from './components/Profile/Root';
+import ProfileRedirect from './components/Profile/ProfileRedirect';
 import MeetingEditor from './components/Shared/MeetingEditor';
 import PageNotFound from './components/Shared/PageNotFound';
 import BATH_PATH from './base_path';
@@ -58,10 +59,15 @@ const router = new VueRouter({
       component: MeetingEditor,
     },
     {
-      path: '/profile/:year?/:month?',
+      path: '/profile/:userId/:year/:month',
       name: 'profile',
       meta: { title: '個人報表' },
       component: Profile,
+    },
+    {
+      path: '/profile',
+      name: 'profileRedirect',
+      component: ProfileRedirect,
     },
     {
       path: '*',

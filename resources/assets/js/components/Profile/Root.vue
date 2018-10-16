@@ -6,12 +6,14 @@
       <div uk-grid >
          <div class="uk-width-1-2@s">
           <div class="uk-text-large uk-text-lead">
-            <select class="uk-select" v-model="year"
-                    @change="$router.push( {name: 'profile', params: {year, month}})">
+            <Multiselect class="uk-margin-small-bottom" v-model="query.user"
+                         :options="userOption" :label="'username'" :trackBy="'id'">
+                         <span slot="noResult">查無資料</span>
+            </Multiselect>
+            <select class="uk-select" v-model="query.year">
               <option v-for="year in yearList" :key="year" :value="year">{{year}}</option>
             </select>
-            <select class="uk-select" v-model="month"
-                    @change="$router.push( {name: 'profile', params: {year, month}})">
+            <select class="uk-select" v-model="query.month">
               <option v-for="month in 12" :key="month" :value="month">{{month}}</option>
             </select>
           </div>
@@ -49,14 +51,13 @@
 import { mapState } from 'vuex';
 import moment from 'moment';
 import range from 'lodash/range';
+import Multiselect from '../Shared/MultiSelect';
 import MeetingTable from '../Shared/MeetingTable';
 import MeetingEnum from '../../MeetingEnum';
-import store from '../../store';
-
 
 const fetchAndCalc = (to, from, next, self) => {
-  const year = to.params.year ? to.params.year : moment().get('year');
-  const month = to.params.month ? to.params.month : moment().get('month') + 1;
+  const { year, month } = to.params;
+  const userId = parseInt(to.params.userId, 10);
   const startDate = moment().set({
     year,
     month: month - 1,
@@ -73,7 +74,7 @@ const fetchAndCalc = (to, from, next, self) => {
     timePerGroup: {},
   };
 
-  axios.get(`/api/users/${store.state.user.user_id}`, {
+  axios.get(`/api/users/${userId}`, {
     params: {
       startDate: startDate.format('YYYY-MM-DD'),
       endDate: startDate.add(1, 'month').subtract(1, 'day').format('YYYY-MM-DD'),
@@ -86,12 +87,12 @@ const fetchAndCalc = (to, from, next, self) => {
   }).then((response) => {
     response.data.meetings.forEach((meeting) => {
       const me = meeting.attendees.find(
-        attendee => attendee.user_id === store.state.user.user_id,
+        attendee => attendee.user_id === userId,
       );
       meetings.push(meeting);
 
       let endTime = moment(meeting.end_time);
-      const startTime = moment(meeting.start_time);
+      let startTime = moment(meeting.start_time);
 
       stats.shouldAttend += 1;
       if (me.status === MeetingEnum.attendeeStatus.Absent) {
@@ -102,23 +103,12 @@ const fetchAndCalc = (to, from, next, self) => {
 
       if (me.status === MeetingEnum.attendeeStatus.LateOrLeaveEarly && me.arrive_time) {
         stats.late += 1;
-        const arriveTime = moment(me.arrive_time, 'HH:mm:ss');
-        startTime.set({
-          hour: arriveTime.get('hour'),
-          minute: arriveTime.get('minute'),
-          second: arriveTime.get('second'),
-        });
+        startTime = moment(me.arrive_time);
       }
       if (me.status === MeetingEnum.attendeeStatus.LateOrLeaveEarly && me.leave_time) {
         stats.leaveEarly += 1;
-        const leaveTime = moment(me.leave_time, 'HH:mm:ss');
-        startTime.set({
-          hour: leaveTime.get('hour'),
-          minute: leaveTime.get('minute'),
-          second: leaveTime.get('second'),
-        });
+        endTime = moment(me.leave_time);
       }
-
       const meetingTime = (endTime - startTime) / 3600000;
       stats.totalTime += meetingTime;
       if (meeting.group in stats.timePerGroup) {
@@ -146,13 +136,21 @@ export default {
   components: {
     Doughnut: () => import('./Doughnut' /* webpackChunkName: "js/doughnut" */),
     MeetingTable,
+    Multiselect,
   },
   data() {
     return {
       meetings: [],
       yearList: [],
-      year: 0,
-      month: 0,
+      userOption: [],
+      firstFindEvent: false,
+      query: {
+        user: {
+          id: this.$route.params.userId,
+        },
+        year: this.$route.params.year,
+        month: this.$route.params.month,
+      },
       stats: null,
     };
   },
@@ -164,15 +162,40 @@ export default {
   },
   created() {
     this.yearList = range(moment().get('year') - 10, moment().get('year') + 1);
+    this.fetchUsers();
+  },
+  watch: {
+    query: {
+      handler() {
+        if (this.firstFindEvent === false) {
+          this.$router.push({
+            name: 'profile',
+            params: {
+              year: this.query.year,
+              month: this.query.month,
+              userId: this.query.user.id,
+            },
+          });
+        }
+      },
+      deep: true,
+    },
   },
   methods: {
     setData(year, month, meetings, stats) {
-      this.year = year;
-      this.month = month;
       this.stats = Object.assign({}, stats);
       this.meetings = Object.assign({}, meetings);
     },
-
+    fetchUsers() {
+      axios.get('/api/users').then((response) => {
+        this.userOption = response.data;
+        this.firstFindEvent = true;
+        this.query.user = this.userOption.find(
+          user => user.id === parseInt(this.$route.params.userId, 10),
+        );
+        this.firstFindEvent = false;
+      });
+    },
   },
 };
 </script>
