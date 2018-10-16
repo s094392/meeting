@@ -59,6 +59,7 @@ export default {
       this.activeMeetings = data;
     },
     fetchMeetings() {
+      this.$store.commit('startLoad');
       axios.get('/api/meetings', {
         params: {
           status: [
@@ -68,6 +69,7 @@ export default {
           sortBy: 'scheduled_time',
         },
       }).then((response) => {
+        this.$store.commit('endLoad');
         this.activeMeetings = Array.from(response.data.data);
       });
     },

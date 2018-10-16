@@ -12,8 +12,8 @@
       <span class="uk-margin-small-right" uk-icon="clock" />{{ meeting.scheduled_time }}
     </p>
     <p class="pre-wrap description">{{ meeting.description }}</p>
-    <MeetingControl :meeting="meeting" :me="me"
-      @updateMe="updateMe" @cancelMeeting="$emit('cancelMeeting');"
+    <MeetingControl :meeting="meeting" :me.sync="me"
+      @cancelMeeting="$emit('cancelMeeting');"
       @startMeeting="startMeeting" @endMeeting="endMeeting"/>
   </div>
 </div>
@@ -61,9 +61,6 @@ export default {
         .then((response) => {
           this.me = response.data ? response.data : {};
         });
-    },
-    updateMe(me) {
-      this.me = me;
     },
     startMeeting(meeting) {
       this.$router.push({

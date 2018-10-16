@@ -161,7 +161,7 @@ export default {
           + `user_id/${this.user.user_id}`, data,
         )
         .then((response) => {
-          this.$emit('updateMe', response.data);
+          this.$emit('update:me', response.data);
           this.reason = '';
         });
     },

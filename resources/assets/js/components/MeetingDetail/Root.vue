@@ -25,7 +25,7 @@
       <span>
         <div v-show="view === 'properties'">
           <Properties :meeting="meeting"/>
-          <MeetingControl :meeting="meeting" :me="me" @updateMe="updateMe"
+          <MeetingControl :meeting="meeting" :me.sync="me"
                           :editingRecord="editingRecord" @cancelMeeting="$router.replace('/')"
                           @startMeeting="updateMeeting" @endMeeting="updateMeeting"
                           @completeRecord="updateMeeting" />
@@ -146,9 +146,6 @@ export default {
     },
     redirect404() {
       this.$router.replace('/404');
-    },
-    updateMe(me) {
-      this.me = me;
     },
     updateAttendee(modifiedAttendee) {
       const index = this.meeting.attendees.findIndex(
