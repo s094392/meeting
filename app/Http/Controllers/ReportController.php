@@ -35,9 +35,9 @@ class ReportController extends Controller
                         $uniq_end = Carbon::parse($val->leave_time);
                     }
                     $uniq_duration = $uniq_end->diffInMinutes($uniq_start);
-                    $report .= "{$meeting->title}/$meeting->id $val->user_id {$uniq_duration}\n";
+                    $report .= "{$meeting->group}/$meeting->id $val->user_id {$uniq_duration}\n";
                 } else {
-                    $report .= "{$meeting->title}/{$meeting->id} {$val->user_id} {$duration}\n";
+                    $report .= "{$meeting->group}/{$meeting->id} {$val->user_id} {$duration}\n";
                 }
             }
             if (Input::Get('archive')==1) {
