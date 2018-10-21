@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Meeting extends Model
 {
+    const INIT = 1;
+    const START = 2;
+    const END = 3;
+    const COMPLETE = 4;
+    const ARCHIVE = 5;
+    const CANCEL = 6;
+    
     protected $fillable = ['title', 'description', 'group', 'scheduled_time',
                         'owner_id', 'record', 'status', 'request_money'];
 

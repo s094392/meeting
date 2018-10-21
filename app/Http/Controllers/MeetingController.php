@@ -14,6 +14,21 @@ use View\UserController;
 class MeetingController extends Controller
 {
     /**
+     * Check expired meeting.
+     *
+     * @param  Meeting  $meeting
+     */
+    private function checkMeetingCancel()
+    {
+        $meetings = Meeting::where('status', 1)->get();
+        $time = Carbon::now();
+        foreach ($meetings as $meeting) {
+            if ($meeting->schedule_time > $time->subMinutes(5)) {
+                $meeting->update(['status' => 6]);
+            }
+        }
+    }
+    /**
      * Send an e-mail reminder to the user when created.
      *
      * @param  Meeting  $meeting
@@ -26,10 +41,11 @@ class MeetingController extends Controller
             array_push($users, $attendee->user->username . "@cs.nctu.edu.tw");
         }
         Mail::send('emails.default', ['meeting' => $meeting], function ($m) use ($meeting, $users) {
-            $m->sender('mllee@cs.nctu.edu.tw');
-            if ($meeting->status==6) {
+            $m->sender('meeting@cs.nctu.edu.tw');
+            $m->replyTo('wwwta@cs.nctu.edu.tw', 'wwwTa');
+            if ($meeting->status==Meeting::CANCEL) {
                 $m->subject('[Meeting] [會議取消通知] "' . $meeting->title);
-            } elseif ($meeting->status==4) {
+            } elseif ($meeting->status==Meeting::COMPLETE) {
                 $m->subject('[Meeting] [會議紀錄報告] "' . $meeting->title);
                 $users[] = 'help@cs.nctu.edu.tw';
             } else {
@@ -54,6 +70,7 @@ class MeetingController extends Controller
             $dt_start = Carbon::parse($meeting->scheduled_time)->format('Ymd\THis');
             $dt_stamp = Carbon::parse($meeting->created_at)->format('Ymd\THis');
             $description = str_replace("\n", "\n ", $meeting->description);
+            $m->replyTo('wwwta@cs.nctu.edu.tw', 'wwwTa');
             $ics = array(
                 "BEGIN:VCALENDAR",
                 "PRODID:-//NCTU CSCC//Meeting",
@@ -84,7 +101,7 @@ class MeetingController extends Controller
             );
             $ics = implode("\r\n", $ics);
             $m->attachData($ics, 'meeting.ics', ['mime' => "application/ics"]);
-            $m->sender('mllee@cs.nctu.edu.tw');
+            $m->sender('meeting@cs.nctu.edu.tw');
             $m->subject("[Meeting] [新開會通知] {$meeting->title} 會議將在 {$meeting->scheduled_time} 舉行");
             $m->to($recipients);
         });
@@ -96,6 +113,7 @@ class MeetingController extends Controller
      */
     public function index(Request $request)
     {
+        $this->checkMeetingCancel();
         $per_page = Input::get('per_page');
         if (!$per_page) {
             $per_page = 10;
@@ -145,7 +163,8 @@ class MeetingController extends Controller
         */
     public function update(Request $request, Meeting $meeting)
     {
-        if (session('user')['user_id'] != $meeting->owner_id) {
+        $this->checkMeetingCancel();
+        if (session('user')['user_id'] != $meeting->owner_id || $meeting->status == Meeting::CANCEL) {
             return response(['message' => '你沒權限'], 403);
         };
         if ($request->status - $meeting->status > 1) {
@@ -164,7 +183,7 @@ class MeetingController extends Controller
                 };
             }
         }
-        if (Input::Get('email')==true || $meeting->status==4) {
+        if (Input::Get('email')==true || $meeting->status == Meeting::COMPLETE) {
             $this->sendMeetingEmail($meeting);
         }
         return $meeting->load('attendees.user');
@@ -178,10 +197,10 @@ class MeetingController extends Controller
         */
     public function destroy(Meeting $meeting)
     {
-        if (session('user')['user_id'] != $meeting->owner_id) {
+        if (session('user')['user_id'] != $meeting->owner_id  || $meeting->status == Meeting::CANCEL) {
             return response(['message' => '你沒權限'], 403);
         };
-        $meeting->update(['status' => 6]);
+        $meeting->update(['status' => Meeting::CANCEL]);
         $this->sendMeetingEmail($meeting);
         return $meeting;
     }
@@ -189,25 +208,25 @@ class MeetingController extends Controller
     public function start($meetingId)
     {
         $meeting = Meeting::where("id", $meetingId)->first();
-        if (session('user')['user_id'] != $meeting->owner_id || $meeting->status!= 1) {
+        if (session('user')['user_id'] != $meeting->owner_id || $meeting->status != Meeting::INIT) {
             return response(['message' => '你壞或沒權限'], 403);
         };
         $time = Carbon::now();
         if ($time->subMinutes(5) > $meeting->scheduled_time) {
             return response(['message' => '超過時間囉'], 403);
         }
-        Meeting::where("id", $meetingId)->update(['status' => 2, 'start_time' => $time]);
+        Meeting::where("id", $meetingId)->update(['status' => Meeting::Start, 'start_time' => $time]);
         return Meeting::where("id", $meetingId)->with(['owner', 'attendees.user'])->first();
     }
 
     public function end($meetingId)
     {
         $meeting = Meeting::where("id", $meetingId)->first();
-        if (session('user')['user_id'] != $meeting->owner_id  || $meeting->status!= 2) {
+        if (session('user')['user_id'] != $meeting->owner_id  || $meeting->status != Meeting::START) {
             return response(['message' => '你壞或沒權限'], 403);
         };
         $time = Carbon::now();
-        Meeting::where("id", $meetingId)->update(['status' => 3, 'end_time' => $time]);
+        Meeting::where("id", $meetingId)->update(['status' => Meeting::END, 'end_time' => $time]);
         return Meeting::where("id", $meetingId)->with(['owner', 'attendees.user'])->first();
     }
 }

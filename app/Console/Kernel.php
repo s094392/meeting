@@ -3,8 +3,6 @@
 namespace App\Console;
 
 use App\Meeting;
-use App\User;
-use Mail;
 use Carbon\Carbon;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
