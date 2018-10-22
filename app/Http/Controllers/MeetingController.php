@@ -16,15 +16,14 @@ class MeetingController extends Controller
     /**
      * Check expired meeting.
      *
-     * @param  Meeting  $meeting
      */
     private function checkMeetingCancel()
     {
         $meetings = Meeting::where('status', 1)->get();
         $time = Carbon::now();
         foreach ($meetings as $meeting) {
-            if ($meeting->schedule_time > $time->subMinutes(5)) {
-                $meeting->update(['status' => 6]);
+            if ($meeting->scheduled_time < $time->subMinutes(5)) {
+                $meeting->update(['status' => Meeting::CANCEL]);
             }
         }
     }
