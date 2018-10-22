@@ -40,7 +40,7 @@ class MeetingController extends Controller
             array_push($users, $attendee->user->username . "@cs.nctu.edu.tw");
         }
         Mail::send('emails.default', ['meeting' => $meeting], function ($m) use ($meeting, $users) {
-            $m->sender('meeting@cs.nctu.edu.tw');
+            $m->sender('ccwwwapp@cs.nctu.edu.tw');
             $m->replyTo('wwwta@cs.nctu.edu.tw', 'wwwTa');
             if ($meeting->status==Meeting::CANCEL) {
                 $m->subject('[Meeting] [會議取消通知] "' . $meeting->title);
@@ -100,7 +100,7 @@ class MeetingController extends Controller
             );
             $ics = implode("\r\n", $ics);
             $m->attachData($ics, 'meeting.ics', ['mime' => "application/ics"]);
-            $m->sender('meeting@cs.nctu.edu.tw');
+            $m->sender('ccwwwapp@cs.nctu.edu.tw');
             $m->subject("[Meeting] [新開會通知] {$meeting->title} 會議將在 {$meeting->scheduled_time} 舉行");
             $m->to($recipients);
         });
@@ -214,7 +214,7 @@ class MeetingController extends Controller
         if ($time->subMinutes(5) > $meeting->scheduled_time) {
             return response(['message' => '超過時間囉'], 403);
         }
-        Meeting::where("id", $meetingId)->update(['status' => Meeting::Start, 'start_time' => $time]);
+        Meeting::where("id", $meetingId)->update(['status' => Meeting::START, 'start_time' => $time]);
         return Meeting::where("id", $meetingId)->with(['owner', 'attendees.user'])->first();
     }
 
