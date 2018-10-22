@@ -182,7 +182,7 @@ class MeetingController extends Controller
                 };
             }
         }
-        if (Input::Get('email')==true || $meeting->status == Meeting::COMPLETE) {
+        if (Input::Get('email') === 'true' || $meeting->status == Meeting::COMPLETE) {
             $this->sendMeetingEmail($meeting);
         }
         return $meeting->load('attendees.user');

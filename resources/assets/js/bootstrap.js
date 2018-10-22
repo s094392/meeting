@@ -34,5 +34,8 @@ axios.interceptors.response.use(null, (error) => {
   if (error.response.status === 403) {
     UIkit.modal.alert(error.response.data.message);
   }
+  if (error.response.status === 500) {
+    UIkit.modal.alert('伺服器錯誤QQ');
+  }
   return Promise.reject(error);
 });
