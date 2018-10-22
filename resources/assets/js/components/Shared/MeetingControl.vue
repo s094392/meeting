@@ -211,7 +211,7 @@ export default {
       } else {
         axios
           .put(`/api/meetings/${this.meeting.id}`, {
-            status: this.$meetingStatus.RecordComplete,
+            status: this.$meetingStatus.Complete,
           })
           .then((response) => {
             this.$emit('completeRecord', response.data);

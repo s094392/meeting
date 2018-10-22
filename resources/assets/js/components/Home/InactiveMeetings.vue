@@ -35,7 +35,7 @@ export default {
             per_page: 5,
             status: [
               this.$meetingStatus.End,
-              this.$meetingStatus.RecordComplete,
+              this.$meetingStatus.Complete,
               this.$meetingStatus.Archive,
             ],
           },

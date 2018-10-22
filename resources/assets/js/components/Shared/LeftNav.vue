@@ -26,6 +26,9 @@
                           個人報表
           </router-link>
         </li>
+        <li>
+          <router-link :to="{ name: 'manual' }">使用手冊</router-link>
+        </li>
         <li><a href="#" @click="logout">登出</a></li>
       </ul>
     </div>

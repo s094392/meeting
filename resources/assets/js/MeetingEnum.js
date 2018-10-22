@@ -2,7 +2,7 @@ const meetingStatus = Object.freeze({
   Init: 1,
   Start: 2,
   End: 3,
-  RecordComplete: 4,
+  Complete: 4,
   Archive: 5,
   Cancel: 6,
 });

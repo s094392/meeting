@@ -18,6 +18,9 @@
                   <a @click="$router.push({name :'list',  params: { page: 1 } })" href="#">會議列表</a>
                 </li>
                 <li><a @click="$router.push({name :'profileRedirect'})" href="#">個人報表</a></li>
+                <li>
+                  <a @click="$router.push({ name :'manual' })" href="#">使用手冊</a>
+                </li>
                 <li><a @click="logout">登出</a></li>
               </ul>
             </div>

@@ -15,8 +15,17 @@ const BASE_PATH = '/';
 mix.setResourceRoot(BASE_PATH);
 
 mix.js('resources/assets/js/app.js', 'public/js')
-  .extract(['vue', 'uikit', 'uikit/dist/js/uikit-icons', 'axios', 'vue-router', 'mavon-editor',
-    'vuex', 'moment', 'vue-multiselect', 'flatpickr'])
+  .extract([
+    'vue',
+    'uikit',
+    'uikit/dist/js/uikit-icons',
+    'axios',
+    'vue-router',
+    'mavon-editor',
+    'vuex',
+    'moment',
+    'vue-multiselect',
+    'flatpickr'])
   .sass('resources/assets/sass/app.scss', 'public/css');
 
 // const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');

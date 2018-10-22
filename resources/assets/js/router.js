@@ -9,6 +9,7 @@ import Profile from './components/Profile/Root';
 import ProfileRedirect from './components/Profile/ProfileRedirect';
 import MeetingEditor from './components/Shared/MeetingEditor';
 import PageNotFound from './components/Shared/PageNotFound';
+import Manual from './components/Manual';
 import BATH_PATH from './base_path';
 import store from './store';
 
@@ -74,6 +75,12 @@ const router = new VueRouter({
       name: '404',
       meta: { title: '404' },
       component: PageNotFound,
+    },
+    {
+      path: '/manual',
+      name: 'manual',
+      meta: { title: '使用手冊' },
+      component: Manual,
     },
   ],
   scrollBehavior(to, from, savedPosition) {
