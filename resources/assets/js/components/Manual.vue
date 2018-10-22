@@ -19,7 +19,7 @@ import { mavonEditor } from 'mavon-editor';
 
 export default {
   beforeRouteEnter(to, from, next) {
-    axios.get('/manual_assets/manual.md').then((response) => {
+    axios.get('/manual.md').then((response) => {
       next(vm => vm.setData(response.data));
     });
   },
