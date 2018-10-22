@@ -25,9 +25,6 @@ class ReportController extends Controller
                 $duration = '0.02';
             }
             foreach ($meeting->attendees as $val) {
-                if ($report != "") {
-                    $report .= "\n";
-                }
                 if ($val->status == 2) {
                     $uniq_start = Carbon::parse($meeting->start_time);
                     if ($val->arrive_time) {
@@ -38,9 +35,9 @@ class ReportController extends Controller
                         $uniq_end = Carbon::parse($val->leave_time);
                     }
                     $uniq_duration = $uniq_end->diffInMinutes($uniq_start);
-                    $report .= "{$meeting->group}/$meeting->id $val->user_id {$uniq_duration}";
+                    $report .= "Meeting {$meeting->group}/$meeting->id $val->user_id {$uniq_duration}\n";
                 } else {
-                    $report .= "{$meeting->group}/{$meeting->id} {$val->user_id} {$duration}";
+                    $report .= "Meeting {$meeting->group}/{$meeting->id} {$val->user_id} {$duration}\n";
                 }
             }
             if (Input::Get('archive')==1) {
