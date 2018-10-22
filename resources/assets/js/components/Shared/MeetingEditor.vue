@@ -182,12 +182,9 @@ export default {
           this.$router.push({
             name: 'detail',
             params: { id: response.data.id, view: 'properties' },
+          }).catch(() => {
+            this.$store.commit('endLoad');
           });
-        }).catch((error) => {
-          this.$store.commit('endLoad');
-          if (error.response.status === 403) {
-            UIkit.modal.alert(error.response.data.message);
-          }
         });
       }
     },

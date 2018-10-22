@@ -31,5 +31,8 @@ axios.interceptors.response.use(null, (error) => {
   if (error.response.status === 401 || error.response.status === 419) {
     return window.location.assign(`${window.location}?expired=true`);
   }
+  if (error.response.status === 403) {
+    UIkit.modal.alert(error.response.data.message);
+  }
   return Promise.reject(error);
 });

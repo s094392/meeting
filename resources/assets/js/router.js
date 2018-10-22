@@ -68,6 +68,7 @@ const router = new VueRouter({
     {
       path: '/profile',
       name: 'profileRedirect',
+      meta: { title: '個人報表' },
       component: ProfileRedirect,
     },
     {

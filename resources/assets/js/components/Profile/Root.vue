@@ -7,7 +7,7 @@
          <div class="uk-width-1-2@s">
           <div class="uk-text-large uk-text-lead">
             <Multiselect class="uk-margin-small-bottom" v-model="query.user"
-                         :options="userOption" :label="'username'" :trackBy="'id'">
+                         :options="userOption" :label="'username'" :trackBy="'user_id'">
                          <span slot="noResult">查無資料</span>
             </Multiselect>
             <select class="uk-select" v-model="query.year">
@@ -146,7 +146,7 @@ export default {
       firstFindEvent: false,
       query: {
         user: {
-          id: this.$route.params.userId,
+          user_id: this.$route.params.userId,
         },
         year: this.$route.params.year,
         month: this.$route.params.month,
@@ -173,7 +173,7 @@ export default {
             params: {
               year: this.query.year,
               month: this.query.month,
-              userId: this.query.user.id,
+              userId: this.query.user.user_id,
             },
           });
         }
@@ -187,11 +187,11 @@ export default {
       this.meetings = Object.assign({}, meetings);
     },
     fetchUsers() {
-      axios.get('/api/users').then((response) => {
-        this.userOption = response.data;
+      axios.get('/api/tas').then((response) => {
+        this.userOption = response.data['cs-ta'];
         this.firstFindEvent = true;
         this.query.user = this.userOption.find(
-          user => user.id === parseInt(this.$route.params.userId, 10),
+          user => parseInt(user.user_id, 10) === parseInt(this.$route.params.userId, 10),
         );
         this.firstFindEvent = false;
       });

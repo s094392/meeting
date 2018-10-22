@@ -142,10 +142,6 @@ export default {
       if (this.isEditingRecord()) return;
       axios.post(`/api/meetings/start/${this.meeting.id}`).then((response) => {
         this.$emit('startMeeting', response.data);
-      }).catch((error) => {
-        if (error.response.status === 403) {
-          UIkit.modal.alert(error.response.data.message);
-        }
       });
     },
     endMeeting() {
