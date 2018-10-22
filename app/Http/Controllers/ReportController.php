@@ -22,7 +22,7 @@ class ReportController extends Controller
             if ($meeting->request_money) {
                 $duration = Carbon::parse($meeting->end_time)->diffInMinutes(Carbon::parse($meeting->start_time));
             } else {
-                $duration = '0.02';
+                $duration = '1';
             }
             foreach ($meeting->attendees as $val) {
                 if ($val->status == 2) {

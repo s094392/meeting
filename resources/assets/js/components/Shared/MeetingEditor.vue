@@ -61,7 +61,7 @@
 
       <div class="uk-margin uk-align-right">
         <span class="uk-margin-right uk-margin-small-bottom request-money"
-             uk-tooltip="若取消勾選擇則本次咪挺不計薪">
+             uk-tooltip="若取消勾選擇則本次咪挺僅計1分鐘薪水">
           <input class="uk-checkbox"  v-model="meeting.request_money" type="checkbox"> 報帳
         </span>
       <button @click="postMeeting(true)" v-if="editMode"

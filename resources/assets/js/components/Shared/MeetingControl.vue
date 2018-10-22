@@ -17,7 +17,7 @@
         <button v-if="meeting.status === $meetingStatus.Start" type="button" @click="endMeeting"
         class="uk-button uk-button-default uk-button-primary">結束</button>
         <button v-if="meeting.status === $meetingStatus.End" type="button" @click="completeRecord"
-        class="uk-button uk-button-default uk-button-primary">確認會議紀錄</button>
+        class="uk-button uk-button-default uk-button-primary">確認會議，並提交報帳</button>
         <router-link :to="{name: 'edit', params: {id: meeting.id}}"
                      class="uk-button uk-button-default">編輯</router-link>
       </span>
@@ -180,7 +180,7 @@ export default {
     },
     isEditingRecord() {
       if (this.editingRecord) {
-        UIkit.modal.alert('會議紀錄尚未完成<br>請儲存後重試');
+        UIkit.modal.alert('會議紀錄編輯器未關閉<br>請儲存後重試');
         return true;
       }
       return false;
