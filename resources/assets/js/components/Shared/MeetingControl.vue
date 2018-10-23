@@ -131,7 +131,7 @@ export default {
     },
     ...mapState(['user']),
   },
-  props: ['meeting', 'me', 'id'],
+  props: ['meeting', 'me'],
   data() {
     return {
       reason: '',
@@ -173,7 +173,7 @@ export default {
     },
     changeAbsentReason(reason) {
       this.put({
-        absent_reason: reason,
+        absent_reason: reason === undefined ? this.reason : reason,
       });
     },
     completeRecord() {
@@ -205,7 +205,9 @@ export default {
       }
     },
     cancelMeeting() {
-      axios.delete(`/api/meetings/${this.meeting.id}`).then(() => this.$emit('cancelMeeting'));
+      axios.delete(`/api/meetings/${this.meeting.id}`).then((response) => {
+        this.$emit('cancelMeeting', response.data);
+      });
     },
   },
 };
