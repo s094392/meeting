@@ -2,7 +2,7 @@
 <div>
   <div class="uk-card uk-card-default uk-card-body uk-margin-top">
     <div>
-      <router-link :to="{name:'detail', params: {id: meeting.id, view: 'properties'}}"
+      <router-link :to="{ name:'properties', params: { id: meeting.id } }"
                    class="uk-card-title">{{ meeting.title }}</router-link>
       <span v-if="isOwnerOrAttendee"  class="uk-label uk-align-right">你的會議</span>
     </div>
@@ -64,14 +64,14 @@ export default {
     },
     startMeeting(meeting) {
       this.$router.push({
-        name: 'detail',
-        params: { id: meeting.id, view: 'properties' },
+        name: 'properties',
+        params: { id: meeting.id },
       });
     },
     endMeeting(meeting) {
       this.$router.push({
-        name: 'detail',
-        params: { id: meeting.id, view: 'properties' },
+        name: 'properties',
+        params: { id: meeting.id },
       });
     },
   },

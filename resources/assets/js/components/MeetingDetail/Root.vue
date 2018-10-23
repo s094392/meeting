@@ -3,62 +3,76 @@
   <div class="uk-width-3-4@l">
     <span class="page-title">{{ meeting.title }}</span>
     <div class="uk-card uk-card-default uk-card-body uk-card-small">
-
-      <ul uk-tab>
-        <li :class="{'uk-active': view === 'properties'}" @click="switchTab('properties')">
-          <a href="#"><span  class="uk-text-large">
-            <span class="uk-visible@s">會議</span>資料
-          </span></a>
+      <ul :uk-tab="`active: ${activeTabIndex};`">
+        <li>
+          <router-link :to="{ name: 'properties' }" replace>
+            <span class="uk-text-large">
+              <span class="uk-visible@s">會議</span>資料
+            </span>
+          </router-link>
         </li>
-        <li :class="{'uk-active': view === 'attendees'}" @click="switchTab('attendees')">
-          <a href="#"><span  class="uk-text-large">
-            <span class="uk-visible@s">參與</span>人員
-          </span></a>
+        <li>
+          <router-link :to="{ name: 'attendees' }" replace>
+            <span class="uk-text-large">
+              <span class="uk-visible@s">參與</span>人員
+            </span>
+          </router-link>
         </li>
-        <li :class="{'uk-active': view === 'record'}" @click="switchTab('record')">
-          <a href="#"><span  class="uk-text-large">
-            <span class="uk-visible@s">會議</span>紀錄
-          </span></a>
+        <li>
+          <router-link :to="{ name: 'record' }" replace>
+            <span class="uk-text-large">
+              <span class="uk-visible@s">會議</span>紀錄
+            </span>
+          </router-link>
         </li>
       </ul>
+      <keep-alive>
+        <router-view
+          :meeting="meeting"
+          :me.sync="me"
+          :attendees="meeting.attendees"
+          @update:attendee="updateAttendee"
+          @update:toc="tocHtml = $event">
+        </router-view>
+      </keep-alive>
 
-      <span>
-        <div v-show="view === 'properties'">
-          <Properties :meeting="meeting"/>
-          <MeetingControl :meeting="meeting" :me.sync="me"
-                          :editingRecord="editingRecord" @cancelMeeting="$router.replace('/')"
-                          @startMeeting="updateMeeting" @endMeeting="updateMeeting"
-                          @completeRecord="updateMeeting" />
-        </div>
-        <Attendees v-show="view === 'attendees'"
-                  :meeting="meeting" :attendees="meeting.attendees"
-                  @updateAttendee="updateAttendee"/>
-        <Record v-show="view === 'record'" :meeting="meeting" :editingRecord="editingRecord"
-                @startEdit="editingRecord = true" @endEdit="editingRecord = false"
-                @updateToc="updateToc"/>
-      </span>
+      <MeetingControl
+        :meeting="meeting"
+        :me.sync="me"
+        v-if="$route.name === 'properties'"
+        @cancelMeeting="$router.replace('/')"
+        @startMeeting="meeting = $event"
+        @endMeeting="meeting = $event"
+        @completeRecord="meeting = $event" />
     </div>
   </div>
 
-  <div class="uk-visible@l uk-width-1-4@l" v-if="tocHtml && meeting.record"
-       :class="{'visibility-hidden': view !== 'record'}">
+  <div
+    class="uk-visible@l uk-width-1-4@l"
+    v-if="tocHtml && meeting.record && $route.name === 'record'">
     <h4>目錄</h4>
-    <div class="uk-card uk-card-small uk-card-default uk-card-body toc markdown-body"
-         uk-sticky="offset:40;" v-html="tocHtml"></div>
+    <div
+      class="uk-card uk-card-small uk-card-default uk-card-body toc markdown-body"
+      uk-sticky="offset: 40;"
+      v-html="tocHtml">
+    </div>
   </div>
 </div>
 </template>
 
 <style lang="scss">
-.toc {
-  max-height: 90vh;
-  overflow: auto;
-  padding: 20px 10px;
-}
 .markdownIt-TOC {
   ul {
     padding-left: 15px;
   }
+}
+</style>
+
+<style lang="scss" scoped>
+.toc {
+  max-height: 90vh;
+  overflow: auto;
+  padding: 20px 10px;
 }
 @media only screen and (max-width: 640px) {
   .uk-card-small.uk-card-body {
@@ -70,12 +84,10 @@
 
 <script>
 import { mapState } from 'vuex';
-import Properties from './Properties';
-import Attendees from './Attendees';
-import Record from './Record';
 import MeetingControl from '../Shared/MeetingControl';
 
 export default {
+  components: { MeetingControl },
   beforeRouteEnter(to, from, next) {
     axios.get(`/api/meetings/${to.params.id}`).then((response) => {
       next(vm => vm.setData(response.data));
@@ -84,18 +96,6 @@ export default {
         next(vm => vm.redirect404());
       }
     });
-  },
-  beforeRouteLeave(to, from, next) {
-    if (this.editingRecord) {
-      UIkit.modal.confirm('會議紀錄編輯器未關閉，是否確定要離開？').then(() => {
-        localStorage.removeItem(`${this.meeting.id}_record`);
-        next();
-      }, () => {
-        this.$router.push({ name: 'detail', params: { id: this.id, view: 'record' } });
-      });
-    } else {
-      next();
-    }
   },
   computed: {
     me: {
@@ -112,8 +112,8 @@ export default {
         this.$set(this.meeting.attendees, index, me);
       },
     },
-    view() {
-      return this.$route.params.view;
+    activeTabIndex() {
+      return ['properties', 'attendees', 'record'].indexOf(this.$route.name);
     },
     id() {
       return this.$route.params.id;
@@ -127,19 +127,7 @@ export default {
       tocHtml: '',
     };
   },
-  components: {
-    Properties,
-    Attendees,
-    Record,
-    MeetingControl,
-  },
   methods: {
-    switchTab(tab) {
-      this.$router.replace({ name: 'detail', params: { id: this.id, view: tab } });
-    },
-    updateToc(tocHtml) {
-      this.tocHtml = tocHtml;
-    },
     setData(data) {
       this.meeting = data;
       document.title = `${this.meeting.title} - Meeting`;
@@ -152,9 +140,6 @@ export default {
         attendee => attendee.user_id === modifiedAttendee.user_id,
       );
       this.$set(this.meeting.attendees, index, modifiedAttendee);
-    },
-    updateMeeting(meeting) {
-      this.meeting = meeting;
     },
   },
 };

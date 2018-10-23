@@ -131,7 +131,7 @@ export default {
     },
     ...mapState(['user']),
   },
-  props: ['meeting', 'me', 'id', 'editingRecord'],
+  props: ['meeting', 'me', 'id'],
   data() {
     return {
       reason: '',
@@ -139,13 +139,11 @@ export default {
   },
   methods: {
     startMeeting() {
-      if (this.isEditingRecord()) return;
       axios.post(`/api/meetings/start/${this.meeting.id}`).then((response) => {
         this.$emit('startMeeting', response.data);
       });
     },
     endMeeting() {
-      if (this.isEditingRecord()) return;
       axios.post(`/api/meetings/end/${this.meeting.id}`).then((response) => {
         this.$emit('endMeeting', response.data);
       });
@@ -178,15 +176,7 @@ export default {
         absent_reason: reason,
       });
     },
-    isEditingRecord() {
-      if (this.editingRecord) {
-        UIkit.modal.alert('會議紀錄編輯器未關閉<br>請儲存後重試');
-        return true;
-      }
-      return false;
-    },
     completeRecord() {
-      if (this.isEditingRecord()) return;
       const meetingStart = moment(this.meeting.start_time);
       const meetingEnd = moment(this.meeting.end_time);
       let bad = [];

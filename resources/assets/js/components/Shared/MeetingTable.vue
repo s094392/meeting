@@ -39,8 +39,8 @@ export default {
   methods: {
     toMeeting(meetingId) {
       this.$router.push({
-        name: 'detail',
-        params: { id: meetingId, view: 'properties' },
+        name: 'properties',
+        params: { id: meetingId },
       });
     },
   },

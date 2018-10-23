@@ -5,6 +5,9 @@ import isEmpty from 'lodash/isEmpty';
 import Home from './components/Home/Root';
 import MeetingList from './components/MeetingList/Root';
 import MeetingDetail from './components/MeetingDetail/Root';
+import Properties from './components/MeetingDetail/Properties';
+import Attendees from './components/MeetingDetail/Attendees';
+import Record from './components/MeetingDetail/Record';
 import Profile from './components/Profile/Root';
 import ProfileRedirect from './components/Profile/ProfileRedirect';
 import MeetingEditor from './components/Shared/MeetingEditor';
@@ -32,20 +35,31 @@ const router = new VueRouter({
       meta: { title: '會議列表' },
     },
     {
-      path: '/detail/:id/:view',
+      path: '/detail/:id',
       name: 'detail',
       component: MeetingDetail,
       meta: { title: '會議資料' },
-    },
-    {
-      path: '/detail/:id',
-      redirect: to => ({
-        name: 'detail',
-        params: {
-          id: to.params.id,
-          view: 'properties',
+      children: [
+        {
+          path: '',
+          redirect: { name: 'properties' },
         },
-      }),
+        {
+          path: 'properties',
+          name: 'properties',
+          component: Properties,
+        },
+        {
+          path: 'attendees',
+          name: 'attendees',
+          component: Attendees,
+        },
+        {
+          path: 'record',
+          name: 'record',
+          component: Record,
+        },
+      ],
     },
     {
       path: '/create',
@@ -105,12 +119,17 @@ function checkIfInit() {
   });
 }
 
+function inDetailPage(name) {
+  const names = ['properties', 'attendees', 'record'];
+  return names.indexOf(name) !== -1;
+}
+
 router.beforeEach((to, from, next) => {
   store.commit('startLoad');
   checkIfInit().then(() => {
     next();
     // dont update title when switching tab in detail page
-    if (!(to.name === 'detail' && from.name === 'detail')) {
+    if (!(inDetailPage(from.name) && inDetailPage(to.name))) {
       document.title = `${to.meta.title} - Meeting`;
     }
   });

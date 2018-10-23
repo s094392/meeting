@@ -1,28 +1,59 @@
 <template>
   <div>
-    <button class="uk-button uk-button-primary uk-button-small uk-align-right edit-button"
-            v-if="canModify && !editingRecord" @click="startEdit">編輯
+    <button
+      class="uk-button uk-button-primary uk-button-small uk-align-right edit-button"
+      v-if="canModify && !editingRecord"
+      @click="startEdit">
+      編輯
     </button>
-    <div v-show="!editingRecord" class="markdown-body uk-overflow-hidden"
-         v-html="rederedHtml"></div>
-    <mavonEditor language="en" v-if="editingRecord" :externalLink="false" defaultOpen="edit"
-                  :autofocus="false" :ishljs="false" :toolbars="toolbars" :subfield="false"
-                 :boxShadow="false" v-model="meetingRecord" @save="saveRecord"></mavonEditor>
-    <button class="uk-button uk-button-primary uk-align-right edit-button uk-margin-top"
-            v-if="editingRecord" @click="endEdit">完成
+
+    <div
+      class="markdown-body uk-overflow-hidden"
+      v-show="!editingRecord"
+      v-html="rederedHtml">
+    </div>
+
+    <mavonEditor
+      language="en"
+      v-if="editingRecord"
+      :externalLink="false"
+      defaultOpen="edit"
+      :autofocus="false"
+      :ishljs="false"
+      :toolbars="toolbars"
+      :subfield="false"
+      :boxShadow="false"
+      v-model="meetingRecord"
+      @save="saveRecord">
+    </mavonEditor>
+
+    <button
+      class="uk-button uk-button-primary uk-align-right edit-button uk-margin-top"
+      v-if="editingRecord"
+      @click="endEdit">
+      完成
     </button>
-    <div ref="backup-modal" class="uk-modal-container" uk-modal="bg-close: false;esc-close: false;">
+
+    <div
+      ref="backup-modal"
+      class="uk-modal-container"
+      uk-modal="bg-close: false; esc-close: false;">
       <div class="uk-modal-dialog">
         <div class="uk-modal-header">
-          <h4>以下為上次未完成的紀錄<br>是否回復紀錄？</h4>
+          <h4>
+            以下為上次未完成的紀錄<br>
+            是否回復紀錄？
+          </h4>
         </div>
         <div class="uk-modal-body" uk-overflow-auto>
           <span class="pre-wrap">{{ backupRecord }}</span>
         </div>
         <div class="uk-modal-footer uk-text-right">
-          <button class="uk-button uk-button-default uk-modal-close" type="button">放棄</button>
-          <button class="uk-button uk-button-primary" type="button"
-                  @click="restoreRecord">回復
+          <button class="uk-button uk-button-default uk-modal-close">
+            放棄
+          </button>
+          <button class="uk-button uk-button-primary uk-modal-close" @click="restoreRecord">
+            回復
           </button>
         </div>
       </div>
@@ -42,7 +73,17 @@ import { mapState } from 'vuex';
 import 'mavon-editor/dist/css/index.css';
 
 export default {
-  props: ['meeting', 'editingRecord'],
+  beforeRouteLeave(to, from, next) {
+    if (this.editingRecord) {
+      this.saveRecord(() => {
+        this.editingRecord = false;
+        next();
+      });
+    } else {
+      next();
+    }
+  },
+  props: ['meeting'],
   components: {
     mavonEditor,
   },
@@ -71,6 +112,7 @@ export default {
     return {
       rederedHtml: '',
       backupRecord: null,
+      editingRecord: false,
       toolbars: {
         bold: true,
         italic: true,
@@ -103,7 +145,7 @@ export default {
   },
   methods: {
     startEdit() {
-      this.$emit('startEdit');
+      this.editingRecord = true;
       this.backupRecord = localStorage.getItem(`${this.meeting.id}_record`);
       if (this.backupRecord !== null) {
         UIkit.modal(this.$refs['backup-modal']).show();
@@ -111,7 +153,7 @@ export default {
     },
     endEdit() {
       this.saveRecord(() => {
-        this.$emit('endEdit');
+        this.editingRecord = false;
       });
     },
     restoreRecord() {
@@ -136,7 +178,7 @@ export default {
       html: false,
       linkify: true,
       tocCallback(tocMarkdown, tocArray, tocHtml) {
-        self.$emit('updateToc', tocHtml);
+        self.$emit('update:toc', tocHtml);
       },
     }).render(this.meetingRecord);
   },

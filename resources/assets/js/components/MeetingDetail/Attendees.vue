@@ -204,7 +204,7 @@ export default {
           data,
         )
         .then((response) => {
-          this.$emit('updateAttendee', response.data);
+          this.$emit('update:attendee', response.data);
         });
     },
     changePresent(userId, present) {

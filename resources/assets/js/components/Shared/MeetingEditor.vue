@@ -180,8 +180,8 @@ export default {
         }).then((response) => {
           this.$store.commit('endLoad');
           this.$router.push({
-            name: 'detail',
-            params: { id: response.data.id, view: 'properties' },
+            name: 'properties',
+            params: { id: response.data.id },
           }).catch(() => {
             this.$store.commit('endLoad');
           });
