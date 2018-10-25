@@ -8,8 +8,10 @@
         <div><b>開會時間:</b> {{ $meeting->scheduled_time }}</div>
         <div><b>會議發起人:</b> {{ $meeting->owner->username }}</div>
         <div><b>會議描述:</b> {{ $meeting->description }}</div>
-        <div>請記得參加喔喔!!</div>
         {{ $url = url('/') . '/detail/' . $meeting->id . '/properties' }}
-        <div>更詳細訊息或請假請至:</b> <a href="{{ $url }}">{{ $url }}</a></div>
+        @if ($meeting->status == 4)
+            <div><b>會議紀錄:</b> {{ $meeting->record }}</div>
+        @endif
+        <div>更詳細訊息請至:</b> <a href="{{ $url }}">{{ $url }}</a></div>
     </body>
 </html>

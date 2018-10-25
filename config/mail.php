@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'meetingTA@cs.nctu.edu.tw'),
-        'name' => env('MAIL_FROM_NAME', 'meetingTA'),
+        'address' => env('MAIL_FROM_ADDRESS', 'ccwwwapp@cs.nctu.edu.tw'),
+        'name' => env('MAIL_FROM_NAME', 'ccwwwapp'),
     ],
 
     /*

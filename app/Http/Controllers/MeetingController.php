@@ -22,7 +22,7 @@ class MeetingController extends Controller
         $meetings = Meeting::where('status', 1)->get();
         $time = Carbon::now();
         foreach ($meetings as $meeting) {
-            if ($meeting->scheduled_time < $time->subMinutes(5)) {
+            if ($meeting->scheduled_time < $time->subHour()) {
                 $meeting->update(['status' => Meeting::CANCEL]);
             }
         }
@@ -37,7 +37,9 @@ class MeetingController extends Controller
         $attendees = $meeting->attendees();
         $users = [];
         foreach ($meeting->attendees as $attendee) {
-            array_push($users, $attendee->user->username . "@cs.nctu.edu.tw");
+            if ($attendee->user) {
+                array_push($users, $attendee->user->username . "@cs.nctu.edu.tw");
+            }
         }
         Mail::send('emails.default', ['meeting' => $meeting], function ($m) use ($meeting, $users) {
             $m->sender('ccwwwapp@cs.nctu.edu.tw');
@@ -46,7 +48,8 @@ class MeetingController extends Controller
                 $m->subject('[Meeting] [會議取消通知] "' . $meeting->title);
             } elseif ($meeting->status==Meeting::COMPLETE) {
                 $m->subject('[Meeting] [會議紀錄報告] "' . $meeting->title);
-                $users[] = 'help@cs.nctu.edu.tw';
+                $m->to('help@cs.nctu.edu.tw');
+                $users = [];
             } else {
                 $m->subject('[Meeting] [會議更新通知] "' . $meeting->title);
             }
@@ -62,7 +65,9 @@ class MeetingController extends Controller
     {
         $recipients = [];
         foreach ($meeting->attendees as $attendee) {
-            array_push($recipients, $attendee->user->username . "@cs.nctu.edu.tw");
+            if ($attendee->user) {
+                array_push($recipients, $attendee->user->username . "@cs.nctu.edu.tw");
+            }
         }
         $url = env('APP_URL') . "/detail/{$meeting->id}/properties";
         Mail::send('emails.default', ['meeting' => $meeting, 'url' => $url], function ($m) use ($meeting, $recipients) {
@@ -211,7 +216,7 @@ class MeetingController extends Controller
             return response(['message' => '你壞或沒權限'], 403);
         };
         $time = Carbon::now();
-        if ($time->subMinutes(5) > $meeting->scheduled_time) {
+        if ($time->subHour() > $meeting->scheduled_time) {
             return response(['message' => '超過時間囉'], 403);
         }
         Meeting::where("id", $meetingId)->update(['status' => Meeting::START, 'start_time' => $time]);

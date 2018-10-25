@@ -7,13 +7,40 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Attendee extends Model
 {
-    protected $fillable = ['status', 'delay_time', 'reason', 'absent_reason',
+    const ONTIME = 1;
+    const ABSENT = 2;
+    const NOTONTIME = 3;
+
+    protected $fillable = ['status', 'reason', 'absent_reason',
         'arrive_time', 'late_reason', 'leave_time', 'leave_early_reason', 'meeting_id', 'user_id'];
     protected $primaryKey = ['user_id', 'meeting_id'];
     public $incrementing = false;
 
     protected $hidden = ['user'];
     protected $appends = ['username'];
+
+    public function getStatus()
+    {
+        if ($this->absent_reason) {
+            return "請假";
+        }
+        $status = "";
+        if ($this->late_reason) {
+            $status .= "遲到";
+        }
+        if ($this->leave_early_reason) {
+            $status .= "早退";
+        }
+        if ($this->late_reason || $this->leave_early_reason) {
+            return $status;
+        }
+        return "準時參加";
+    }
+
+    public function meeting()
+    {
+        return Meeting::where('id', $this->meeting_id)->first();
+    }
 
     public function user()
     {
