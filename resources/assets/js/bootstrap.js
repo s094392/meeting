@@ -29,7 +29,11 @@ axios.defaults.baseURL = BASE_PATH;
 
 axios.interceptors.response.use(null, (error) => {
   if (error.response.status === 401 || error.response.status === 419) {
-    return window.location.assign(`${window.location}?expired=true`);
+    UIkit.modal.alert('登入已過期，點擊重新登入').then(() => {
+      axios.get('/save_route_before_redirect', { params: { route: window.location.href } }).then(() => {
+        window.location = `${BASE_PATH}cssso/redirect`;
+      });
+    });
   }
   if (error.response.status === 403) {
     UIkit.modal.alert(error.response.data.message);

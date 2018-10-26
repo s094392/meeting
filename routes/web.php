@@ -34,14 +34,21 @@ Route::prefix('api/')->middleware('auth:api')->group(function () {
 
 Route::get('/cssso/handle', 'SSOController');
 
-Route::get('/login', 'LoginController')->name('login');
+Route::get('/login', function () {
+    return view('login', ["APP_URL" => env("APP_URL", ""), "CSSSO_SERVER" => env("CSSSO_SERVER", "")]);
+})->name('login');
 
-Route::post('/logout', function (Request $request) {
-    $request->session()->flush();
+Route::get('/logout', function (Request $request) {
+    session()->flush();
     return;
 });
 
 Route::get('/report', 'ReportController');
+
+Route::get('/save_route_before_redirect', function (Request $request) {
+    session([ 'redirect_url' => $request->get('route') ]);
+    return '';
+});
 
 Route::get('/{page}', function () {
     return view('vue');

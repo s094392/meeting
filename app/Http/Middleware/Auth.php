@@ -16,21 +16,20 @@ class Auth
      */
     public function handle($request, Closure $next, $api = '')
     {
-        if (Input::get("expired") ||
-        !session()->get('user')['groups'] ||
-        !in_array("cs-ta", session()->get('user')['groups'])) {
+        if (!session()->get('user')['groups']) {
             if ($api) {
                 return response('', 401);
             }
             session([ 'redirect_url' => $request->path() ]);
-            $params = ['expired'=>Input::get("expired")];
-            if (session()->get('user')['groups'] &&
-                !in_array("cs-ta", session()->get('user')['groups'])) {
-                $params["cs-ta-only"] = true;
-            }
-            session()->forget('user');
-            return redirect()->route('login', $params);
+            return redirect('/cssso/redirect');
         };
+        if (session()->get('user')['groups']
+            && !in_array("cs-ta", session()->get('user')['groups'])) {
+            if ($api) {
+                    return response(['message' => '你沒權限'], 403);
+            }
+            return redirect('/login');
+        }
         return $next($request);
     }
 }

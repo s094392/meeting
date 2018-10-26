@@ -35,6 +35,7 @@
       </ul>
     </div>
   </div>
+  <form v-show="false" ref="logoutForm" method="POST" action="https://oauth.cs.nctu.edu.tw/logout"></form>
 </div>
 </template>
 
@@ -52,9 +53,7 @@ export default {
   computed: mapState(['user']),
   methods: {
     logout() {
-      axios.post('/logout').then(() => {
-        window.location = `${this.$basePath}login`;
-      });
+      this.$refs.logoutForm.submit();
     },
   },
 };
