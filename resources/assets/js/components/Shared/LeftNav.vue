@@ -35,7 +35,8 @@
       </ul>
     </div>
   </div>
-  <form v-show="false" ref="logoutForm" method="POST" action="https://oauth.cs.nctu.edu.tw/logout"></form>
+  <form v-show="false" ref="logoutForm" method="POST"
+        :action="`https://oauth.cs.nctu.edu.tw/logout?next=${origin}${$basePath}`"></form>
 </div>
 </template>
 
@@ -50,7 +51,12 @@
 import { mapState } from 'vuex';
 
 export default {
-  computed: mapState(['user']),
+  computed: {
+    origin() {
+      return document.location.origin;
+    },
+    ...mapState(['user']),
+  },
   methods: {
     logout() {
       this.$refs.logoutForm.submit();
