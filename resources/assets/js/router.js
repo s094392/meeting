@@ -48,6 +48,7 @@ const router = new VueRouter({
           path: 'properties',
           name: 'properties',
           component: Properties,
+          meta: { title: '會議資料' },
         },
         {
           path: 'attendees',
