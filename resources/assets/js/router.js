@@ -38,11 +38,11 @@ const router = new VueRouter({
       path: '/detail/:id',
       name: 'detail',
       component: MeetingDetail,
-      meta: { title: '會議資料' },
       children: [
         {
           path: '',
           redirect: { name: 'properties' },
+          meta: { title: '會議資料' },
         },
         {
           path: 'properties',
