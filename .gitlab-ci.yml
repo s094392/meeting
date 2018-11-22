@@ -117,7 +117,7 @@ deploy:tccws1:
         chmod 775 storage/framework/sessions;"
   dependencies:
     - install:php
-    - build
+    - build:dev
 
 deploy:ccws01:
   only:
@@ -148,7 +148,7 @@ deploy:ccws01:
         chmod 775 storage/framework/sessions;"
   dependencies:
     - install:php
-    - build
+    - build:master
 
 deploy:ccws02:
   only:
@@ -179,7 +179,7 @@ deploy:ccws02:
         chmod 775 storage/framework/sessions;"
   dependencies:
     - install:php
-    - build
+    - build:master
 
 migrate:dev:
   only:
