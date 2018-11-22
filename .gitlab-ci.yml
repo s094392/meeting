@@ -16,8 +16,7 @@ install:php:
     - composer install --no-progress
   artifacts:
     when: on_success
-    expire_in: 1 week
-    paths:
+    expire_in: 1 week paths:
       - vendor
 
 install:js:
@@ -50,7 +49,9 @@ test:js:
   dependencies:
     - install:js
 
-build:
+build:dev:
+  only:
+    - dev
   stage: build
   tags:
     - builder
@@ -67,7 +68,26 @@ build:
   dependencies:
     - install:js
 
-deploy:
+build:master:
+  only:
+    - master
+  stage: build
+  tags:
+    - builder
+  script:
+    - sed -i -e "s,^\x24APP_URL:.*,\x24APP_URL:'$APP_URL';,g" resources/assets/sass/_variables.scss
+    - sed -i -e "s,^const BASE_PATH = .*,const BASE_PATH = '$DEPOLY_BASE_PATH';,g" resources/assets/js/base_path.js
+    - sed -i -e "s,^const BASE_PATH = .*,const BASE_PATH = '$DEPOLY_BASE_PATH';,g" webpack.mix.js
+    - yarn production
+  artifacts:
+    when: on_success
+    expire_in: 1 day
+    paths:
+      - public
+  dependencies:
+    - install:js
+
+deploy:tccws1:
   only:
     - dev
   stage: deploy
@@ -98,7 +118,69 @@ deploy:
     - install:php
     - build
 
-migrate:
+deploy:ccws01:
+  only:
+    - master
+  stage: deploy
+  tags:
+    - training
+  script:
+    - ssh ccws01 "
+        cd /srv/www-available/;
+        git clone $CI_REPOSITORY_URL -b $CI_COMMIT_REF_NAME $CI_PROJECT_NAME || 
+        ( cd $CI_PROJECT_NAME;
+          git remote set-url origin $CI_REPOSITORY_URL;
+          git fetch --all;
+          git reset --hard origin/$CI_COMMIT_REF_NAME;
+        )"
+    - scp -r vendor ccws01:/srv/www-available/$CI_PROJECT_NAME/
+    - scp -r public ccws01:/srv/www-available/$CI_PROJECT_NAME/
+    - ssh ccws01 "
+        cd /srv/www-available/$CI_PROJECT_NAME/;
+        chmod 775 storage/logs;
+        chmod 775 storage/app;
+        chmod 775 storage/app/public;
+        chmod 775 storage/framework;
+        chmod 775 storage/framework/views;
+        chmod 775 storage/framework/testing;
+        chmod 775 storage/framework/cache;
+        chmod 775 storage/framework/sessions;"
+  dependencies:
+    - install:php
+    - build
+
+deploy:ccws02:
+  only:
+    - master
+  stage: deploy
+  tags:
+    - training
+  script:
+    - ssh ccws02 "
+        cd /srv/www-available/;
+        git clone $CI_REPOSITORY_URL -b $CI_COMMIT_REF_NAME $CI_PROJECT_NAME || 
+        ( cd $CI_PROJECT_NAME;
+          git remote set-url origin $CI_REPOSITORY_URL;
+          git fetch --all;
+          git reset --hard origin/$CI_COMMIT_REF_NAME;
+        )"
+    - scp -r vendor ccws02:/srv/www-available/$CI_PROJECT_NAME/
+    - scp -r public ccws02:/srv/www-available/$CI_PROJECT_NAME/
+    - ssh ccws02 "
+        cd /srv/www-available/$CI_PROJECT_NAME/;
+        chmod 775 storage/logs;
+        chmod 775 storage/app;
+        chmod 775 storage/app/public;
+        chmod 775 storage/framework;
+        chmod 775 storage/framework/views;
+        chmod 775 storage/framework/testing;
+        chmod 775 storage/framework/cache;
+        chmod 775 storage/framework/sessions;"
+  dependencies:
+    - install:php
+    - build
+
+migrate:dev:
   only:
     - dev
   stage: migrate
@@ -135,6 +217,53 @@ migrate:
     - sed -i -e "/LOGGING_STORAGE=.*/d" .env
     - scp .env tccws1:/srv/www-available/$CI_PROJECT_NAME/
     - ssh tccws1 "
+          cd /srv/www-available/$CI_PROJECT_NAME/;
+          php artisan migrate --force;
+          ln -sfn /srv/www-available/$CI_PROJECT_NAME/public/ /srv/www-enable/$CI_PROJECT_NAME;"
+  dependencies: []
+
+migrate:master:
+  only:
+    - master
+  stage: migrate
+  tags:
+    - training
+  script:
+    # Set Env file
+    - cp .env.example .env
+    - sed -i -e "s,^APP_ENV=.*,APP_ENV=$APP_ENV,g" .env
+    - sed -i -e "s,^APP_URL=.*,APP_URL=$DEPOLY_APP_URL,g" .env
+    - sed -i -e "s,^APP_KEY=.*,APP_KEY=$APP_KEY,g" .env
+    - sed -i -e "s,^APP_DEBUG=.*,APP_DEBUG=$APP_DEBUG,g" .env
+
+    - sed -i -e "s,^CSSSO_CLIENT_ID=.*,CSSSO_CLIENT_ID=$DEPOLY_CSSSO_CLIENT_ID,g" .env
+    - sed -i -e "s,^CSSSO_CLIENT_SECRET=.*,CSSSO_CLIENT_SECRET=$DEPOLY_CSSSO_CLIENT_SECRET,g" .env
+    - sed -i -e "s,^CSSSO_SERVER=.*,CSSSO_SERVER=$CSSSO_SERVER,g" .env
+
+    - sed -i -e "s,^DB_HOST=.*,DB_HOST=$DEPOLY_DB_HOST,g" .env
+    - sed -i -e "s,^DB_DATABASE=.*,DB_DATABASE=$DEPOLY_DB_DATABASE,g" .env
+    - sed -i -e "s,^DB_USERNAME=.*,DB_USERNAME=$DEPOLY_DB_USERNAME,g" .env
+    - sed -i -e "s,^DB_PASSWORD=.*,DB_PASSWORD=$DEPOLY_DB_PASSWORD,g" .env
+
+    - sed -i -e "s,^REDIS_HOST=.*,REDIS_HOST=$DEPOLY_REDIS_HOST,g" .env
+    - sed -i -e "s,^REDIS_PASSWORD=.*,REDIS_PASSWORD=$DEPOLY_REDIS_PASSWORD,g" .env
+    - sed -i -e "s,^REDIS_PORT=.*,REDIS_PORT=$DEPOLY_REDIS_PORT,g" .env
+
+    - sed -i -e "s,^MAIL_DRIVER=.*,MAIL_DRIVER=$MAIL_DRIVER,g" .env
+    - sed -i -e "s,^MAIL_HOST=.*,MAIL_HOST=$MAIL_HOST,g" .env
+    - sed -i -e "s,^MAIL_PORT=.*,MAIL_PORT=$MAIL_PORT,g" .env
+    - sed -i -e "s,^MAIL_USERNAME=.*,MAIL_USERNAME=$MAIL_USERNAME,g" .env
+    - sed -i -e "s,^MAIL_PASSWORD=.*,MAIL_PASSWORD=$MAIL_PASSWORD,g" .env
+    - sed -i -e "s,^MAIL_ENCRYPTION=.*,MAIL_ENCRYPTION=$MAIL_ENCRYPTION,g" .env
+
+    - sed -i -e "/LOGGING_STORAGE=.*/d" .env
+    - scp .env ccws01:/srv/www-available/$CI_PROJECT_NAME/
+    - scp .env ccws02:/srv/www-available/$CI_PROJECT_NAME/
+    - ssh ccws01 "
+          cd /srv/www-available/$CI_PROJECT_NAME/;
+          php artisan migrate --force;
+          ln -sfn /srv/www-available/$CI_PROJECT_NAME/public/ /srv/www-enable/$CI_PROJECT_NAME;"
+    - ssh ccws02 "
           cd /srv/www-available/$CI_PROJECT_NAME/;
           php artisan migrate --force;
           ln -sfn /srv/www-available/$CI_PROJECT_NAME/public/ /srv/www-enable/$CI_PROJECT_NAME;"
