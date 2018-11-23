@@ -124,7 +124,7 @@ deploy:ccws01:
     - master
   stage: deploy
   tags:
-    - training
+    - deployer
   script:
     - ssh ccws01 "
         cd /srv/www-available/;
@@ -155,7 +155,7 @@ deploy:ccws02:
     - master
   stage: deploy
   tags:
-    - training
+    - deployer
   script:
     - ssh ccws02 "
         cd /srv/www-available/;
@@ -228,7 +228,7 @@ migrate:master:
     - master
   stage: migrate
   tags:
-    - training
+    - deployer
   script:
     # Set Env file
     - cp .env.example .env
